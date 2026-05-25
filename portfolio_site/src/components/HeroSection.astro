@@ -1,67 +1,95 @@
 ---
-import type { SiteConfig } from '../lib/types';
+import { getProjectHeroImage } from '../lib/portfolio-data';
+import type { Project, SiteConfig } from '../lib/types';
 
 interface Props {
   config: SiteConfig;
   projectCount: number;
   skillCount: number;
+  featuredProject?: Project;
 }
 
-const { config, projectCount, skillCount } = Astro.props;
+const { config, projectCount, skillCount, featuredProject } = Astro.props;
+const featuredImage = featuredProject ? getProjectHeroImage(featuredProject) : '';
 ---
 
-<section class="border-b border-line bg-panel">
-  <div class="mx-auto grid min-h-[560px] max-w-7xl content-center gap-10 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
-    <div>
-      <p class="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-signal">
-        Systems Portfolio / Engineering Profile
-      </p>
-      <h1 class="max-w-4xl text-5xl font-black leading-[0.95] text-ink sm:text-7xl">
+<section class="border-b border-line bg-panel px-6 py-10 lg:px-8">
+  <div class="mx-auto max-w-7xl">
+    <nav class="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
+      <a class="text-sm font-black uppercase tracking-[0.18em] text-ink" href="/">
         {config.name}
-      </h1>
-      <p class="mt-5 max-w-3xl text-xl font-semibold text-slate-700">
-        {config.headline}
-      </p>
-      <p class="mt-6 max-w-3xl text-base leading-8 text-slate-600">
-        {config.bio}
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        {config.github_url && (
-          <a class="border border-ink bg-ink px-4 py-2 text-sm font-bold text-white" href={config.github_url}>
-            GitHub
-          </a>
-        )}
-        {config.linkedin_url && (
-          <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={config.linkedin_url}>
-            LinkedIn
-          </a>
-        )}
-        {config.resume_url && (
-          <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={config.resume_url}>
-            Resume
-          </a>
-        )}
+      </a>
+      <div class="flex max-w-full flex-wrap gap-3 text-sm font-bold text-quiet">
+        <a class="hover:text-signal" href="#projects">Projects</a>
+        <a class="hover:text-signal" href="#skills">Skills</a>
+        {config.email && <a class="hover:text-signal" href={`mailto:${config.email}`}>Contact</a>}
       </div>
-    </div>
+    </nav>
 
-    <aside class="border border-line bg-white p-5 shadow-sm">
-      <div class="border-b border-line pb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-        Profile Snapshot
+    <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+      <div class="min-w-0">
+        <p class="mb-4 text-xs font-black uppercase tracking-[0.18em] text-signal">
+          Systems Portfolio / Engineering Profile
+        </p>
+        <h1 class="max-w-full break-words text-4xl font-black leading-[0.98] text-ink sm:text-7xl">
+          {config.name}
+        </h1>
+        <p class="mt-5 max-w-3xl text-xl font-semibold leading-8 text-ink">
+          {config.headline}
+        </p>
+        <p class="mt-5 max-w-3xl text-base leading-8 text-quiet">
+          {config.bio}
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          {config.github_url && (
+            <a class="border border-ink bg-ink px-4 py-2 text-sm font-bold text-white" href={config.github_url}>
+              GitHub
+            </a>
+          )}
+          {config.linkedin_url && (
+            <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={config.linkedin_url}>
+              LinkedIn
+            </a>
+          )}
+          {config.resume_url && (
+            <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={config.resume_url}>
+              Resume
+            </a>
+          )}
+        </div>
       </div>
-      <dl class="mt-5 grid gap-4">
-        <div class="flex items-center justify-between border-b border-line pb-3">
-          <dt class="text-sm text-slate-500">Published Projects</dt>
-          <dd class="text-2xl font-black text-ink">{projectCount}</dd>
-        </div>
-        <div class="flex items-center justify-between border-b border-line pb-3">
-          <dt class="text-sm text-slate-500">Skill Groups</dt>
-          <dd class="text-2xl font-black text-ink">{skillCount}</dd>
-        </div>
-        <div class="flex items-center justify-between">
-          <dt class="text-sm text-slate-500">Primary Focus</dt>
-          <dd class="text-sm font-black uppercase text-signal">Product Systems</dd>
-        </div>
-      </dl>
-    </aside>
+
+      <aside class="min-w-0 border border-line bg-white p-4 shadow-sm">
+        {featuredProject && featuredImage && (
+          <a href={`/projects/${featuredProject.slug}/`} class="block">
+            <div class="mb-3 flex items-center justify-between gap-4">
+              <p class="text-xs font-black uppercase tracking-[0.16em] text-alert">
+                Featured Build
+              </p>
+              <span class="text-xs font-bold text-quiet">{projectCount} projects</span>
+            </div>
+            <img
+              src={featuredImage}
+              alt={`${featuredProject.title} preview`}
+              class="aspect-[16/10] w-full border border-line object-cover"
+            />
+            <h2 class="mt-4 text-2xl font-black text-ink">{featuredProject.title}</h2>
+            <p class="mt-2 line-clamp-2 text-sm leading-6 text-quiet">
+              {featuredProject.short_description ?? featuredProject.description}
+            </p>
+          </a>
+        )}
+        <dl class="mt-5 grid grid-cols-2 border-t border-line pt-4">
+          <div>
+            <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Projects</dt>
+            <dd class="mt-1 text-3xl font-black text-ink">{projectCount}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Skill Groups</dt>
+            <dd class="mt-1 text-3xl font-black text-ink">{skillCount}</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
   </div>
 </section>

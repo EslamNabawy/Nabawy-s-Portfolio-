@@ -1,6 +1,8 @@
 import { supabase } from './supabase';
 import type { Project, SiteConfig, Skill } from './types';
 
+const projectSelect = '*, project_images(*)';
+
 export type PortfolioData = {
   config: SiteConfig;
   projects: Project[];
@@ -17,8 +19,9 @@ export async function getPortfolioData(): Promise<PortfolioData> {
       .order('display_order', { ascending: true }),
     supabase
       .from('projects')
-      .select('*')
+      .select(projectSelect)
       .eq('is_published', true)
+      .order('featured', { ascending: false })
       .order('display_order', { ascending: true })
       .order('created_at', { ascending: false }),
   ]);
@@ -35,7 +38,7 @@ export async function getPortfolioData(): Promise<PortfolioData> {
 
   const config = configResult.data as SiteConfig;
   const skills = (skillsResult.data ?? []) as Skill[];
-  const projects = (projectsResult.data ?? []) as Project[];
+  const projects = ((projectsResult.data ?? []) as Project[]).map(normalizeProject);
 
   validateSiteConfig(config);
   for (const skill of skills) {
@@ -51,15 +54,16 @@ export async function getPortfolioData(): Promise<PortfolioData> {
 export async function getPublishedProjects(): Promise<Project[]> {
   const { data, error } = await supabase
     .from('projects')
-    .select('*')
+    .select(projectSelect)
     .eq('is_published', true)
+    .order('featured', { ascending: false })
     .order('display_order', { ascending: true });
 
   if (error) {
     throw new Error(`Failed to load project static paths: ${error.message}`);
   }
 
-  const projects = (data ?? []) as Project[];
+  const projects = ((data ?? []) as Project[]).map(normalizeProject);
   for (const project of projects) {
     validatePublishedProject(project);
   }
@@ -71,7 +75,7 @@ export function validatePublishedProject(project: Project): void {
     ['title', project.title],
     ['slug', project.slug],
     ['description', project.description],
-    ['image_url', project.image_url],
+    ['image', getProjectHeroImage(project)],
   ].filter(([, value]) => typeof value !== 'string' || value.trim().length === 0);
 
   if (missing.length > 0) {
@@ -87,6 +91,29 @@ export function validatePublishedProject(project: Project): void {
   if (!Array.isArray(project.tech_stack) || project.tech_stack.length === 0) {
     throw new Error(`Published project "${project.title}" must include tech_stack.`);
   }
+  for (const image of project.project_images ?? []) {
+    if (!image.image_url?.trim()) {
+      throw new Error(`Published project "${project.title}" has a gallery image without image_url.`);
+    }
+  }
+}
+
+export function getProjectHeroImage(project: Project): string {
+  const primaryImage = project.image_url?.trim();
+  if (primaryImage) {
+    return primaryImage;
+  }
+  return project.project_images?.find((image) => image.image_url.trim().length > 0)?.image_url ?? '';
+}
+
+function normalizeProject(project: Project): Project {
+  const projectImages = [...(project.project_images ?? [])].sort(
+    (left, right) => left.display_order - right.display_order,
+  );
+  return {
+    ...project,
+    project_images: projectImages,
+  };
 }
 
 function validateSiteConfig(config: SiteConfig): void {

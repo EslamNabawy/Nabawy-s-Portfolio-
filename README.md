@@ -1,18 +1,39 @@
-# portfolio_admin
+# Nabawy Portfolio CMS
 
-A new Flutter project.
+Flutter admin dashboard plus Astro static portfolio for a Supabase-backed portfolio CMS.
 
-## Getting Started
+## Structure
 
-This project is a starting point for a Flutter application.
+- `lib/`: Flutter admin dashboard.
+- `supabase/migrations/`: database, RLS, and storage migrations.
+- `portfolio_site/`: Astro public portfolio generated at build time.
+- `.github/workflows/deploy.yml`: manual GitHub Pages deploy for the Astro site.
+- `.github/workflows/build-dashboard-windows.yml`: manual Windows dashboard release build.
 
-A few resources to get you started if this is your first Flutter project:
+## Dashboard
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Run locally:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# Nabawy-s-Portfolio-
+```powershell
+$env:SUPABASE_URL = "https://your-project.supabase.co"
+$env:SUPABASE_ANON_KEY = "your-anon-key"
+flutter run -d windows
+```
+
+Build a Windows release zip:
+
+```powershell
+$env:SUPABASE_URL = "https://your-project.supabase.co"
+$env:SUPABASE_ANON_KEY = "your-anon-key"
+.\scripts\build_windows_release.ps1
+```
+
+## Public Site
+
+```powershell
+cd portfolio_site
+npm ci
+npm run build
+```
+
+The public site fetches Supabase content only during the Astro build.

@@ -7,41 +7,96 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPortfolioData } from '../lib/portfolio-data';
 
 const { config, projects, skills } = await getPortfolioData();
+const featuredProject = projects.find((project) => project.featured) ?? projects[0];
 ---
 
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
   <main>
-    <HeroSection config={config} projectCount={projects.length} skillCount={skills.length} />
+    <HeroSection
+      config={config}
+      projectCount={projects.length}
+      skillCount={skills.length}
+      featuredProject={featuredProject}
+    />
 
-    <section class="border-b border-line bg-white px-6 py-16 lg:px-8" id="projects">
+    <section class="border-b border-line bg-white px-6 py-14 lg:px-8" id="projects">
       <div class="mx-auto max-w-7xl">
-        <SectionHeader
-          eyebrow="Selected Systems"
-          title="Projects Built For Real Constraints"
-          copy="A curated set of shipped work, technical experiments, and engineering systems."
-        />
-        <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {projects.map((project) => <ProjectCard project={project} />)}
+        <div class="flex flex-col justify-between gap-6 border-b border-line pb-8 lg:flex-row lg:items-end">
+          <SectionHeader
+            eyebrow="Selected Systems"
+            title="Projects With Architecture, Tradeoffs, And Evidence"
+            copy="Static pages generated from the CMS at build time. Recruiters get fast HTML; the dashboard keeps the source of truth editable."
+          />
+          <div class="grid w-full max-w-md grid-cols-2 border border-line bg-panel">
+            <div class="border-r border-line p-4">
+              <p class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Published</p>
+              <p class="mt-1 text-3xl font-black text-ink">{projects.length}</p>
+            </div>
+            <div class="p-4">
+              <p class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Featured</p>
+              <p class="mt-1 text-3xl font-black text-ink">
+                {projects.filter((project) => project.featured).length}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {projects.map((project, index) => (
+            <ProjectCard project={project} prominent={index === 0} />
+          ))}
         </div>
       </div>
     </section>
 
-    <section class="bg-panel px-6 py-16 lg:px-8" id="skills">
+    <section class="border-b border-line bg-panel px-6 py-14 lg:px-8" id="skills">
       <div class="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Capability Matrix"
-          title="Technical Operating Range"
-          copy="Practical coverage across frontend, backend, data, automation, and deployment work."
+          title="Practical Range Across Product Systems"
+          copy="Grouped skills are kept in the CMS, then compiled into this static page with no client-side database dependency."
         />
         <div class="grid gap-5 lg:grid-cols-2">
           {skills.map((skill) => (
             <article class="border border-line bg-white p-5">
-              <h3 class="mb-4 text-lg font-black text-ink">{skill.category}</h3>
+              <div class="mb-5 flex items-center justify-between gap-4 border-b border-line pb-4">
+                <h3 class="text-xl font-black text-ink">{skill.category}</h3>
+                <span class="text-xs font-black uppercase tracking-[0.14em] text-alert">
+                  {skill.items.length} items
+                </span>
+              </div>
               <div class="flex flex-wrap gap-2">
                 {skill.items.map((item) => <SkillBadge label={item} />)}
               </div>
             </article>
           ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-ink px-6 py-12 text-white lg:px-8">
+      <div class="mx-auto flex max-w-7xl flex-col justify-between gap-6 lg:flex-row lg:items-center">
+        <div>
+          <p class="text-xs font-black uppercase tracking-[0.18em] text-signal">
+            Contact Route
+          </p>
+          <h2 class="mt-3 text-3xl font-black leading-tight sm:text-4xl">
+            Need the complete context?
+          </h2>
+          <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
+            Review the case files, source links, and resume from one static surface.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          {config.email && (
+            <a class="border border-white bg-white px-4 py-2 text-sm font-bold text-ink" href={`mailto:${config.email}`}>
+              Email
+            </a>
+          )}
+          {config.github_url && (
+            <a class="border border-slate-500 px-4 py-2 text-sm font-bold text-white" href={config.github_url}>
+              GitHub
+            </a>
+          )}
         </div>
       </div>
     </section>

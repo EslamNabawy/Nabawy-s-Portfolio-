@@ -1,0 +1,50 @@
+name: Build Dashboard Windows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dashboard-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Windows release zip
+    runs-on: windows-latest
+    env:
+      FLUTTER_VERSION: "3.44.0"
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Verify Flutter toolchain
+        run: flutter --version
+
+      - name: Build and package release
+        shell: pwsh
+        run: >
+          pwsh -NoProfile -ExecutionPolicy Bypass
+          -File .\scripts\build_windows_release.ps1
+          -SupabaseUrl $env:SUPABASE_URL
+          -SupabaseAnonKey $env:SUPABASE_ANON_KEY
+          -OutputPath build\portfolio_admin_windows_release.zip
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: portfolio-admin-windows-${{ github.sha }}
+          path: build/portfolio_admin_windows_release.zip
+          if-no-files-found: error
+          retention-days: 30

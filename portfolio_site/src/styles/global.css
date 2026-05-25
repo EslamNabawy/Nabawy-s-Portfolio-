@@ -2,11 +2,14 @@
 
 @theme {
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --color-ink: #0b0f14;
-  --color-panel: #f7f9fb;
-  --color-line: #cbd5e1;
-  --color-signal: #0f766e;
-  --color-alert: #b45309;
+  --color-ink: #101312;
+  --color-panel: #f4f7f5;
+  --color-field: #e8efec;
+  --color-line: #c7d2cc;
+  --color-signal: #00836b;
+  --color-alert: #b86105;
+  --color-oxide: #a83a2a;
+  --color-quiet: #58635f;
 }
 
 html {
@@ -15,10 +18,24 @@ html {
 
 body {
   margin: 0;
-  background: #f4f6f8;
-  color: #0b0f14;
+  background: #f4f7f5;
+  color: #101312;
 }
 
 a {
   text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+::selection {
+  background: #00836b;
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 3px solid #00836b;
+  outline-offset: 3px;
 }
