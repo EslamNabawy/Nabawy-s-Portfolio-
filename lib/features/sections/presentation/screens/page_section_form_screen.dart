@@ -9,11 +9,13 @@ import '../../application/section_providers.dart';
 import '../../domain/entities/page_section.dart';
 import 'page_section_form_sections.dart';
 import 'page_section_form_support.dart';
+import 'page_section_preview_dialog.dart';
 
 class PageSectionFormScreen extends ConsumerStatefulWidget {
-  const PageSectionFormScreen({super.key, this.section});
+  const PageSectionFormScreen({super.key, this.section, this.initialSection});
 
   final PageSection? section;
+  final PageSection? initialSection;
 
   @override
   ConsumerState<PageSectionFormScreen> createState() =>
@@ -51,8 +53,8 @@ class _PageSectionFormScreenState extends ConsumerState<PageSectionFormScreen>
   @override
   void initState() {
     super.initState();
-    final section = widget.section;
-    _section = section;
+    final section = widget.section ?? widget.initialSection;
+    _section = widget.section;
     _title = TextEditingController(text: section?.title ?? '');
     _sectionKey = TextEditingController(text: section?.sectionKey ?? '');
     _eyebrow = TextEditingController(text: section?.eyebrow ?? '');
@@ -143,6 +145,15 @@ class _PageSectionFormScreenState extends ConsumerState<PageSectionFormScreen>
                 PageSectionAdvancedJsonSection(
                   contentJson: _contentJson,
                   designJson: _designJson,
+                ),
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: OutlinedButton.icon(
+                    onPressed: _previewCurrentSection,
+                    icon: const Icon(Icons.visibility_outlined),
+                    label: const Text('Preview Section'),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 DeploymentAutomationPanel(
@@ -245,6 +256,16 @@ class _PageSectionFormScreenState extends ConsumerState<PageSectionFormScreen>
       displayOrder: int.parse(_displayOrder.text.trim()),
       isPublished: _isPublished,
     );
+  }
+
+  void _previewCurrentSection() {
+    try {
+      showPageSectionPreview(context, _sectionFromFields());
+    } on AppException catch (error) {
+      _setError(error.message);
+    } catch (error) {
+      _setError('Preview failed: $error');
+    }
   }
 
   void _syncSectionKey(String value) {

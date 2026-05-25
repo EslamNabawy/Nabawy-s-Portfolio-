@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio_admin/features/sections/domain/entities/page_section.dart';
+import 'package:portfolio_admin/features/sections/domain/entities/page_section_template.dart';
 
 void main() {
   test('PageSection parses Supabase row and serializes save payload', () {
@@ -39,5 +40,34 @@ void main() {
     expect(json['placement'], 'before_projects');
     expect(json['tone'], 'signal');
     expect(json['is_published'], isTrue);
+  });
+
+  test('section templates create unpublished draft sections', () {
+    final draft = sectionFromTemplate(pageSectionTemplates.first);
+
+    expect(draft.id, isNull);
+    expect(draft.isPublished, isFalse);
+    expect(draft.sectionKey, isNotEmpty);
+    expect(draft.contentJson['items'], isA<List<Object?>>());
+  });
+
+  test('duplicate section clears identity and appends copy suffix', () {
+    final duplicate = duplicateSection(
+      const PageSection(
+        id: 'original',
+        sectionKey: 'source-section',
+        title: 'Source Section',
+        contentJson: {'items': []},
+        designJson: {'accent': 'signal'},
+        displayOrder: 4,
+        isPublished: true,
+      ),
+    );
+
+    expect(duplicate.id, isNull);
+    expect(duplicate.isPublished, isFalse);
+    expect(duplicate.sectionKey, 'source-section-copy');
+    expect(duplicate.title, 'Source Section Copy');
+    expect(duplicate.displayOrder, 5);
   });
 }

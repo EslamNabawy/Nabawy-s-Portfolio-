@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/errors/app_exception.dart';
 import '../../application/section_providers.dart';
 import '../../domain/entities/page_section.dart';
+import '../../domain/entities/page_section_template.dart';
 import 'page_section_form_screen.dart';
+import 'page_section_template_picker.dart';
 
 class PageSectionListScreen extends ConsumerWidget {
   const PageSectionListScreen({super.key});
@@ -20,6 +22,7 @@ class PageSectionListScreen extends ConsumerWidget {
           _Header(
             onRefresh: () => ref.invalidate(pageSectionsProvider),
             onCreate: () => _openForm(context, ref),
+            onTemplate: () => _openTemplate(context, ref),
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -27,6 +30,8 @@ class PageSectionListScreen extends ConsumerWidget {
               data: (sections) => _SectionTable(
                 sections: sections,
                 onEdit: (section) => _openForm(context, ref, section),
+                onDuplicate: (section) =>
+                    _openForm(context, ref, duplicateSection(section)),
                 onDelete: (section) => _deleteSection(context, ref, section),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -48,12 +53,22 @@ class PageSectionListScreen extends ConsumerWidget {
   ]) async {
     final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => PageSectionFormScreen(section: section),
+        builder: (_) => section?.id == null
+            ? PageSectionFormScreen(initialSection: section)
+            : PageSectionFormScreen(section: section),
       ),
     );
     if (changed == true) {
       ref.invalidate(pageSectionsProvider);
     }
+  }
+
+  Future<void> _openTemplate(BuildContext context, WidgetRef ref) async {
+    final template = await showPageSectionTemplatePicker(context);
+    if (template == null || !context.mounted) {
+      return;
+    }
+    await _openForm(context, ref, sectionFromTemplate(template));
   }
 
   Future<void> _deleteSection(
@@ -106,10 +121,15 @@ class PageSectionListScreen extends ConsumerWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.onRefresh, required this.onCreate});
+  const _Header({
+    required this.onRefresh,
+    required this.onCreate,
+    required this.onTemplate,
+  });
 
   final VoidCallback onRefresh;
   final VoidCallback onCreate;
+  final VoidCallback onTemplate;
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +147,12 @@ class _Header extends StatelessWidget {
           icon: const Icon(Icons.refresh),
         ),
         const SizedBox(width: 8),
+        OutlinedButton.icon(
+          onPressed: onTemplate,
+          icon: const Icon(Icons.dashboard_customize_outlined),
+          label: const Text('Templates'),
+        ),
+        const SizedBox(width: 8),
         FilledButton.icon(
           onPressed: onCreate,
           icon: const Icon(Icons.add),
@@ -141,11 +167,13 @@ class _SectionTable extends StatelessWidget {
   const _SectionTable({
     required this.sections,
     required this.onEdit,
+    required this.onDuplicate,
     required this.onDelete,
   });
 
   final List<PageSection> sections;
   final ValueChanged<PageSection> onEdit;
+  final ValueChanged<PageSection> onDuplicate;
   final ValueChanged<PageSection> onDelete;
 
   @override
@@ -190,6 +218,11 @@ class _SectionTable extends StatelessWidget {
                             tooltip: 'Edit',
                             onPressed: () => onEdit(section),
                             icon: const Icon(Icons.edit_outlined),
+                          ),
+                          IconButton(
+                            tooltip: 'Duplicate as draft',
+                            onPressed: () => onDuplicate(section),
+                            icon: const Icon(Icons.copy_outlined),
                           ),
                           IconButton(
                             tooltip: 'Delete',
