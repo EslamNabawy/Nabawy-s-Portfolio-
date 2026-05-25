@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/errors/app_exception.dart';
 import '../features/auth/application/auth_providers.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
+import '../features/dashboard/presentation/screens/overview_screen.dart';
 import '../features/deployment/presentation/screens/deploy_screen.dart';
 import '../features/developer_tools/presentation/screens/code_tools_screen.dart';
+import '../features/projects/presentation/screens/experiment_list_screen.dart';
 import '../features/projects/presentation/screens/project_list_screen.dart';
 import '../features/projects/presentation/screens/skill_list_screen.dart';
 import '../features/settings/presentation/screens/publish_log_screen.dart';
@@ -21,7 +23,26 @@ class PortfolioAdminApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Portfolio Admin',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2563EB)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF00836B),
+          surface: const Color(0xFFF8FAFC),
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF4F7F5),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFF8FAFC),
+          foregroundColor: Color(0xFF101312),
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+        ),
+        cardTheme: const CardThemeData(
+          color: Colors.white,
+          elevation: 0,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Color(0xFFC7D2CC)),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
           isDense: true,
@@ -66,7 +87,7 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
-  AdminSection _section = AdminSection.projects;
+  AdminSection _section = AdminSection.overview;
 
   @override
   Widget build(BuildContext context) {
@@ -74,12 +95,14 @@ class _AdminHomeState extends State<AdminHome> {
       selectedSection: _section,
       onSectionChanged: (section) => setState(() => _section = section),
       child: switch (_section) {
+        AdminSection.overview => const OverviewScreen(),
         AdminSection.projects => const ProjectListScreen(),
         AdminSection.skills => const SkillListScreen(),
+        AdminSection.experiments => const ExperimentListScreen(),
         AdminSection.config => const SiteConfigScreen(),
+        AdminSection.deploy => const DeployScreen(),
         AdminSection.publishLog => const PublishLogScreen(),
         AdminSection.codeTools => const CodeToolsScreen(),
-        AdminSection.deploy => const DeployScreen(),
       },
     );
   }

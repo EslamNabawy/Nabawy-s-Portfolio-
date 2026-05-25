@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedExperiments } from '../../lib/portfolio-data';
+import type { Experiment } from '../../lib/types';
+
+export async function getStaticPaths() {
+  const experiments = await getPublishedExperiments();
+  return experiments.map((experiment) => ({
+    params: { slug: experiment.slug },
+    props: { experiment },
+  }));
+}
+
+interface Props {
+  experiment: Experiment;
+}
+
+const { experiment } = Astro.props;
+const statusClass = {
+  prototype: 'text-alert',
+  active: 'text-signal',
+  archived: 'text-oxide',
+}[experiment.status];
+---
+
+<BaseLayout title={`${experiment.title} | Lab`} description={experiment.summary}>
+  <main class="min-h-screen bg-panel">
+    <section class="border-b border-line bg-white px-6 py-6 lg:px-8">
+      <div class="mx-auto max-w-7xl">
+        <nav class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
+          <a class="text-sm font-black uppercase tracking-[0.16em] text-signal" href="/lab/">
+            Back To Lab
+          </a>
+          <span class={`text-xs font-black uppercase tracking-[0.16em] ${statusClass}`}>
+            {experiment.status}
+          </span>
+        </nav>
+
+        <div class="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
+          <div class="min-w-0">
+            <p class="mb-4 text-xs font-black uppercase tracking-[0.18em] text-alert">
+              {experiment.category} / {experiment.slug}
+            </p>
+            <h1 class="break-words text-4xl font-black leading-[0.98] text-ink sm:text-7xl">
+              {experiment.title}
+            </h1>
+            <p class="mt-5 max-w-3xl text-lg leading-8 text-quiet">
+              {experiment.summary}
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              {experiment.github_url && (
+                <a class="border border-ink bg-ink px-4 py-2 text-sm font-bold text-white" href={experiment.github_url}>
+                  Source
+                </a>
+              )}
+              {experiment.live_url && (
+                <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={experiment.live_url}>
+                  Live Demo
+                </a>
+              )}
+            </div>
+          </div>
+
+          <aside class="min-w-0 border border-line bg-panel p-4">
+            {experiment.media_url ? (
+              <img
+                src={experiment.media_url}
+                alt={`${experiment.title} media preview`}
+                class="aspect-[16/10] w-full border border-line bg-white object-cover"
+              />
+            ) : (
+              <div class="flex aspect-[16/10] items-center justify-center border border-line bg-white">
+                <span class="text-xs font-black uppercase tracking-[0.16em] text-quiet">
+                  No Media Attached
+                </span>
+              </div>
+            )}
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 py-12 lg:px-8">
+      <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.78fr_1.22fr]">
+        <aside class="border border-line bg-white p-5">
+          <h2 class="text-2xl font-black text-ink">Experiment Index</h2>
+          <dl class="mt-6 grid gap-4">
+            <div class="border-b border-line pb-4">
+              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Status</dt>
+              <dd class={`mt-1 text-sm font-bold ${statusClass}`}>{experiment.status}</dd>
+            </div>
+            <div class="border-b border-line pb-4">
+              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Category</dt>
+              <dd class="mt-1 text-sm font-bold text-ink">{experiment.category}</dd>
+            </div>
+            <div>
+              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Updated</dt>
+              <dd class="mt-1 text-sm font-bold text-ink">
+                {experiment.updated_at ? new Date(experiment.updated_at).toLocaleDateString('en-US') : 'Not recorded'}
+              </dd>
+            </div>
+          </dl>
+        </aside>
+
+        <article class="border border-line bg-white p-6">
+          <h2 class="text-3xl font-black text-ink">Research Notes</h2>
+          <p class="mt-5 whitespace-pre-line text-base leading-8 text-quiet">
+            {experiment.writeup_markdown ?? experiment.summary}
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

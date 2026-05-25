@@ -6,21 +6,23 @@ interface Props {
   config: SiteConfig;
   projectCount: number;
   skillCount: number;
+  experimentCount: number;
   featuredProject?: Project;
 }
 
-const { config, projectCount, skillCount, featuredProject } = Astro.props;
+const { config, projectCount, skillCount, experimentCount, featuredProject } = Astro.props;
 const featuredImage = featuredProject ? getProjectHeroImage(featuredProject) : '';
 ---
 
-<section class="border-b border-line bg-panel px-6 py-10 lg:px-8">
+<section class="border-b border-line bg-panel px-6 py-8 lg:px-8">
   <div class="mx-auto max-w-7xl">
     <nav class="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
       <a class="text-sm font-black uppercase tracking-[0.18em] text-ink" href="/">
-        {config.name}
+        Nabawy OS
       </a>
       <div class="flex max-w-full flex-wrap gap-3 text-sm font-bold text-quiet">
         <a class="hover:text-signal" href="#projects">Projects</a>
+        <a class="hover:text-signal" href="#lab">Lab</a>
         <a class="hover:text-signal" href="#skills">Skills</a>
         {config.email && <a class="hover:text-signal" href={`mailto:${config.email}`}>Contact</a>}
       </div>
@@ -29,7 +31,7 @@ const featuredImage = featuredProject ? getProjectHeroImage(featuredProject) : '
     <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
       <div class="min-w-0">
         <p class="mb-4 text-xs font-black uppercase tracking-[0.18em] text-signal">
-          Systems Portfolio / Engineering Profile
+          Engineering Operating System / Static Build
         </p>
         <h1 class="max-w-full break-words text-4xl font-black leading-[0.98] text-ink sm:text-7xl">
           {config.name}
@@ -41,9 +43,12 @@ const featuredImage = featuredProject ? getProjectHeroImage(featuredProject) : '
           {config.bio}
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
+          <a class="border border-ink bg-ink px-4 py-2 text-sm font-bold text-white" href="#projects">
+            Review Systems
+          </a>
           {config.github_url && (
-            <a class="border border-ink bg-ink px-4 py-2 text-sm font-bold text-white" href={config.github_url}>
-              GitHub
+            <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={config.github_url}>
+              Open GitHub
             </a>
           )}
           {config.linkedin_url && (
@@ -66,7 +71,7 @@ const featuredImage = featuredProject ? getProjectHeroImage(featuredProject) : '
               <p class="text-xs font-black uppercase tracking-[0.16em] text-alert">
                 Featured Build
               </p>
-              <span class="text-xs font-bold text-quiet">{projectCount} projects</span>
+              <span class="text-xs font-bold text-quiet">{projectCount} systems</span>
             </div>
             <img
               src={featuredImage}
@@ -79,13 +84,17 @@ const featuredImage = featuredProject ? getProjectHeroImage(featuredProject) : '
             </p>
           </a>
         )}
-        <dl class="mt-5 grid grid-cols-2 border-t border-line pt-4">
+        <dl class="mt-5 grid grid-cols-3 border-t border-line pt-4">
           <div>
-            <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Projects</dt>
+            <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Systems</dt>
             <dd class="mt-1 text-3xl font-black text-ink">{projectCount}</dd>
           </div>
           <div>
-            <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Skill Groups</dt>
+            <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Lab</dt>
+            <dd class="mt-1 text-3xl font-black text-ink">{experimentCount}</dd>
+          </div>
+          <div>
+            <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Skills</dt>
             <dd class="mt-1 text-3xl font-black text-ink">{skillCount}</dd>
           </div>
         </dl>

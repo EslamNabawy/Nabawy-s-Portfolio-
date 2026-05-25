@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/application/auth_providers.dart';
 
 enum AdminSection {
+  overview('Overview', Icons.space_dashboard_outlined),
   projects('Projects', Icons.view_list_outlined),
   skills('Skills', Icons.bolt_outlined),
-  config('Config', Icons.tune_outlined),
+  experiments('Lab', Icons.science_outlined),
+  config('Site Config', Icons.tune_outlined),
+  deploy('Deploy', Icons.rocket_launch_outlined),
   publishLog('Publish Log', Icons.history_outlined),
-  codeTools('Code Tools', Icons.code),
-  deploy('Deploy', Icons.rocket_launch_outlined);
+  codeTools('Code Tools', Icons.code);
 
   const AdminSection(this.label, this.icon);
 
@@ -92,6 +94,17 @@ class _AdminSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final groups = const <_NavGroup>[
+      _NavGroup('Command', [AdminSection.overview]),
+      _NavGroup('Content', [
+        AdminSection.projects,
+        AdminSection.skills,
+        AdminSection.experiments,
+        AdminSection.config,
+      ]),
+      _NavGroup('Operations', [AdminSection.deploy, AdminSection.publishLog]),
+      _NavGroup('Tools', [AdminSection.codeTools]),
+    ];
     return SizedBox(
       width: 240,
       child: Material(
@@ -106,21 +119,42 @@ class _AdminSidebar extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
             ),
-            for (final section in AdminSection.values)
+            for (final group in groups) ...[
               Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: NavigationTile(
-                  icon: section.icon,
-                  label: section.label,
-                  selected: selectedSection == section,
-                  onTap: () => onSectionChanged(section),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+                child: Text(
+                  group.label,
+                  style: const TextStyle(
+                    color: Color(0xFF64748B),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.1,
+                  ),
                 ),
               ),
+              for (final section in group.sections)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: NavigationTile(
+                    icon: section.icon,
+                    label: section.label,
+                    selected: selectedSection == section,
+                    onTap: () => onSectionChanged(section),
+                  ),
+                ),
+            ],
           ],
         ),
       ),
     );
   }
+}
+
+final class _NavGroup {
+  const _NavGroup(this.label, this.sections);
+
+  final String label;
+  final List<AdminSection> sections;
 }
 
 class NavigationTile extends StatelessWidget {

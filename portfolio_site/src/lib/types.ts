@@ -39,6 +39,25 @@ export type Skill = {
   updated_at: string | null;
 };
 
+export type ExperimentStatus = 'prototype' | 'active' | 'archived';
+
+export type Experiment = {
+  id: string;
+  title: string;
+  slug: string;
+  status: ExperimentStatus;
+  category: string;
+  summary: string;
+  writeup_markdown: string | null;
+  media_url: string | null;
+  github_url: string | null;
+  live_url: string | null;
+  display_order: number;
+  is_published: boolean;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
 export type SiteConfig = {
   id: 'global';
   name: string;

@@ -1,4 +1,5 @@
 ---
+import ExperimentCard from '../components/ExperimentCard.astro';
 import HeroSection from '../components/HeroSection.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeader from '../components/SectionHeader.astro';
@@ -6,7 +7,7 @@ import SkillBadge from '../components/SkillBadge.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPortfolioData } from '../lib/portfolio-data';
 
-const { config, projects, skills } = await getPortfolioData();
+const { config, projects, skills, experiments } = await getPortfolioData();
 const featuredProject = projects.find((project) => project.featured) ?? projects[0];
 ---
 
@@ -16,6 +17,7 @@ const featuredProject = projects.find((project) => project.featured) ?? projects
       config={config}
       projectCount={projects.length}
       skillCount={skills.length}
+      experimentCount={experiments.length}
       featuredProject={featuredProject}
     />
 
@@ -48,6 +50,32 @@ const featuredProject = projects.find((project) => project.featured) ?? projects
       </div>
     </section>
 
+    <section class="border-b border-line bg-ink px-6 py-14 text-white lg:px-8" id="lab">
+      <div class="mx-auto max-w-7xl">
+        <div class="flex flex-col justify-between gap-6 border-b border-slate-700 pb-8 lg:flex-row lg:items-end">
+          <SectionHeader
+            eyebrow="Lab / Experiments"
+            title="Prototype Surface For AI, P2P, Flutter, And Interface Systems"
+            copy="The Lab keeps experimental work discoverable without turning the main recruiter path into a game."
+            inverse
+          />
+          <a class="border border-slate-500 px-4 py-2 text-sm font-bold text-white" href="#contact">
+            Contact
+          </a>
+        </div>
+        <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {experiments.map((experiment) => <ExperimentCard experiment={experiment} />)}
+          {experiments.length === 0 && (
+            <div class="border border-slate-700 p-5">
+              <p class="text-sm leading-7 text-slate-300">
+                Lab files are drafted in the CMS and will appear here after publishing.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
     <section class="border-b border-line bg-panel px-6 py-14 lg:px-8" id="skills">
       <div class="mx-auto max-w-7xl">
         <SectionHeader
@@ -73,7 +101,7 @@ const featuredProject = projects.find((project) => project.featured) ?? projects
       </div>
     </section>
 
-    <section class="bg-ink px-6 py-12 text-white lg:px-8">
+    <section class="bg-ink px-6 py-12 text-white lg:px-8" id="contact">
       <div class="mx-auto flex max-w-7xl flex-col justify-between gap-6 lg:flex-row lg:items-center">
         <div>
           <p class="text-xs font-black uppercase tracking-[0.18em] text-signal">

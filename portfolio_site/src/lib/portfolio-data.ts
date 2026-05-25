@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Project, SiteConfig, Skill } from './types';
+import type { Experiment, Project, SiteConfig, Skill } from './types';
 
 const projectSelect = '*, project_images(*)';
 
@@ -7,10 +7,11 @@ export type PortfolioData = {
   config: SiteConfig;
   projects: Project[];
   skills: Skill[];
+  experiments: Experiment[];
 };
 
 export async function getPortfolioData(): Promise<PortfolioData> {
-  const [configResult, skillsResult, projectsResult] = await Promise.all([
+  const [configResult, skillsResult, projectsResult, experimentsResult] = await Promise.all([
     supabase.from('site_config').select('*').eq('id', 'global').single(),
     supabase
       .from('skills')
@@ -24,6 +25,12 @@ export async function getPortfolioData(): Promise<PortfolioData> {
       .order('featured', { ascending: false })
       .order('display_order', { ascending: true })
       .order('created_at', { ascending: false }),
+    supabase
+      .from('experiments')
+      .select('*')
+      .eq('is_published', true)
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false }),
   ]);
 
   if (configResult.error) {
@@ -35,10 +42,14 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   if (projectsResult.error) {
     throw new Error(`Failed to load published projects: ${projectsResult.error.message}`);
   }
+  if (experimentsResult.error) {
+    throw new Error(`Failed to load published experiments: ${experimentsResult.error.message}`);
+  }
 
   const config = configResult.data as SiteConfig;
   const skills = (skillsResult.data ?? []) as Skill[];
   const projects = ((projectsResult.data ?? []) as Project[]).map(normalizeProject);
+  const experiments = (experimentsResult.data ?? []) as Experiment[];
 
   validateSiteConfig(config);
   for (const skill of skills) {
@@ -47,8 +58,11 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   for (const project of projects) {
     validatePublishedProject(project);
   }
+  for (const experiment of experiments) {
+    validatePublishedExperiment(experiment);
+  }
 
-  return { config, projects, skills };
+  return { config, projects, skills, experiments };
 }
 
 export async function getPublishedProjects(): Promise<Project[]> {
@@ -68,6 +82,25 @@ export async function getPublishedProjects(): Promise<Project[]> {
     validatePublishedProject(project);
   }
   return projects;
+}
+
+export async function getPublishedExperiments(): Promise<Experiment[]> {
+  const { data, error } = await supabase
+    .from('experiments')
+    .select('*')
+    .eq('is_published', true)
+    .order('display_order', { ascending: true })
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to load experiment static paths: ${error.message}`);
+  }
+
+  const experiments = (data ?? []) as Experiment[];
+  for (const experiment of experiments) {
+    validatePublishedExperiment(experiment);
+  }
+  return experiments;
 }
 
 export function validatePublishedProject(project: Project): void {
@@ -104,6 +137,31 @@ export function getProjectHeroImage(project: Project): string {
     return primaryImage;
   }
   return project.project_images?.find((image) => image.image_url.trim().length > 0)?.image_url ?? '';
+}
+
+export function validatePublishedExperiment(experiment: Experiment): void {
+  const missing = [
+    ['title', experiment.title],
+    ['slug', experiment.slug],
+    ['category', experiment.category],
+    ['summary', experiment.summary],
+  ].filter(([, value]) => typeof value !== 'string' || value.trim().length === 0);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Published experiment "${experiment.id}" is missing: ${missing
+        .map(([field]) => field)
+        .join(', ')}`,
+    );
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(experiment.slug)) {
+    throw new Error(
+      `Published experiment "${experiment.title}" has invalid slug "${experiment.slug}".`,
+    );
+  }
+  if (!['prototype', 'active', 'archived'].includes(experiment.status)) {
+    throw new Error(`Published experiment "${experiment.title}" has invalid status.`);
+  }
 }
 
 function normalizeProject(project: Project): Project {
