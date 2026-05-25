@@ -58,6 +58,8 @@ export type Experiment = {
   updated_at: string | null;
 };
 
+export type PublicDesignVariant = 'command_center' | 'clean_dossier' | 'terminal_ops';
+
 export type SiteConfig = {
   id: 'global';
   name: string;
@@ -67,5 +69,6 @@ export type SiteConfig = {
   github_url: string | null;
   linkedin_url: string | null;
   email: string | null;
+  design_variant: PublicDesignVariant;
   updated_at: string | null;
 };

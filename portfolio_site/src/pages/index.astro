@@ -10,6 +10,7 @@ import { getPortfolioData } from '../lib/portfolio-data';
 const { config, projects, skills, experiments } = await getPortfolioData();
 const featuredProject = projects.find((project) => project.featured) ?? projects[0];
 const featuredCount = projects.filter((project) => project.featured).length;
+const designClass = `design-${config.design_variant}`;
 const skillGroups =
   skills.length > 0
     ? skills
@@ -41,7 +42,7 @@ const queuedLab = [
 ---
 
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
-  <main>
+  <main class={designClass}>
     <HeroSection
       config={config}
       projectCount={projects.length}
