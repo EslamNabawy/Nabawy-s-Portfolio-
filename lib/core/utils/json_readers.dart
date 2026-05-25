@@ -76,3 +76,22 @@ List<String> readStringList(JsonMap json, String key) {
   }
   throw FormatException('Field "$key" must be a string array.');
 }
+
+JsonMap readJsonObject(JsonMap json, String key) {
+  final value = json[key];
+  final field = key;
+  if (value == null) {
+    return const <String, Object?>{};
+  }
+  if (value is Map) {
+    return Map<String, Object?>.unmodifiable(
+      value.map((key, value) {
+        if (key is! String) {
+          throw FormatException('Field "$field" contains a non-string key.');
+        }
+        return MapEntry<String, Object?>(key, value);
+      }),
+    );
+  }
+  throw FormatException('Field "$key" must be a JSON object.');
+}

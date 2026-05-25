@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Experiment, Project, SiteConfig, Skill } from './types';
+import type { Experiment, PageSection, Project, SiteConfig, Skill } from './types';
 
 const projectSelect = '*, project_images(*)';
 
@@ -8,10 +8,11 @@ export type PortfolioData = {
   projects: Project[];
   skills: Skill[];
   experiments: Experiment[];
+  sections: PageSection[];
 };
 
 export async function getPortfolioData(): Promise<PortfolioData> {
-  const [configResult, skillsResult, projectsResult, experimentsResult] = await Promise.all([
+  const [configResult, skillsResult, projectsResult, experimentsResult, sectionsResult] = await Promise.all([
     supabase.from('site_config').select('*').eq('id', 'global').single(),
     supabase
       .from('skills')
@@ -31,6 +32,13 @@ export async function getPortfolioData(): Promise<PortfolioData> {
       .eq('is_published', true)
       .order('display_order', { ascending: true })
       .order('created_at', { ascending: false }),
+    supabase
+      .from('page_sections')
+      .select('*')
+      .eq('is_published', true)
+      .order('placement', { ascending: true })
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false }),
   ]);
 
   if (configResult.error) {
@@ -45,11 +53,15 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   if (experimentsResult.error) {
     throw new Error(`Failed to load published experiments: ${experimentsResult.error.message}`);
   }
+  if (sectionsResult.error) {
+    throw new Error(`Failed to load published page sections: ${sectionsResult.error.message}`);
+  }
 
   const config = configResult.data as SiteConfig;
   const skills = (skillsResult.data ?? []) as Skill[];
   const projects = ((projectsResult.data ?? []) as Project[]).map(normalizeProject);
   const experiments = (experimentsResult.data ?? []) as Experiment[];
+  const sections = (sectionsResult.data ?? []) as PageSection[];
 
   validateSiteConfig(config);
   for (const skill of skills) {
@@ -61,8 +73,11 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   for (const experiment of experiments) {
     validatePublishedExperiment(experiment);
   }
+  for (const section of sections) {
+    validatePublishedPageSection(section);
+  }
 
-  return { config, projects, skills, experiments };
+  return { config, projects, skills, experiments, sections };
 }
 
 export async function getPublishedProjects(): Promise<Project[]> {
@@ -193,5 +208,29 @@ function validateSiteConfig(config: SiteConfig): void {
 function validateSkill(skill: Skill): void {
   if (!skill.category || !Array.isArray(skill.items) || skill.items.length === 0) {
     throw new Error(`Published skill "${skill.id}" must include category and items.`);
+  }
+}
+
+function validatePublishedPageSection(section: PageSection): void {
+  const missing = [
+    ['section_key', section.section_key],
+    ['title', section.title],
+  ].filter(([, value]) => typeof value !== 'string' || value.trim().length === 0);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Published page section "${section.id}" is missing: ${missing
+        .map(([field]) => field)
+        .join(', ')}`,
+    );
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(section.section_key)) {
+    throw new Error(`Published page section "${section.title}" has invalid section_key.`);
+  }
+  if (!['after_hero', 'before_projects', 'before_lab', 'before_skills', 'before_contact'].includes(section.placement)) {
+    throw new Error(`Published page section "${section.title}" has invalid placement.`);
+  }
+  if (!['content_grid', 'metric_strip', 'timeline', 'callout', 'cta'].includes(section.section_type)) {
+    throw new Error(`Published page section "${section.title}" has invalid section_type.`);
   }
 }

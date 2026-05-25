@@ -207,7 +207,7 @@ body {
 
 .design-signal_studio .os-hero-grid {
   background:
-    radial-gradient(circle at 78% 20%, rgba(33, 211, 190, 0.34), transparent 28%),
+    linear-gradient(120deg, transparent 0 48%, rgba(33, 211, 190, 0.24) 49% 54%, transparent 55%),
     linear-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.075) 1px, transparent 1px),
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%),

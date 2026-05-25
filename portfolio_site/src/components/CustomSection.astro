@@ -1,0 +1,121 @@
+---
+import type { PageSection } from '../lib/types';
+
+type SectionItem = {
+  label?: string;
+  title?: string;
+  copy?: string;
+  url?: string;
+};
+
+type SectionAction = {
+  label?: string;
+  url?: string;
+};
+
+const { section } = Astro.props as { section: PageSection };
+
+const items = readItems(section.content_json.items);
+const actions = readActions(section.content_json.actions);
+const mediaUrl = safeMediaUrl(section.design_json.mediaUrl);
+const caption = readString(section.design_json.caption);
+const classes = [
+  'custom-section',
+  `custom-section--${section.tone}`,
+  `custom-section--${section.layout}`,
+  `custom-section--${section.density}`,
+  `custom-section--${section.alignment}`,
+  `custom-section--${section.section_type}`,
+].join(' ');
+
+function readString(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function readItems(value: unknown): SectionItem[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value
+    .filter((item): item is Record<string, unknown> => item !== null && typeof item === 'object')
+    .map((item) => ({
+      label: readString(item.label),
+      title: readString(item.title),
+      copy: readString(item.copy),
+      url: safeHref(item.url),
+    }))
+    .filter((item) => item.title || item.copy || item.label);
+}
+
+function readActions(value: unknown): SectionAction[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value
+    .filter((item): item is Record<string, unknown> => item !== null && typeof item === 'object')
+    .map((item) => ({
+      label: readString(item.label),
+      url: safeHref(item.url),
+    }))
+    .filter((item) => item.label && item.url);
+}
+
+function safeHref(value: unknown): string {
+  const url = readString(value);
+  if (
+    url.startsWith('#') ||
+    url.startsWith('/') ||
+    url.startsWith('https://') ||
+    url.startsWith('http://') ||
+    url.startsWith('mailto:')
+  ) {
+    return url;
+  }
+  return '';
+}
+
+function safeMediaUrl(value: unknown): string {
+  const url = readString(value);
+  if (url.startsWith('https://') || url.startsWith('http://')) {
+    return url;
+  }
+  return '';
+}
+---
+
+<section class={classes} id={section.section_key}>
+  <div class="custom-section__inner">
+    <div class="custom-section__header">
+      {section.eyebrow && <p class="custom-section__eyebrow">{section.eyebrow}</p>}
+      <h2>{section.title}</h2>
+      {section.body && <p class="custom-section__body">{section.body}</p>}
+      {actions.length > 0 && (
+        <div class="custom-section__actions">
+          {actions.map((action) => (
+            <a href={action.url}>{action.label}</a>
+          ))}
+        </div>
+      )}
+    </div>
+
+    {mediaUrl && (
+      <figure class="custom-section__media">
+        <img src={mediaUrl} alt={caption || section.title} loading="lazy" />
+        {caption && <figcaption>{caption}</figcaption>}
+      </figure>
+    )}
+
+    {items.length > 0 && (
+      <div class="custom-section__items">
+        {items.map((item, index) => (
+          <article class="custom-section__item">
+            <p class="custom-section__item-label">{item.label || String(index + 1).padStart(2, '0')}</p>
+            {item.title && <h3>{item.title}</h3>}
+            {item.copy && <p>{item.copy}</p>}
+            {item.url && <a href={item.url}>Open</a>}
+          </article>
+        ))}
+      </div>
+    )}
+  </div>
+</section>

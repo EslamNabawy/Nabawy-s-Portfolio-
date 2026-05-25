@@ -76,3 +76,42 @@ export type SiteConfig = {
   design_variant: PublicDesignVariant;
   updated_at: string | null;
 };
+
+export type PageSectionPlacement =
+  | 'after_hero'
+  | 'before_projects'
+  | 'before_lab'
+  | 'before_skills'
+  | 'before_contact';
+
+export type PageSectionType =
+  | 'content_grid'
+  | 'metric_strip'
+  | 'timeline'
+  | 'callout'
+  | 'cta';
+
+export type PageSectionLayout = 'stack' | 'split' | 'grid' | 'rail' | 'banner';
+export type PageSectionTone = 'panel' | 'ink' | 'signal' | 'studio' | 'minimal';
+export type PageSectionDensity = 'compact' | 'standard' | 'spacious';
+export type PageSectionAlignment = 'left' | 'center';
+
+export type PageSection = {
+  id: string;
+  section_key: string;
+  title: string;
+  eyebrow: string | null;
+  body: string | null;
+  placement: PageSectionPlacement;
+  section_type: PageSectionType;
+  layout: PageSectionLayout;
+  tone: PageSectionTone;
+  density: PageSectionDensity;
+  alignment: PageSectionAlignment;
+  content_json: Record<string, unknown>;
+  design_json: Record<string, unknown>;
+  display_order: number;
+  is_published: boolean;
+  created_at: string | null;
+  updated_at: string | null;
+};

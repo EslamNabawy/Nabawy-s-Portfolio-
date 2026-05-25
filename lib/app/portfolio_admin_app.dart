@@ -10,6 +10,7 @@ import '../features/developer_tools/presentation/screens/code_tools_screen.dart'
 import '../features/projects/presentation/screens/experiment_list_screen.dart';
 import '../features/projects/presentation/screens/project_list_screen.dart';
 import '../features/projects/presentation/screens/skill_list_screen.dart';
+import '../features/sections/presentation/screens/page_section_list_screen.dart';
 import '../features/settings/presentation/screens/publish_log_screen.dart';
 import '../features/settings/presentation/screens/site_config_screen.dart';
 import '../shared/ui/admin_shell.dart';
@@ -99,6 +100,7 @@ class _AdminHomeState extends State<AdminHome> {
         AdminSection.projects => const ProjectListScreen(),
         AdminSection.skills => const SkillListScreen(),
         AdminSection.experiments => const ExperimentListScreen(),
+        AdminSection.sections => const PageSectionListScreen(),
         AdminSection.config => const SiteConfigScreen(),
         AdminSection.deploy => const DeployScreen(),
         AdminSection.publishLog => const PublishLogScreen(),
