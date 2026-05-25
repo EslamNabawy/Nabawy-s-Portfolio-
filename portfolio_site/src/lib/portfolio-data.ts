@@ -178,7 +178,14 @@ function validateSiteConfig(config: SiteConfig): void {
   if (!config?.name || !config.headline || !config.bio) {
     throw new Error('site_config.global must include name, headline, and bio.');
   }
-  if (!['command_center', 'clean_dossier', 'terminal_ops'].includes(config.design_variant)) {
+  if (
+    ![
+      'command_center',
+      'clean_dossier',
+      'terminal_ops',
+      'signal_studio',
+    ].includes(config.design_variant)
+  ) {
     throw new Error('site_config.global has an invalid design_variant.');
   }
 }

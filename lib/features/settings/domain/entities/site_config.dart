@@ -3,7 +3,8 @@ import '../../../../core/utils/json_readers.dart';
 enum PublicDesignVariant {
   commandCenter('command_center', 'Command Center'),
   cleanDossier('clean_dossier', 'Clean Dossier'),
-  terminalOps('terminal_ops', 'Terminal Ops');
+  terminalOps('terminal_ops', 'Terminal Ops'),
+  signalStudio('signal_studio', 'Signal Studio');
 
   const PublicDesignVariant(this.value, this.label);
 
@@ -15,6 +16,7 @@ enum PublicDesignVariant {
       'command_center' => PublicDesignVariant.commandCenter,
       'clean_dossier' => PublicDesignVariant.cleanDossier,
       'terminal_ops' => PublicDesignVariant.terminalOps,
+      'signal_studio' => PublicDesignVariant.signalStudio,
       _ => throw FormatException('Unknown public design variant "$value".'),
     };
   }

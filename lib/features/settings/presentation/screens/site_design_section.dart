@@ -45,6 +45,8 @@ class SiteDesignSection extends StatelessWidget {
         'Bright recruiter-friendly dossier layout with quieter contrast.',
       PublicDesignVariant.terminalOps =>
         'High-contrast terminal operations style for a more tactical mood.',
+      PublicDesignVariant.signalStudio =>
+        'Bright creative studio surface with bold signal accents and premium contrast.',
     };
   }
 }

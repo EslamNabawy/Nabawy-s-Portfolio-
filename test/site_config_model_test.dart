@@ -14,4 +14,17 @@ void main() {
     expect(config.designVariant, PublicDesignVariant.terminalOps);
     expect(config.toJson()['design_variant'], 'terminal_ops');
   });
+
+  test('SiteConfig supports signal studio design variant', () {
+    final config = SiteConfig.fromJson(const {
+      'id': 'global',
+      'name': 'Eslam Nabawy',
+      'headline': 'Software engineer',
+      'bio': 'Builds reliable systems.',
+      'design_variant': 'signal_studio',
+    });
+
+    expect(config.designVariant, PublicDesignVariant.signalStudio);
+    expect(config.toJson()['design_variant'], 'signal_studio');
+  });
 }

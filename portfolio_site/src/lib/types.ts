@@ -58,7 +58,11 @@ export type Experiment = {
   updated_at: string | null;
 };
 
-export type PublicDesignVariant = 'command_center' | 'clean_dossier' | 'terminal_ops';
+export type PublicDesignVariant =
+  | 'command_center'
+  | 'clean_dossier'
+  | 'terminal_ops'
+  | 'signal_studio';
 
 export type SiteConfig = {
   id: 'global';

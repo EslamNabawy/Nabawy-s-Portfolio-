@@ -191,6 +191,63 @@ body {
   background-color: rgba(41, 255, 167, 0.1);
 }
 
+.design-signal_studio {
+  background: #eaf3f1;
+}
+
+.design-signal_studio .os-hero {
+  background: #061213;
+}
+
+.design-signal_studio .os-hero > img {
+  opacity: 0.3;
+  filter: saturate(1.35) contrast(1.08);
+  mix-blend-mode: screen;
+}
+
+.design-signal_studio .os-hero-grid {
+  background:
+    radial-gradient(circle at 78% 20%, rgba(33, 211, 190, 0.34), transparent 28%),
+    linear-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.075) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%),
+    #061213;
+  background-size: auto, 44px 44px, 44px 44px, auto, auto;
+}
+
+.design-signal_studio .os-glass-panel,
+.design-signal_studio .os-hero dl {
+  border-color: rgba(255, 255, 255, 0.28);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.055)),
+    rgba(6, 18, 19, 0.74);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+}
+
+.design-signal_studio .text-signal,
+.design-signal_studio .hover\:text-signal:hover {
+  color: #21d3be;
+}
+
+.design-signal_studio .text-alert {
+  color: #f3b45c;
+}
+
+.design-signal_studio .border-signal\/50 {
+  border-color: rgba(33, 211, 190, 0.62);
+}
+
+.design-signal_studio .bg-signal\/10 {
+  background-color: rgba(33, 211, 190, 0.14);
+}
+
+.design-signal_studio #signal,
+.design-signal_studio #skills {
+  background:
+    linear-gradient(135deg, rgba(33, 211, 190, 0.12), transparent 38%),
+    #eaf3f1;
+}
+
 a {
   text-decoration: none;
 }
