@@ -14,6 +14,7 @@ class PageSectionIdentitySection extends StatelessWidget {
     required this.displayOrder,
     required this.isPublished,
     required this.onTitleChanged,
+    required this.onChanged,
     required this.onPublishedChanged,
   });
 
@@ -24,6 +25,7 @@ class PageSectionIdentitySection extends StatelessWidget {
   final TextEditingController displayOrder;
   final bool isPublished;
   final ValueChanged<String> onTitleChanged;
+  final VoidCallback onChanged;
   final ValueChanged<bool> onPublishedChanged;
 
   @override
@@ -35,7 +37,10 @@ class PageSectionIdentitySection extends StatelessWidget {
           controller: title,
           decoration: const InputDecoration(labelText: 'Title'),
           validator: requiredField('Title'),
-          onChanged: onTitleChanged,
+          onChanged: (value) {
+            onTitleChanged(value);
+            onChanged();
+          },
         ),
         const SizedBox(height: 12),
         TextFormField(
@@ -45,11 +50,13 @@ class PageSectionIdentitySection extends StatelessWidget {
             helperText: 'Stable lowercase identifier used for anchors/CMS.',
           ),
           validator: validateSlug,
+          onChanged: (_) => onChanged(),
         ),
         const SizedBox(height: 12),
         TextFormField(
           controller: eyebrow,
           decoration: const InputDecoration(labelText: 'Eyebrow'),
+          onChanged: (_) => onChanged(),
         ),
         const SizedBox(height: 12),
         TextFormField(
@@ -60,6 +67,7 @@ class PageSectionIdentitySection extends StatelessWidget {
           ),
           minLines: 3,
           maxLines: 7,
+          onChanged: (_) => onChanged(),
         ),
         const SizedBox(height: 12),
         TextFormField(
@@ -67,6 +75,7 @@ class PageSectionIdentitySection extends StatelessWidget {
           decoration: const InputDecoration(labelText: 'Display Order'),
           keyboardType: TextInputType.number,
           validator: validateDisplayOrder,
+          onChanged: (_) => onChanged(),
         ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
@@ -185,40 +194,56 @@ class PageSectionAdvancedJsonSection extends StatelessWidget {
     super.key,
     required this.contentJson,
     required this.designJson,
+    required this.onChanged,
   });
 
   final TextEditingController contentJson;
   final TextEditingController designJson;
+  final VoidCallback onChanged;
 
   @override
   Widget build(BuildContext context) {
     return ProjectFormSection(
-      title: 'Advanced JSON',
+      title: 'Advanced Escape Hatch',
       children: [
-        TextFormField(
-          controller: contentJson,
-          decoration: const InputDecoration(
-            labelText: 'Content JSON',
-            helperText:
-                'Use items/actions arrays for grids, metrics, CTA, and timeline blocks.',
-            alignLabelWithHint: true,
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          title: const Text('Edit Raw JSON'),
+          subtitle: const Text(
+            'Use only when the structured builder is not enough.',
           ),
-          minLines: 8,
-          maxLines: 16,
-          validator: (value) => validateJsonObjectField('Content JSON', value),
-        ),
-        const SizedBox(height: 12),
-        TextFormField(
-          controller: designJson,
-          decoration: const InputDecoration(
-            labelText: 'Design JSON',
-            helperText:
-                'Optional controlled metadata like accent, mediaUrl, or caption.',
-            alignLabelWithHint: true,
-          ),
-          minLines: 5,
-          maxLines: 12,
-          validator: (value) => validateJsonObjectField('Design JSON', value),
+          children: [
+            TextFormField(
+              controller: contentJson,
+              decoration: const InputDecoration(
+                labelText: 'Content JSON',
+                helperText:
+                    'Items/actions for grids, metrics, CTA, and timeline blocks.',
+                alignLabelWithHint: true,
+              ),
+              minLines: 8,
+              maxLines: 16,
+              validator: (value) =>
+                  validateJsonObjectField('Content JSON', value),
+              onChanged: (_) => onChanged(),
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: designJson,
+              decoration: const InputDecoration(
+                labelText: 'Design JSON',
+                helperText:
+                    'Optional metadata like accent, mediaUrl, or caption.',
+                alignLabelWithHint: true,
+              ),
+              minLines: 5,
+              maxLines: 12,
+              validator: (value) =>
+                  validateJsonObjectField('Design JSON', value),
+              onChanged: (_) => onChanged(),
+            ),
+          ],
         ),
       ],
     );

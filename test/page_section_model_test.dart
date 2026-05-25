@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio_admin/features/sections/domain/entities/page_section.dart';
 import 'package:portfolio_admin/features/sections/domain/entities/page_section_template.dart';
+import 'package:portfolio_admin/features/sections/presentation/screens/page_section_form_support.dart';
 
 void main() {
   test('PageSection parses Supabase row and serializes save payload', () {
@@ -69,5 +70,13 @@ void main() {
     expect(duplicate.sectionKey, 'source-section-copy');
     expect(duplicate.title, 'Source Section Copy');
     expect(duplicate.displayOrder, 5);
+  });
+
+  test('section href validator allows anchors, paths, urls, and mailto', () {
+    expect(validateOptionalHref('#contact'), isNull);
+    expect(validateOptionalHref('/projects'), isNull);
+    expect(validateOptionalHref('https://example.com'), isNull);
+    expect(validateOptionalHref('mailto:test@example.com'), isNull);
+    expect(validateOptionalHref('javascript:alert(1)'), isNotNull);
   });
 }

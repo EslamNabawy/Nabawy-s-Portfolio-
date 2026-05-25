@@ -62,6 +62,21 @@ String? validateJsonObjectField(String label, String? value) {
   }
 }
 
+String? validateOptionalHref(String? value) {
+  final href = value?.trim() ?? '';
+  if (href.isEmpty ||
+      href.startsWith('#') ||
+      href.startsWith('/') ||
+      href.startsWith('mailto:')) {
+    return null;
+  }
+  final parsed = Uri.tryParse(href);
+  if (parsed == null || !parsed.hasScheme || parsed.host.trim().isEmpty) {
+    return 'Use an absolute URL, anchor, or root-relative path.';
+  }
+  return null;
+}
+
 class SectionDropdown<T> extends StatelessWidget {
   const SectionDropdown({
     super.key,

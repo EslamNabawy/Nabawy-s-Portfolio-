@@ -9,7 +9,8 @@ import '../../application/section_providers.dart';
 import '../../domain/entities/page_section.dart';
 import 'page_section_form_sections.dart';
 import 'page_section_form_support.dart';
-import 'page_section_preview_dialog.dart';
+import 'page_section_live_preview.dart';
+import 'page_section_structured_editor.dart';
 
 class PageSectionFormScreen extends ConsumerStatefulWidget {
   const PageSectionFormScreen({super.key, this.section, this.initialSection});
@@ -121,6 +122,7 @@ class _PageSectionFormScreenState extends ConsumerState<PageSectionFormScreen>
                   displayOrder: _displayOrder,
                   isPublished: _isPublished,
                   onTitleChanged: _syncSectionKey,
+                  onChanged: () => setState(() {}),
                   onPublishedChanged: _setPublished,
                 ),
                 const SizedBox(height: 16),
@@ -142,18 +144,31 @@ class _PageSectionFormScreenState extends ConsumerState<PageSectionFormScreen>
                       setState(() => _alignment = value),
                 ),
                 const SizedBox(height: 16),
-                PageSectionAdvancedJsonSection(
+                PageSectionStructuredEditor(
+                  contentJson: _contentJson,
+                  designJson: _designJson,
+                  onChanged: () => setState(() {}),
+                ),
+                const SizedBox(height: 16),
+                PageSectionLivePreview(
+                  title: _title,
+                  sectionKey: _sectionKey,
+                  eyebrow: _eyebrow,
+                  body: _body,
+                  placement: _placement,
+                  sectionType: _sectionType,
+                  layout: _layout,
+                  tone: _tone,
+                  density: _density,
+                  alignment: _alignment,
                   contentJson: _contentJson,
                   designJson: _designJson,
                 ),
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: OutlinedButton.icon(
-                    onPressed: _previewCurrentSection,
-                    icon: const Icon(Icons.visibility_outlined),
-                    label: const Text('Preview Section'),
-                  ),
+                const SizedBox(height: 16),
+                PageSectionAdvancedJsonSection(
+                  contentJson: _contentJson,
+                  designJson: _designJson,
+                  onChanged: () => setState(() {}),
                 ),
                 const SizedBox(height: 16),
                 DeploymentAutomationPanel(
@@ -256,16 +271,6 @@ class _PageSectionFormScreenState extends ConsumerState<PageSectionFormScreen>
       displayOrder: int.parse(_displayOrder.text.trim()),
       isPublished: _isPublished,
     );
-  }
-
-  void _previewCurrentSection() {
-    try {
-      showPageSectionPreview(context, _sectionFromFields());
-    } on AppException catch (error) {
-      _setError(error.message);
-    } catch (error) {
-      _setError('Preview failed: $error');
-    }
   }
 
   void _syncSectionKey(String value) {
