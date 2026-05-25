@@ -9,6 +9,35 @@ import { getPortfolioData } from '../lib/portfolio-data';
 
 const { config, projects, skills, experiments } = await getPortfolioData();
 const featuredProject = projects.find((project) => project.featured) ?? projects[0];
+const featuredCount = projects.filter((project) => project.featured).length;
+const skillGroups =
+  skills.length > 0
+    ? skills
+    : [
+        {
+          category: 'Frontend Systems',
+          items: ['Flutter Web', 'Astro SSG', 'Responsive UI', 'Design Systems'],
+        },
+        {
+          category: 'Realtime Networks',
+          items: ['WebRTC', 'P2P Signaling', 'Supabase', 'Operational Debugging'],
+        },
+        {
+          category: 'Agentic Workflows',
+          items: ['AI Orchestration', 'Prompt Systems', 'Tooling', 'Automation'],
+        },
+      ];
+const systemSignals = [
+  ['01', 'Static Surface', 'Astro generates recruiter-fast pages with build-time CMS data.'],
+  ['02', 'Control Room', 'Flutter Admin keeps content edits, deploys, and health checks separate.'],
+  ['03', 'Shared Brain', 'Supabase stores portfolio data with RLS and public read boundaries.'],
+  ['04', 'Release Loop', 'GitHub Actions rebuilds the static site on demand or schedule.'],
+];
+const queuedLab = [
+  ['WebRTC Mesh Lab', 'Peer discovery, signaling constraints, and resilience tests.'],
+  ['Agent Console', 'Workflow orchestration notes for tool-using AI systems.'],
+  ['Interface Physics', 'Flutter and web interaction studies with reduced-motion support.'],
+];
 ---
 
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
@@ -16,62 +45,102 @@ const featuredProject = projects.find((project) => project.featured) ?? projects
     <HeroSection
       config={config}
       projectCount={projects.length}
-      skillCount={skills.length}
+      skillCount={skillGroups.length}
       experimentCount={experiments.length}
       featuredProject={featuredProject}
     />
+
+    <section class="border-b border-line bg-panel px-6 py-14 lg:px-8" id="signal">
+      <div class="mx-auto max-w-7xl">
+        <SectionHeader
+          eyebrow="System Signal"
+          title="A Portfolio Built Like A Product System"
+          copy="The experience is designed to make engineering depth visible fast: architecture, constraints, proof, and operational discipline."
+        />
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {systemSignals.map(([number, title, copy]) => (
+            <article class="border border-line bg-white p-5">
+              <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
+                Signal {number}
+              </p>
+              <h3 class="mt-4 text-2xl font-black text-ink">{title}</h3>
+              <p class="mt-3 text-sm leading-7 text-quiet">{copy}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <section class="border-b border-line bg-white px-6 py-14 lg:px-8" id="projects">
       <div class="mx-auto max-w-7xl">
         <div class="flex flex-col justify-between gap-6 border-b border-line pb-8 lg:flex-row lg:items-end">
           <SectionHeader
             eyebrow="Selected Systems"
-            title="Projects With Architecture, Tradeoffs, And Evidence"
-            copy="Static pages generated from the CMS at build time. Recruiters get fast HTML; the dashboard keeps the source of truth editable."
+            title="Project Dossiers With Architecture, Tradeoffs, And Evidence"
+            copy="Every published project should read like a technical case file: problem, role, architecture, stack, links, and outcome."
           />
           <div class="grid w-full max-w-md grid-cols-2 border border-line bg-panel">
             <div class="border-r border-line p-4">
-              <p class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Published</p>
-              <p class="mt-1 text-3xl font-black text-ink">{projects.length}</p>
+              <p class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">
+                Published
+              </p>
+              <p class="mt-1 text-4xl font-black text-ink">{projects.length}</p>
             </div>
             <div class="p-4">
-              <p class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Featured</p>
-              <p class="mt-1 text-3xl font-black text-ink">
-                {projects.filter((project) => project.featured).length}
+              <p class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">
+                Featured
               </p>
+              <p class="mt-1 text-4xl font-black text-ink">{featuredCount}</p>
             </div>
           </div>
         </div>
+
         <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {projects.map((project, index) => (
-            <ProjectCard project={project} prominent={index === 0} />
+            <ProjectCard project={project} prominent={index === 0} index={index} />
           ))}
+          {projects.length === 0 && (
+            <div class="border border-line bg-panel p-6">
+              <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
+                Awaiting Dossier
+              </p>
+              <p class="mt-4 text-sm leading-7 text-quiet">
+                Publish the first project from the dashboard to populate this system grid.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>
 
     <section class="border-b border-line bg-ink px-6 py-14 text-white lg:px-8" id="lab">
       <div class="mx-auto max-w-7xl">
-        <div class="flex flex-col justify-between gap-6 border-b border-slate-700 pb-8 lg:flex-row lg:items-end">
+        <div class="flex flex-col justify-between gap-6 border-b border-white/15 pb-8 lg:flex-row lg:items-end">
           <SectionHeader
             eyebrow="Lab / Experiments"
-            title="Prototype Surface For AI, P2P, Flutter, And Interface Systems"
-            copy="The Lab keeps experimental work discoverable without turning the main recruiter path into a game."
+            title="Experimental Layer For AI, P2P, Flutter, And Interface Systems"
+            copy="Experimental work gets its own lane, so recruiters can scan the main proof path while technical readers can go deeper."
             inverse
           />
-          <a class="border border-slate-500 px-4 py-2 text-sm font-bold text-white" href="#contact">
+          <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href="#contact">
             Contact
           </a>
         </div>
+
         <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {experiments.map((experiment) => <ExperimentCard experiment={experiment} />)}
-          {experiments.length === 0 && (
-            <div class="border border-slate-700 p-5">
-              <p class="text-sm leading-7 text-slate-300">
-                Lab files are drafted in the CMS and will appear here after publishing.
-              </p>
-            </div>
-          )}
+          {experiments.map((experiment) => (
+            <ExperimentCard experiment={experiment} href={`lab/${experiment.slug}/`} />
+          ))}
+          {experiments.length === 0 &&
+            queuedLab.map(([title, copy]) => (
+              <article class="border border-white/15 bg-white/5 p-5">
+                <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
+                  Queued Lab File
+                </p>
+                <h3 class="mt-4 text-2xl font-black text-white">{title}</h3>
+                <p class="mt-3 text-sm leading-7 text-slate-300">{copy}</p>
+              </article>
+            ))}
         </div>
       </div>
     </section>
@@ -80,16 +149,16 @@ const featuredProject = projects.find((project) => project.featured) ?? projects
       <div class="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Capability Matrix"
-          title="Practical Range Across Product Systems"
-          copy="Grouped skills are kept in the CMS, then compiled into this static page with no client-side database dependency."
+          title="Technical Range Organized By System Domain"
+          copy="The matrix keeps skills scannable without flattening them into a generic keyword cloud."
         />
-        <div class="grid gap-5 lg:grid-cols-2">
-          {skills.map((skill) => (
+        <div class="grid gap-5 lg:grid-cols-3">
+          {skillGroups.map((skill) => (
             <article class="border border-line bg-white p-5">
               <div class="mb-5 flex items-center justify-between gap-4 border-b border-line pb-4">
                 <h3 class="text-xl font-black text-ink">{skill.category}</h3>
-                <span class="text-xs font-black uppercase tracking-[0.14em] text-alert">
-                  {skill.items.length} items
+                <span class="font-mono text-xs font-black uppercase tracking-[0.14em] text-alert">
+                  {skill.items.length} nodes
                 </span>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -101,28 +170,33 @@ const featuredProject = projects.find((project) => project.featured) ?? projects
       </div>
     </section>
 
-    <section class="bg-ink px-6 py-12 text-white lg:px-8" id="contact">
-      <div class="mx-auto flex max-w-7xl flex-col justify-between gap-6 lg:flex-row lg:items-center">
+    <section class="bg-ink px-6 py-14 text-white lg:px-8" id="contact">
+      <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.72fr] lg:items-end">
         <div>
-          <p class="text-xs font-black uppercase tracking-[0.18em] text-signal">
+          <p class="font-mono text-xs font-black uppercase tracking-[0.18em] text-signal">
             Contact Route
           </p>
-          <h2 class="mt-3 text-3xl font-black leading-tight sm:text-4xl">
-            Need the complete context?
+          <h2 class="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-6xl">
+            Need the complete engineering context?
           </h2>
-          <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
-            Review the case files, source links, and resume from one static surface.
+          <p class="mt-5 max-w-2xl text-base leading-8 text-slate-300">
+            Review the case files, source links, resume, and experiments from one static surface.
           </p>
         </div>
-        <div class="flex flex-wrap gap-3">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           {config.email && (
-            <a class="border border-white bg-white px-4 py-2 text-sm font-bold text-ink" href={`mailto:${config.email}`}>
+            <a class="bg-white px-5 py-3 text-sm font-black text-ink" href={`mailto:${config.email}`}>
               Email
             </a>
           )}
           {config.github_url && (
-            <a class="border border-slate-500 px-4 py-2 text-sm font-bold text-white" href={config.github_url}>
+            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.github_url}>
               GitHub
+            </a>
+          )}
+          {config.linkedin_url && (
+            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.linkedin_url}>
+              LinkedIn
             </a>
           )}
         </div>

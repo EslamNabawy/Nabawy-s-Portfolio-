@@ -21,6 +21,9 @@ const statusClass = {
   active: 'text-signal',
   archived: 'text-oxide',
 }[experiment.status];
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 
 <BaseLayout title={`${experiment.title} | Lab`} description={experiment.summary}>
@@ -28,17 +31,17 @@ const statusClass = {
     <section class="border-b border-line bg-white px-6 py-6 lg:px-8">
       <div class="mx-auto max-w-7xl">
         <nav class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
-          <a class="text-sm font-black uppercase tracking-[0.16em] text-signal" href="/lab/">
+          <a class="font-mono text-sm font-black uppercase tracking-[0.16em] text-signal" href={`${base}lab/`}>
             Back To Lab
           </a>
-          <span class={`text-xs font-black uppercase tracking-[0.16em] ${statusClass}`}>
+          <span class={`font-mono text-xs font-black uppercase tracking-[0.16em] ${statusClass}`}>
             {experiment.status}
           </span>
         </nav>
 
         <div class="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
           <div class="min-w-0">
-            <p class="mb-4 text-xs font-black uppercase tracking-[0.18em] text-alert">
+            <p class="mb-4 font-mono text-xs font-black uppercase tracking-[0.18em] text-alert">
               {experiment.category} / {experiment.slug}
             </p>
             <h1 class="break-words text-4xl font-black leading-[0.98] text-ink sm:text-7xl">
@@ -70,7 +73,7 @@ const statusClass = {
               />
             ) : (
               <div class="flex aspect-[16/10] items-center justify-center border border-line bg-white">
-                <span class="text-xs font-black uppercase tracking-[0.16em] text-quiet">
+                <span class="font-mono text-xs font-black uppercase tracking-[0.16em] text-quiet">
                   No Media Attached
                 </span>
               </div>
@@ -86,15 +89,15 @@ const statusClass = {
           <h2 class="text-2xl font-black text-ink">Experiment Index</h2>
           <dl class="mt-6 grid gap-4">
             <div class="border-b border-line pb-4">
-              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Status</dt>
+              <dt class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">Status</dt>
               <dd class={`mt-1 text-sm font-bold ${statusClass}`}>{experiment.status}</dd>
             </div>
             <div class="border-b border-line pb-4">
-              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Category</dt>
+              <dt class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">Category</dt>
               <dd class="mt-1 text-sm font-bold text-ink">{experiment.category}</dd>
             </div>
             <div>
-              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Updated</dt>
+              <dt class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">Updated</dt>
               <dd class="mt-1 text-sm font-bold text-ink">
                 {experiment.updated_at ? new Date(experiment.updated_at).toLocaleDateString('en-US') : 'Not recorded'}
               </dd>

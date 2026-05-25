@@ -22,6 +22,9 @@ const galleryImages = (project.project_images ?? []).filter(
   (image) => image.image_url !== heroImage,
 );
 const summary = project.short_description ?? project.description;
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 
 <BaseLayout title={`${project.title} | Project`} description={summary}>
@@ -29,17 +32,17 @@ const summary = project.short_description ?? project.description;
     <section class="border-b border-line bg-white px-6 py-6 lg:px-8">
       <div class="mx-auto max-w-7xl">
         <nav class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
-          <a class="text-sm font-black uppercase tracking-[0.16em] text-signal" href="/">
+          <a class="font-mono text-sm font-black uppercase tracking-[0.16em] text-signal" href={base}>
             Back To Portfolio
           </a>
-          <span class="text-xs font-black uppercase tracking-[0.16em] text-quiet">
+          <span class="font-mono text-xs font-black uppercase tracking-[0.16em] text-quiet">
             {project.featured ? 'Featured Case File' : 'Project Case File'}
           </span>
         </nav>
 
         <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
           <div class="min-w-0">
-            <p class="mb-4 text-xs font-black uppercase tracking-[0.18em] text-alert">
+            <p class="mb-4 font-mono text-xs font-black uppercase tracking-[0.18em] text-alert">
               {project.slug}
             </p>
             <h1 class="break-words text-4xl font-black leading-[0.98] text-ink sm:text-7xl">
@@ -79,15 +82,15 @@ const summary = project.short_description ?? project.description;
     <section class="border-b border-line px-6 py-12 lg:px-8">
       <div class="mx-auto grid max-w-7xl gap-5 md:grid-cols-3">
         <article class="border border-line bg-white p-5">
-          <p class="text-xs font-black uppercase tracking-[0.16em] text-quiet">Role</p>
+          <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-quiet">Role</p>
           <p class="mt-3 text-lg font-black text-ink">{project.role ?? 'Builder / Engineer'}</p>
         </article>
         <article class="border border-line bg-white p-5">
-          <p class="text-xs font-black uppercase tracking-[0.16em] text-quiet">Impact</p>
+          <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-quiet">Impact</p>
           <p class="mt-3 text-lg font-black text-ink">{project.impact ?? 'Technical system delivered'}</p>
         </article>
         <article class="border border-line bg-white p-5">
-          <p class="text-xs font-black uppercase tracking-[0.16em] text-quiet">Stack Depth</p>
+          <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-quiet">Stack Depth</p>
           <p class="mt-3 text-lg font-black text-ink">{project.tech_stack.length} technologies</p>
         </article>
       </div>
@@ -99,15 +102,15 @@ const summary = project.short_description ?? project.description;
           <h2 class="text-2xl font-black text-ink">Case Index</h2>
           <dl class="mt-6 grid gap-4">
             <div class="border-b border-line pb-4">
-              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Status</dt>
+              <dt class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">Status</dt>
               <dd class="mt-1 text-sm font-bold text-signal">Published</dd>
             </div>
             <div class="border-b border-line pb-4">
-              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Ordering</dt>
+              <dt class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">Ordering</dt>
               <dd class="mt-1 text-sm font-bold text-ink">#{project.display_order}</dd>
             </div>
             <div>
-              <dt class="text-xs font-black uppercase tracking-[0.14em] text-quiet">Updated</dt>
+              <dt class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">Updated</dt>
               <dd class="mt-1 text-sm font-bold text-ink">
                 {project.updated_at ? new Date(project.updated_at).toLocaleDateString('en-US') : 'Not recorded'}
               </dd>
@@ -122,7 +125,7 @@ const summary = project.short_description ?? project.description;
           </p>
           {project.architecture_notes && (
             <section class="mt-8 border-t border-line pt-6">
-              <h3 class="text-sm font-black uppercase tracking-[0.16em] text-signal">
+              <h3 class="font-mono text-sm font-black uppercase tracking-[0.16em] text-signal">
                 Architecture
               </h3>
               <p class="mt-3 whitespace-pre-line text-base leading-8 text-quiet">
@@ -132,7 +135,7 @@ const summary = project.short_description ?? project.description;
           )}
           {project.case_study_markdown && (
             <section class="mt-8 border-t border-line pt-6">
-              <h3 class="text-sm font-black uppercase tracking-[0.16em] text-signal">
+              <h3 class="font-mono text-sm font-black uppercase tracking-[0.16em] text-signal">
                 Case Study
               </h3>
               <p class="mt-3 whitespace-pre-line text-base leading-8 text-quiet">

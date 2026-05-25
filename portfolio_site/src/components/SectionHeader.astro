@@ -8,15 +8,15 @@ interface Props {
 
 const { eyebrow, title, copy, inverse = false } = Astro.props;
 const titleClass = inverse
-  ? 'text-3xl font-black leading-tight text-white sm:text-5xl'
-  : 'text-3xl font-black leading-tight text-ink sm:text-5xl';
+  ? 'text-4xl font-black leading-tight text-white sm:text-5xl'
+  : 'text-4xl font-black leading-tight text-ink sm:text-5xl';
 const copyClass = inverse
   ? 'mt-4 max-w-2xl text-base leading-7 text-slate-300'
   : 'mt-4 max-w-2xl text-base leading-7 text-quiet';
 ---
 
 <header class="mb-8 max-w-4xl">
-  <p class="mb-3 text-xs font-black uppercase tracking-[0.18em] text-signal">
+  <p class="mb-3 font-mono text-xs font-black uppercase tracking-[0.18em] text-signal">
     {eyebrow}
   </p>
   <h2 class={titleClass}>{title}</h2>
