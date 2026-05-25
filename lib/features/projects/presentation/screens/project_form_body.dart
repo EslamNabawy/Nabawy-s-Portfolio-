@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../deployment/domain/entities/deployment_result.dart';
+import '../../../deployment/presentation/widgets/deployment_automation_panel.dart';
 import 'project_form_controllers.dart';
 import 'project_form_sections.dart';
 import 'project_form_support.dart';
@@ -16,11 +18,17 @@ class ProjectFormBody extends StatelessWidget {
     required this.error,
     required this.isUploadingImage,
     required this.isSaving,
+    required this.isDeploying,
     required this.canSubmit,
     required this.hasUnsavedChanges,
     required this.isPublished,
     required this.featured,
     required this.submitLabel,
+    required this.deployAfterSave,
+    required this.canDeploySavedChanges,
+    required this.deploymentProgress,
+    required this.deploymentResult,
+    required this.deploymentError,
     required this.publishReadinessIssues,
     required this.galleryImageUrls,
     required this.onTitleChanged,
@@ -29,8 +37,10 @@ class ProjectFormBody extends StatelessWidget {
     required this.onRemoveGalleryImage,
     required this.onPublishedChanged,
     required this.onFeaturedChanged,
+    required this.onDeployAfterSaveChanged,
     required this.onCancel,
     required this.onSubmit,
+    required this.onSaveAndDeploy,
   });
 
   final GlobalKey<FormState> formKey;
@@ -38,11 +48,17 @@ class ProjectFormBody extends StatelessWidget {
   final String? error;
   final bool isUploadingImage;
   final bool isSaving;
+  final bool isDeploying;
   final bool canSubmit;
   final bool hasUnsavedChanges;
   final bool isPublished;
   final bool featured;
   final String submitLabel;
+  final bool deployAfterSave;
+  final bool canDeploySavedChanges;
+  final DeploymentProgress? deploymentProgress;
+  final DeploymentResult? deploymentResult;
+  final String? deploymentError;
   final List<PublishReadinessIssue> publishReadinessIssues;
   final List<String> galleryImageUrls;
   final ValueChanged<String> onTitleChanged;
@@ -51,8 +67,10 @@ class ProjectFormBody extends StatelessWidget {
   final ValueChanged<String> onRemoveGalleryImage;
   final ValueChanged<bool> onPublishedChanged;
   final ValueChanged<bool> onFeaturedChanged;
+  final ValueChanged<bool> onDeployAfterSaveChanged;
   final VoidCallback onCancel;
   final VoidCallback onSubmit;
+  final VoidCallback onSaveAndDeploy;
 
   @override
   Widget build(BuildContext context) {
@@ -119,12 +137,27 @@ class ProjectFormBody extends StatelessWidget {
                 isPublished: isPublished,
                 issues: publishReadinessIssues,
               ),
+              const SizedBox(height: 16),
+              DeploymentAutomationPanel(
+                enabled: canDeploySavedChanges,
+                disabledReason:
+                    'Draft-only project changes do not need deploy.',
+                deployAfterSave: deployAfterSave,
+                isSaving: isSaving,
+                isDeploying: isDeploying,
+                progress: deploymentProgress,
+                result: deploymentResult,
+                error: deploymentError,
+                onDeployAfterSaveChanged: onDeployAfterSaveChanged,
+                onSaveAndDeploy: onSaveAndDeploy,
+              ),
               const SizedBox(height: 24),
               ProjectFormActions(
                 isSaving: isSaving,
-                canSubmit: canSubmit,
+                canSubmit: canSubmit && !isDeploying,
                 hasUnsavedChanges: hasUnsavedChanges,
                 submitLabel: submitLabel,
+                canCancel: !isDeploying,
                 onCancel: onCancel,
                 onSubmit: onSubmit,
               ),

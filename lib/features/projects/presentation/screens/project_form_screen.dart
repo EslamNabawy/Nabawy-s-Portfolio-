@@ -1,15 +1,13 @@
-import 'dart:typed_data';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_exception.dart';
+import '../../../deployment/presentation/controllers/cms_deployment_state.dart';
 import '../../application/project_providers.dart';
 import '../../domain/entities/project.dart';
-import '../../domain/value_objects/project_image_upload.dart';
 import 'project_form_body.dart';
 import 'project_form_controllers.dart';
+import 'project_image_picker.dart';
 import 'project_form_projection.dart';
 import 'project_form_support.dart';
 import 'project_publish_readiness.dart';
@@ -23,23 +21,32 @@ class ProjectFormScreen extends ConsumerStatefulWidget {
   ConsumerState<ProjectFormScreen> createState() => _ProjectFormScreenState();
 }
 
-class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
+class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen>
+    with CmsDeploymentState<ProjectFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final ProjectFormControllers _controllers;
+  late Project? _project;
   late String _initialStateKey;
   bool _isPublished = false;
   bool _featured = false;
   bool _hasUnsavedChanges = false;
   bool _isUploadingImage = false;
   bool _isSaving = false;
+  bool _deployAfterSave = false;
   String? _error;
 
-  bool get _isEditing => widget.project != null;
+  bool get _isEditing => _project != null;
+
+  bool get _canDeploySavedChanges {
+    return _isPublished ||
+        (_project?.isPublished ?? widget.project?.isPublished ?? false);
+  }
 
   @override
   void initState() {
     super.initState();
     final project = widget.project;
+    _project = project;
     _controllers = ProjectFormControllers.fromProject(project);
     _isPublished = project?.isPublished ?? false;
     _featured = project?.featured ?? false;
@@ -57,10 +64,10 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final canSubmit = !_isSaving && !_isUploadingImage;
+    final canSubmit = !_isSaving && !_isUploadingImage && !isDeploying;
     final c = _controllers;
     return PopScope(
-      canPop: !_hasUnsavedChanges && !_isSaving,
+      canPop: !_hasUnsavedChanges && !_isSaving && !isDeploying,
       onPopInvokedWithResult: _handlePopInvoked,
       child: Scaffold(
         appBar: AppBar(
@@ -79,11 +86,17 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
           error: _error,
           isUploadingImage: _isUploadingImage,
           isSaving: _isSaving,
+          isDeploying: isDeploying,
           canSubmit: canSubmit,
           hasUnsavedChanges: _hasUnsavedChanges,
           isPublished: _isPublished,
           featured: _featured,
           submitLabel: _isEditing ? 'Save Changes' : 'Create Project',
+          deployAfterSave: _deployAfterSave,
+          canDeploySavedChanges: _canDeploySavedChanges,
+          deploymentProgress: deploymentProgress,
+          deploymentResult: deploymentResult,
+          deploymentError: deploymentError,
           publishReadinessIssues: _publishReadinessIssues,
           galleryImageUrls: _galleryImageUrls,
           onTitleChanged: _syncSlug,
@@ -92,8 +105,10 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
           onRemoveGalleryImage: _removeGalleryImage,
           onPublishedChanged: _setPublished,
           onFeaturedChanged: _setFeatured,
+          onDeployAfterSaveChanged: _setDeployAfterSave,
           onCancel: _cancel,
-          onSubmit: _save,
+          onSubmit: _saveOnly,
+          onSaveAndDeploy: _saveAndDeploy,
         ),
       ),
     );
@@ -105,29 +120,12 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
       _error = null;
     });
     try {
-      final result = await FilePicker.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp', 'avif'],
-        withData: true,
+      final imageUrl = await pickAndUploadProjectImage(
+        ref.read(projectRepositoryProvider),
       );
-      if (result == null || result.files.isEmpty) {
-        return;
+      if (imageUrl != null) {
+        _controllers.imageUrl.text = imageUrl;
       }
-      final file = result.files.single;
-      final bytes = file.bytes;
-      if (bytes == null) {
-        throw const ValidationFailure('Could not read selected image bytes.');
-      }
-      final imageUrl = await ref
-          .read(projectRepositoryProvider)
-          .uploadProjectImage(
-            ProjectImageUpload(
-              bytes: Uint8List.fromList(bytes),
-              fileName: file.name,
-              contentType: contentTypeFor(file.extension),
-            ),
-          );
-      _controllers.imageUrl.text = imageUrl;
     } on AppException catch (error) {
       _setError(error.message);
     } catch (error) {
@@ -139,7 +137,19 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
     }
   }
 
-  Future<void> _save() async {
+  Future<void> _saveOnly() async {
+    await _save(deployAfterSave: _deployAfterSave && _canDeploySavedChanges);
+  }
+
+  Future<void> _saveAndDeploy() async {
+    if (!_canDeploySavedChanges) {
+      _setError('Only published or previously published projects need deploy.');
+      return;
+    }
+    await _save(deployAfterSave: true);
+  }
+
+  Future<void> _save({required bool deployAfterSave}) async {
     if (_isUploadingImage) {
       _setError('Wait for image upload to finish before saving.');
       return;
@@ -159,20 +169,20 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
     setState(() {
       _isSaving = true;
       _error = null;
+      clearDeploymentFeedback();
     });
     try {
       final project = projectFromControllerSet(
-        existingProject: widget.project,
+        existingProject: _project,
         controllers: _controllers,
         isPublished: _isPublished,
         featured: _featured,
       );
       final repository = ref.read(projectRepositoryProvider);
-      if (_isEditing) {
-        await repository.updateProject(project);
-      } else {
-        await repository.createProject(project);
-      }
+      final savedProject = _isEditing
+          ? await repository.updateProject(project)
+          : await repository.createProject(project);
+      _project = savedProject;
       ref.invalidate(projectsProvider);
       _initialStateKey = _currentStateKey();
       if (mounted) {
@@ -180,7 +190,11 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
           _hasUnsavedChanges = false;
           _isSaving = false;
         });
-        Navigator.of(context).pop(true);
+        if (deployAfterSave) {
+          await _deploySavedProject(savedProject);
+        } else if (mounted) {
+          Navigator.of(context).pop(true);
+        }
       }
     } on AppException catch (error) {
       _setError(error.message);
@@ -191,6 +205,12 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
         setState(() => _isSaving = false);
       }
     }
+  }
+
+  Future<void> _deploySavedProject(Project project) async {
+    await runCmsDeployment(
+      message: 'Deployment requested after saving project "${project.title}".',
+    );
   }
 
   void _syncSlug(String value) {
@@ -235,7 +255,7 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
   }
 
   Future<void> _handlePopInvoked(bool didPop, Object? result) async {
-    if (didPop || !_hasUnsavedChanges || _isSaving) {
+    if (didPop || !_hasUnsavedChanges || _isSaving || isDeploying) {
       return;
     }
     if (await _confirmDiscardChanges() && mounted) {
@@ -272,7 +292,12 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
   }
 
   void _setPublished(bool value) {
-    setState(() => _isPublished = value);
+    setState(() {
+      _isPublished = value;
+      if (!_canDeploySavedChanges) {
+        _deployAfterSave = false;
+      }
+    });
     _formKey.currentState?.validate();
     _onFormChanged();
   }
@@ -280,6 +305,10 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
   void _setFeatured(bool value) {
     setState(() => _featured = value);
     _onFormChanged();
+  }
+
+  void _setDeployAfterSave(bool value) {
+    setState(() => _deployAfterSave = value && _canDeploySavedChanges);
   }
 
   void _onFormChanged() {

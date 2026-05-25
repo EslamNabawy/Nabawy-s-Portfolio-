@@ -93,6 +93,7 @@ class ProjectFormActions extends StatelessWidget {
     required this.submitLabel,
     required this.onCancel,
     required this.onSubmit,
+    this.canCancel = true,
   });
 
   final bool isSaving;
@@ -101,6 +102,7 @@ class ProjectFormActions extends StatelessWidget {
   final String submitLabel;
   final VoidCallback onCancel;
   final VoidCallback onSubmit;
+  final bool canCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +114,7 @@ class ProjectFormActions extends StatelessWidget {
           const SizedBox(width: 12),
         ],
         TextButton(
-          onPressed: isSaving ? null : onCancel,
+          onPressed: isSaving || !canCancel ? null : onCancel,
           child: const Text('Cancel'),
         ),
         const SizedBox(width: 12),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_exception.dart';
+import '../../../deployment/presentation/controllers/cms_deployment_state.dart';
+import '../../../deployment/presentation/widgets/deployment_automation_panel.dart';
 import '../../../projects/presentation/screens/project_form_support.dart';
 import '../../application/settings_providers.dart';
 import '../../domain/entities/site_config.dart';
@@ -38,7 +40,8 @@ class SiteConfigForm extends ConsumerStatefulWidget {
   ConsumerState<SiteConfigForm> createState() => _SiteConfigFormState();
 }
 
-class _SiteConfigFormState extends ConsumerState<SiteConfigForm> {
+class _SiteConfigFormState extends ConsumerState<SiteConfigForm>
+    with CmsDeploymentState<SiteConfigForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _name;
   late final TextEditingController _headline;
@@ -48,6 +51,7 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm> {
   late final TextEditingController _linkedinUrl;
   late final TextEditingController _email;
   bool _isSaving = false;
+  bool _deployAfterSave = false;
   String? _error;
 
   @override
@@ -91,7 +95,7 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm> {
               ),
               IconButton(
                 tooltip: 'Refresh',
-                onPressed: _isSaving
+                onPressed: _isSaving || isDeploying
                     ? null
                     : () => ref.invalidate(siteConfigProvider),
                 icon: const Icon(Icons.refresh),
@@ -159,27 +163,50 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm> {
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          DeploymentAutomationPanel(
+            enabled: true,
+            disabledReason: '',
+            deployAfterSave: _deployAfterSave,
+            isSaving: _isSaving,
+            isDeploying: isDeploying,
+            progress: deploymentProgress,
+            result: deploymentResult,
+            error: deploymentError,
+            onDeployAfterSaveChanged: _setDeployAfterSave,
+            onSaveAndDeploy: _saveAndDeploy,
+          ),
           const SizedBox(height: 24),
           ProjectFormActions(
             isSaving: _isSaving,
-            canSubmit: !_isSaving,
+            canSubmit: !_isSaving && !isDeploying,
             hasUnsavedChanges: false,
             submitLabel: 'Save Config',
+            canCancel: !isDeploying,
             onCancel: () => ref.invalidate(siteConfigProvider),
-            onSubmit: _save,
+            onSubmit: _saveOnly,
           ),
         ],
       ),
     );
   }
 
-  Future<void> _save() async {
+  Future<void> _saveOnly() async {
+    await _save(deployAfterSave: _deployAfterSave);
+  }
+
+  Future<void> _saveAndDeploy() async {
+    await _save(deployAfterSave: true);
+  }
+
+  Future<void> _save({required bool deployAfterSave}) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     setState(() {
       _isSaving = true;
       _error = null;
+      clearDeploymentFeedback();
     });
 
     try {
@@ -198,9 +225,14 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm> {
           );
       ref.invalidate(siteConfigProvider);
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Site config saved.')));
+        setState(() => _isSaving = false);
+        if (deployAfterSave) {
+          await _deploySavedConfig();
+        } else if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Site config saved.')));
+        }
       }
     } on AppException catch (error) {
       _setError(error.message);
@@ -211,6 +243,12 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm> {
         setState(() => _isSaving = false);
       }
     }
+  }
+
+  Future<void> _deploySavedConfig() async {
+    await runCmsDeployment(
+      message: 'Deployment requested after saving site config.',
+    );
   }
 
   String? _validateOptionalEmail(String? value) {
@@ -228,6 +266,10 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm> {
     if (mounted) {
       setState(() => _error = message);
     }
+  }
+
+  void _setDeployAfterSave(bool value) {
+    setState(() => _deployAfterSave = value);
   }
 }
 

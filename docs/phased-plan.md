@@ -120,7 +120,7 @@ Mitigation: Create a GitHub Actions workflow for Windows release artifacts.
 
 ## Phase 8: Automation
 
-Status: Next.
+Status: Complete.
 
 Objective: Reduce manual work after edits.
 
@@ -134,9 +134,25 @@ Bottleneck: Manual deploy can be forgotten.
 
 Mitigation: Make deployment a guided CMS workflow rather than a separate manual task.
 
+## Phase 9: Observability
+
+Status: Next.
+
+Objective: Make failures obvious without opening every tool manually.
+
+Build:
+- Dashboard health checks
+- Supabase content validation report
+- Last public deploy summary
+- Broken image/link scanner
+
+Bottleneck: Static-site failures can hide until the next manual check.
+
+Mitigation: Add lightweight validation commands and render their results in the admin dashboard.
+
 ## Recommended Next Sprint
 
-1. Execute Phase 8: Automation.
-2. Add `Save + Deploy` from the CMS edit flow.
-3. Add optional monthly rebuild scheduling.
-4. Add clearer deployment notifications inside the dashboard.
+1. Execute Phase 9: Observability.
+2. Add a dashboard health panel for Supabase, GitHub Actions, and public site status.
+3. Add content validation before deployment.
+4. Add broken image/link checks for published projects.

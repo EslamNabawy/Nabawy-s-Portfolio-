@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_exception.dart';
+import '../../../deployment/presentation/controllers/cms_deployment_state.dart';
+import '../../../deployment/presentation/widgets/deployment_automation_panel.dart';
 import '../../application/project_providers.dart';
 import '../../domain/entities/skill.dart';
 import 'project_form_support.dart';
@@ -15,21 +17,30 @@ class SkillFormScreen extends ConsumerStatefulWidget {
   ConsumerState<SkillFormScreen> createState() => _SkillFormScreenState();
 }
 
-class _SkillFormScreenState extends ConsumerState<SkillFormScreen> {
+class _SkillFormScreenState extends ConsumerState<SkillFormScreen>
+    with CmsDeploymentState<SkillFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _category;
   late final TextEditingController _items;
   late final TextEditingController _displayOrder;
+  late Skill? _skill;
   bool _isPublished = true;
   bool _isSaving = false;
+  bool _deployAfterSave = false;
   String? _error;
 
-  bool get _isEditing => widget.skill != null;
+  bool get _isEditing => _skill != null;
+
+  bool get _canDeploySavedChanges {
+    return _isPublished ||
+        (_skill?.isPublished ?? widget.skill?.isPublished ?? false);
+  }
 
   @override
   void initState() {
     super.initState();
     final skill = widget.skill;
+    _skill = skill;
     _category = TextEditingController(text: skill?.category ?? '');
     _items = TextEditingController(text: skill?.items.join(', ') ?? '');
     _displayOrder = TextEditingController(
@@ -97,19 +108,38 @@ class _SkillFormScreenState extends ConsumerState<SkillFormScreen> {
                       value: _isPublished,
                       title: const Text('Published'),
                       subtitle: const Text('Visible on the public portfolio.'),
-                      onChanged: (value) =>
-                          setState(() => _isPublished = value),
+                      onChanged: (value) => setState(() {
+                        _isPublished = value;
+                        if (!_canDeploySavedChanges) {
+                          _deployAfterSave = false;
+                        }
+                      }),
                     ),
                   ],
+                ),
+                const SizedBox(height: 16),
+                DeploymentAutomationPanel(
+                  enabled: _canDeploySavedChanges,
+                  disabledReason:
+                      'Draft-only skill changes do not need deploy.',
+                  deployAfterSave: _deployAfterSave,
+                  isSaving: _isSaving,
+                  isDeploying: isDeploying,
+                  progress: deploymentProgress,
+                  result: deploymentResult,
+                  error: deploymentError,
+                  onDeployAfterSaveChanged: _setDeployAfterSave,
+                  onSaveAndDeploy: _saveAndDeploy,
                 ),
                 const SizedBox(height: 24),
                 ProjectFormActions(
                   isSaving: _isSaving,
-                  canSubmit: !_isSaving,
+                  canSubmit: !_isSaving && !isDeploying,
                   hasUnsavedChanges: false,
                   submitLabel: _isEditing ? 'Save Changes' : 'Create Skill',
+                  canCancel: !isDeploying,
                   onCancel: () => Navigator.of(context).pop(false),
-                  onSubmit: _save,
+                  onSubmit: _saveOnly,
                 ),
               ],
             ),
@@ -119,32 +149,49 @@ class _SkillFormScreenState extends ConsumerState<SkillFormScreen> {
     );
   }
 
-  Future<void> _save() async {
+  Future<void> _saveOnly() async {
+    await _save(deployAfterSave: _deployAfterSave && _canDeploySavedChanges);
+  }
+
+  Future<void> _saveAndDeploy() async {
+    if (!_canDeploySavedChanges) {
+      _setError('Only published or previously published skills need deploy.');
+      return;
+    }
+    await _save(deployAfterSave: true);
+  }
+
+  Future<void> _save({required bool deployAfterSave}) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     setState(() {
       _isSaving = true;
       _error = null;
+      clearDeploymentFeedback();
     });
 
     try {
       final repository = ref.read(skillRepositoryProvider);
       final skill = Skill(
-        id: widget.skill?.id,
+        id: _skill?.id,
         category: _category.text.trim(),
         items: splitTechStack(_items.text),
         displayOrder: int.parse(_displayOrder.text.trim()),
         isPublished: _isPublished,
       );
-      if (_isEditing) {
-        await repository.updateSkill(skill);
-      } else {
-        await repository.createSkill(skill);
-      }
+      final savedSkill = _isEditing
+          ? await repository.updateSkill(skill)
+          : await repository.createSkill(skill);
+      _skill = savedSkill;
       ref.invalidate(skillsProvider);
       if (mounted) {
-        Navigator.of(context).pop(true);
+        setState(() => _isSaving = false);
+        if (deployAfterSave) {
+          await _deploySavedSkill(savedSkill);
+        } else if (mounted) {
+          Navigator.of(context).pop(true);
+        }
       }
     } on AppException catch (error) {
       _setError(error.message);
@@ -155,6 +202,13 @@ class _SkillFormScreenState extends ConsumerState<SkillFormScreen> {
         setState(() => _isSaving = false);
       }
     }
+  }
+
+  Future<void> _deploySavedSkill(Skill skill) async {
+    await runCmsDeployment(
+      message:
+          'Deployment requested after saving skill group "${skill.category}".',
+    );
   }
 
   String? _validateItems(String? value) {
@@ -168,5 +222,9 @@ class _SkillFormScreenState extends ConsumerState<SkillFormScreen> {
     if (mounted) {
       setState(() => _error = message);
     }
+  }
+
+  void _setDeployAfterSave(bool value) {
+    setState(() => _deployAfterSave = value && _canDeploySavedChanges);
   }
 }
