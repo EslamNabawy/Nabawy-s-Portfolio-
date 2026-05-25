@@ -19,6 +19,11 @@ const items = readItems(section.content_json.items);
 const actions = readActions(section.content_json.actions);
 const mediaUrl = safeMediaUrl(section.design_json.mediaUrl);
 const caption = readString(section.design_json.caption);
+const sectionTitleId = `section-${section.section_key}-title`;
+const hasMedia = mediaUrl.length > 0;
+const hasItems = items.length > 0;
+const hasActions = actions.length > 0;
+const itemLinkLabel = (item: SectionItem) => `Open ${item.title || item.label || 'item'}`;
 const classes = [
   'custom-section',
   `custom-section--${section.tone}`,
@@ -26,6 +31,7 @@ const classes = [
   `custom-section--${section.density}`,
   `custom-section--${section.alignment}`,
   `custom-section--${section.section_type}`,
+  hasMedia ? 'custom-section--has-media' : '',
 ].join(' ');
 
 function readString(value: unknown): string {
@@ -83,13 +89,13 @@ function safeMediaUrl(value: unknown): string {
 }
 ---
 
-<section class={classes} id={section.section_key}>
+<section class={classes} id={section.section_key} aria-labelledby={sectionTitleId}>
   <div class="custom-section__inner">
     <div class="custom-section__header">
       {section.eyebrow && <p class="custom-section__eyebrow">{section.eyebrow}</p>}
-      <h2>{section.title}</h2>
+      <h2 id={sectionTitleId}>{section.title}</h2>
       {section.body && <p class="custom-section__body">{section.body}</p>}
-      {actions.length > 0 && (
+      {hasActions && (
         <div class="custom-section__actions">
           {actions.map((action) => (
             <a href={action.url}>{action.label}</a>
@@ -105,14 +111,14 @@ function safeMediaUrl(value: unknown): string {
       </figure>
     )}
 
-    {items.length > 0 && (
+    {hasItems && (
       <div class="custom-section__items">
         {items.map((item, index) => (
           <article class="custom-section__item">
             <p class="custom-section__item-label">{item.label || String(index + 1).padStart(2, '0')}</p>
             {item.title && <h3>{item.title}</h3>}
             {item.copy && <p>{item.copy}</p>}
-            {item.url && <a href={item.url}>Open</a>}
+            {item.url && <a aria-label={itemLinkLabel(item)} href={item.url}>Open</a>}
           </article>
         ))}
       </div>
