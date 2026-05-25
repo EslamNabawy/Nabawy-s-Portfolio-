@@ -1,0 +1,67 @@
+---
+import type { SiteConfig } from '../lib/types';
+
+interface Props {
+  config: SiteConfig;
+  projectCount: number;
+  skillCount: number;
+}
+
+const { config, projectCount, skillCount } = Astro.props;
+---
+
+<section class="border-b border-line bg-panel">
+  <div class="mx-auto grid min-h-[560px] max-w-7xl content-center gap-10 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
+    <div>
+      <p class="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-signal">
+        Systems Portfolio / Engineering Profile
+      </p>
+      <h1 class="max-w-4xl text-5xl font-black leading-[0.95] text-ink sm:text-7xl">
+        {config.name}
+      </h1>
+      <p class="mt-5 max-w-3xl text-xl font-semibold text-slate-700">
+        {config.headline}
+      </p>
+      <p class="mt-6 max-w-3xl text-base leading-8 text-slate-600">
+        {config.bio}
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        {config.github_url && (
+          <a class="border border-ink bg-ink px-4 py-2 text-sm font-bold text-white" href={config.github_url}>
+            GitHub
+          </a>
+        )}
+        {config.linkedin_url && (
+          <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={config.linkedin_url}>
+            LinkedIn
+          </a>
+        )}
+        {config.resume_url && (
+          <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={config.resume_url}>
+            Resume
+          </a>
+        )}
+      </div>
+    </div>
+
+    <aside class="border border-line bg-white p-5 shadow-sm">
+      <div class="border-b border-line pb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+        Profile Snapshot
+      </div>
+      <dl class="mt-5 grid gap-4">
+        <div class="flex items-center justify-between border-b border-line pb-3">
+          <dt class="text-sm text-slate-500">Published Projects</dt>
+          <dd class="text-2xl font-black text-ink">{projectCount}</dd>
+        </div>
+        <div class="flex items-center justify-between border-b border-line pb-3">
+          <dt class="text-sm text-slate-500">Skill Groups</dt>
+          <dd class="text-2xl font-black text-ink">{skillCount}</dd>
+        </div>
+        <div class="flex items-center justify-between">
+          <dt class="text-sm text-slate-500">Primary Focus</dt>
+          <dd class="text-sm font-black uppercase text-signal">Product Systems</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</section>

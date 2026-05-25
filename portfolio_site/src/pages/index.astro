@@ -1,0 +1,49 @@
+---
+import HeroSection from '../components/HeroSection.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import SkillBadge from '../components/SkillBadge.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPortfolioData } from '../lib/portfolio-data';
+
+const { config, projects, skills } = await getPortfolioData();
+---
+
+<BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
+  <main>
+    <HeroSection config={config} projectCount={projects.length} skillCount={skills.length} />
+
+    <section class="border-b border-line bg-white px-6 py-16 lg:px-8" id="projects">
+      <div class="mx-auto max-w-7xl">
+        <SectionHeader
+          eyebrow="Selected Systems"
+          title="Projects Built For Real Constraints"
+          copy="A curated set of shipped work, technical experiments, and engineering systems."
+        />
+        <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-panel px-6 py-16 lg:px-8" id="skills">
+      <div class="mx-auto max-w-7xl">
+        <SectionHeader
+          eyebrow="Capability Matrix"
+          title="Technical Operating Range"
+          copy="Practical coverage across frontend, backend, data, automation, and deployment work."
+        />
+        <div class="grid gap-5 lg:grid-cols-2">
+          {skills.map((skill) => (
+            <article class="border border-line bg-white p-5">
+              <h3 class="mb-4 text-lg font-black text-ink">{skill.category}</h3>
+              <div class="flex flex-wrap gap-2">
+                {skill.items.map((item) => <SkillBadge label={item} />)}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

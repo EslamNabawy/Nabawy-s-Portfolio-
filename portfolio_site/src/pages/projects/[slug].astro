@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedProjects } from '../../lib/portfolio-data';
+import type { Project } from '../../lib/types';
+
+export async function getStaticPaths() {
+  const projects = await getPublishedProjects();
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<BaseLayout title={`${project.title} | Project`} description={project.description}>
+  <main class="min-h-screen bg-panel">
+    <section class="border-b border-line bg-white px-6 py-10 lg:px-8">
+      <div class="mx-auto max-w-6xl">
+        <a class="text-sm font-bold text-signal" href="/">Back to portfolio</a>
+        <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_420px]">
+          <div>
+            <p class="mb-3 text-xs font-black uppercase tracking-[0.18em] text-signal">
+              Project Case File
+            </p>
+            <h1 class="text-5xl font-black leading-tight text-ink">{project.title}</h1>
+            <p class="mt-5 whitespace-pre-line text-lg leading-8 text-slate-700">
+              {project.description}
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              {project.github_url && (
+                <a class="border border-ink bg-ink px-4 py-2 text-sm font-bold text-white" href={project.github_url}>
+                  Source
+                </a>
+              )}
+              {project.live_url && (
+                <a class="border border-line bg-white px-4 py-2 text-sm font-bold text-ink" href={project.live_url}>
+                  Live Build
+                </a>
+              )}
+            </div>
+          </div>
+          <aside class="border border-line bg-panel p-4">
+            <img
+              src={project.image_url ?? ''}
+              alt={`${project.title} interface preview`}
+              class="aspect-[16/10] w-full border border-line object-cover"
+            />
+            <div class="mt-4 flex flex-wrap gap-2">
+              {project.tech_stack.map((item) => (
+                <span class="border border-line bg-white px-2 py-1 text-xs font-bold text-slate-700">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
