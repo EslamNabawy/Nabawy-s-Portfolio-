@@ -366,6 +366,51 @@
   color: #ffffff;
 }
 
+.design-signal_studio .custom-section {
+  background: #ffffff;
+  border-color: #d9e5df;
+}
+
+.design-signal_studio .custom-section h2 {
+  color: #0f172a;
+  font-size: clamp(2rem, 3.6vw, 3.8rem);
+  line-height: 1.04;
+}
+
+.design-signal_studio .custom-section__body,
+.design-signal_studio .custom-section__item p:not(.custom-section__item-label),
+.design-signal_studio .custom-section__block p:not(.custom-section__item-label) {
+  color: #475569;
+}
+
+.design-signal_studio .custom-section__eyebrow,
+.design-signal_studio .custom-section__item-label {
+  color: #0f766e;
+}
+
+.design-signal_studio .custom-section__item,
+.design-signal_studio .custom-section__block {
+  background: #ffffff;
+  border-color: #d9e5df;
+  border-radius: 16px;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+}
+
+.design-signal_studio .custom-section--ink,
+.design-signal_studio .custom-section--signal {
+  background: #111827;
+}
+
+.design-signal_studio .custom-section--ink h2,
+.design-signal_studio .custom-section--signal h2 {
+  color: #ffffff;
+}
+
+.design-signal_studio .custom-section--metric_strip .custom-section__item h3,
+.design-signal_studio .custom-section__items--metricStrip .custom-section__item h3 {
+  font-size: clamp(1.4rem, 2.4vw, 2.2rem);
+}
+
 .custom-section--callout .custom-section__inner {
   border: 1px solid currentColor;
   padding: clamp(24px, 5vw, 48px);

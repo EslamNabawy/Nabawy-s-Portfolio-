@@ -323,60 +323,161 @@ body {
 }
 
 .design-signal_studio {
-  background: #eaf3f1;
+  background: #f7f9fb;
 }
 
 .design-signal_studio .os-hero {
-  background: #061213;
+  background:
+    radial-gradient(circle at 14% 20%, rgba(15, 118, 110, 0.16), transparent 28%),
+    linear-gradient(135deg, #ffffff 0 54%, #ecfdf5 54% 100%);
+  border-bottom: 1px solid #d9e5df;
+  color: #0f172a;
+  min-height: auto;
+}
+
+.design-signal_studio .os-hero > .relative {
+  min-height: auto;
+  padding-bottom: 48px;
 }
 
 .design-signal_studio .os-hero > img {
-  opacity: 0.3;
-  filter: saturate(1.35) contrast(1.08);
-  mix-blend-mode: screen;
+  display: none;
+}
+
+.design-signal_studio .os-hero::after {
+  display: none;
 }
 
 .design-signal_studio .os-hero-grid {
   background:
-    linear-gradient(120deg, transparent 0 48%, rgba(33, 211, 190, 0.24) 49% 54%, transparent 55%),
-    linear-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.075) 1px, transparent 1px),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%),
-    #061213;
-  background-size: auto, 44px 44px, 44px 44px, auto, auto;
+    linear-gradient(rgba(15, 23, 42, 0.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.032) 1px, transparent 1px);
+  background-size: 52px 52px;
 }
 
-.design-signal_studio .os-glass-panel,
-.design-signal_studio .os-hero dl {
-  border-color: rgba(255, 255, 255, 0.28);
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.055)),
-    rgba(6, 18, 19, 0.74);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+.design-signal_studio .hero-main-grid {
+  align-items: center;
+}
+
+@media (width >= 1024px) {
+  .design-signal_studio .hero-main-grid {
+    grid-template-columns: minmax(0, 0.96fr) minmax(360px, 0.72fr);
+  }
+}
+
+.design-signal_studio .hero-copy-frame {
+  max-width: 58rem;
+}
+
+.design-signal_studio .hero-command-frame {
+  max-width: 100%;
+}
+
+.design-signal_studio .os-hero h1,
+.design-signal_studio .os-hero h2,
+.design-signal_studio .os-hero nav a,
+.design-signal_studio .os-hero p {
+  color: #0f172a;
+}
+
+.design-signal_studio .os-hero nav {
+  border: 1px solid #d9e5df;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+  padding: 12px 16px;
+}
+
+.design-signal_studio .os-hero .text-white,
+.design-signal_studio .os-hero .text-slate-300,
+.design-signal_studio .os-hero .text-slate-400 {
+  color: #475569;
+}
+
+.design-signal_studio .os-hero h1 {
+  letter-spacing: 0;
+}
+
+.design-signal_studio .os-hero .bg-white {
+  background: #111827;
+  border-color: #111827;
+  color: #ffffff;
+}
+
+.design-signal_studio .hero-copy-frame a {
+  border-radius: 999px;
+}
+
+.design-signal_studio .os-hero .border-white\/15,
+.design-signal_studio .os-hero .border-white\/25 {
+  border-color: #cbded7;
+}
+
+.design-signal_studio .os-hero .bg-white\/5,
+.design-signal_studio .os-hero .bg-signal\/10 {
+  background-color: #e9f9f4;
+  color: #0f766e;
+}
+
+.design-signal_studio .border-signal\/50 {
+  border-color: #9bd6c8;
 }
 
 .design-signal_studio .text-signal,
 .design-signal_studio .hover\:text-signal:hover {
-  color: #21d3be;
+  color: #0f766e;
 }
 
 .design-signal_studio .text-alert {
-  color: #f3b45c;
+  color: #c2410c;
 }
 
-.design-signal_studio .border-signal\/50 {
-  border-color: rgba(33, 211, 190, 0.62);
+.design-signal_studio .os-glass-panel,
+.design-signal_studio .os-hero dl {
+  border-color: #d9e5df;
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.11);
+  color: #0f172a;
+  overflow: hidden;
 }
 
-.design-signal_studio .bg-signal\/10 {
-  background-color: rgba(33, 211, 190, 0.14);
+.design-signal_studio .hero-command-frame {
+  grid-template-columns: 1fr !important;
 }
 
-.design-signal_studio #signal,
+@media (width < 768px) {
+  .design-signal_studio .hero-command-frame {
+    display: none;
+  }
+}
+
+.design-signal_studio .os-glass-panel .bg-ink {
+  background: #f1f5f9;
+}
+
+.design-signal_studio #projects {
+  background: #ffffff;
+}
+
+.design-signal_studio #summary,
 .design-signal_studio #skills {
+  background: #f7f9fb;
+}
+
+.design-signal_studio #experience {
   background:
-    linear-gradient(135deg, rgba(33, 211, 190, 0.12), transparent 38%),
-    #eaf3f1;
+    linear-gradient(135deg, rgba(15, 118, 110, 0.14), transparent 42%),
+    #111827;
+}
+
+.design-signal_studio article.bg-white {
+  border-radius: 16px;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+}
+
+.design-signal_studio .border-line {
+  border-color: #d9e5df;
 }
 
 .design-system_forge {
