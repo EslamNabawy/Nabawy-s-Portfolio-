@@ -412,33 +412,38 @@
 }
 
 .design-terminal_ops .custom-section {
-  background: #08111f;
-  border-color: rgba(148, 163, 184, 0.18);
-  color: #e6f1ff;
+  background:
+    linear-gradient(rgba(6, 7, 10, 0.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 7, 10, 0.032) 1px, transparent 1px),
+    #f6f1e5;
+  background-size: 42px 42px;
+  border-color: rgba(21, 24, 26, 0.16);
+  color: #11130f;
 }
 
 .design-terminal_ops .custom-section h2,
 .design-terminal_ops .custom-section__item h3,
 .design-terminal_ops .custom-section__block h3 {
-  color: #e6f1ff;
+  color: #11130f;
 }
 
 .design-terminal_ops .custom-section__body,
 .design-terminal_ops .custom-section__item p:not(.custom-section__item-label),
 .design-terminal_ops .custom-section__block p:not(.custom-section__item-label) {
-  color: #94a3b8;
+  color: #545a54;
 }
 
 .design-terminal_ops .custom-section__eyebrow,
 .design-terminal_ops .custom-section__item-label {
-  color: #64ffda;
+  color: #006d5c;
 }
 
 .design-terminal_ops .custom-section__item,
 .design-terminal_ops .custom-section__block {
-  background: #0b1628;
-  border-color: rgba(148, 163, 184, 0.18);
-  border-radius: 10px;
+  background: rgba(255, 253, 247, 0.94);
+  border-color: rgba(21, 24, 26, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 22px 60px rgba(24, 20, 12, 0.08);
 }
 
 .custom-section--callout .custom-section__inner {

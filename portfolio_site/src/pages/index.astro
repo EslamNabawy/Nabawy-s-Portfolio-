@@ -59,6 +59,27 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('after_hero').map((section) => <CustomSection section={section} />)}
 
+    <section class="border-b border-line bg-panel px-6 py-10 lg:px-8" id="summary">
+      <div class="mx-auto max-w-7xl">
+        <SectionHeader
+          eyebrow="Recruiter Brief"
+          title="What To Know In 30 Seconds"
+          copy="Flutter engineer with practical app delivery, Firebase experience, mentorship history, and computer science fundamentals."
+        />
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {quickFacts.map(([label, title, copy]) => (
+            <article class="border border-line bg-white p-5">
+              <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
+                {label}
+              </p>
+              <h3 class="mt-4 text-2xl font-black text-ink">{title}</h3>
+              <p class="mt-3 text-sm leading-7 text-quiet">{copy}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
     {sectionsFor('before_projects').map((section) => <CustomSection section={section} />)}
 
     <section class="border-b border-line bg-white px-6 py-12 lg:px-8" id="projects">
@@ -66,8 +87,8 @@ const sectionsFor = (placement: string) =>
         <div class="flex flex-col justify-between gap-6 border-b border-line pb-8 lg:flex-row lg:items-end">
           <SectionHeader
             eyebrow="Selected Projects"
-            title="Relevant Flutter Projects"
-            copy="Two quick project examples from the resume, focused on the role, stack, and practical delivery value."
+            title="Proof Of Work"
+            copy="Two Flutter/Firebase builds from the resume, focused on stack, role, and delivery value."
           />
           <div class="grid w-full max-w-md grid-cols-2 border border-line bg-panel">
             <div class="border-r border-line p-4">
@@ -99,27 +120,6 @@ const sectionsFor = (placement: string) =>
               </p>
             </div>
           )}
-        </div>
-      </div>
-    </section>
-
-    <section class="border-b border-line bg-panel px-6 py-10 lg:px-8" id="summary">
-      <div class="mx-auto max-w-7xl">
-        <SectionHeader
-          eyebrow="30-Second Summary"
-          title="What Recruiters Need To Know Fast"
-          copy="Flutter engineer with practical app delivery, Firebase experience, mentorship history, and computer science fundamentals."
-        />
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {quickFacts.map(([label, title, copy]) => (
-            <article class="border border-line bg-white p-5">
-              <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-                {label}
-              </p>
-              <h3 class="mt-4 text-2xl font-black text-ink">{title}</h3>
-              <p class="mt-3 text-sm leading-7 text-quiet">{copy}</p>
-            </article>
-          ))}
         </div>
       </div>
     </section>
