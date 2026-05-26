@@ -85,9 +85,9 @@ const sectionsFor = (placement: string) =>
           </div>
         </div>
 
-        <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div class="mt-8 grid gap-5 md:grid-cols-2">
           {projects.map((project, index) => (
-            <ProjectCard project={project} prominent={index === 0} index={index} />
+            <ProjectCard project={project} index={index} />
           ))}
           {projects.length === 0 && (
             <div class="border border-line bg-panel p-6">
