@@ -34,50 +34,58 @@ class PageSectionPreviewToolbar extends StatelessWidget {
         color: Color(0xFFF8FAFC),
         border: Border(bottom: BorderSide(color: Color(0xFFC7D2CC))),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Icon(Icons.drag_indicator),
-          const SizedBox(width: 8),
-          Expanded(
-            child: _SectionMeta(section: section, readiness: readiness),
-          ),
-          if (selected)
-            const Padding(
-              padding: EdgeInsets.only(right: 8),
-              child: AdminStatusChip(
-                label: 'Selected',
-                tone: AdminStatusTone.info,
-                icon: Icons.ads_click,
+          Row(
+            children: [
+              const Icon(Icons.drag_indicator),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _SectionMeta(section: section, readiness: readiness),
               ),
-            ),
-          IconButton(
-            tooltip: 'Open full preview',
-            onPressed: () => onPreview(section),
-            icon: const Icon(Icons.open_in_full),
+              if (selected)
+                const AdminStatusChip(
+                  label: 'Selected',
+                  tone: AdminStatusTone.info,
+                  icon: Icons.ads_click,
+                ),
+            ],
           ),
-          IconButton(
-            tooltip: 'Edit section',
-            onPressed: () => onEdit(section),
-            icon: const Icon(Icons.edit_outlined),
-          ),
-          IconButton(
-            tooltip: section.isPublished ? 'Unpublish' : 'Publish',
-            onPressed: () => onTogglePublished(section),
-            icon: Icon(
-              section.isPublished
-                  ? Icons.visibility_off_outlined
-                  : Icons.publish_outlined,
-            ),
-          ),
-          IconButton(
-            tooltip: 'Duplicate',
-            onPressed: () => onDuplicate(section),
-            icon: const Icon(Icons.copy_outlined),
-          ),
-          IconButton(
-            tooltip: 'Delete section',
-            onPressed: section.id == null ? null : () => onDelete(section),
-            icon: const Icon(Icons.delete_outline),
+          const SizedBox(height: 6),
+          Wrap(
+            alignment: WrapAlignment.end,
+            children: [
+              IconButton(
+                tooltip: 'Open full preview',
+                onPressed: () => onPreview(section),
+                icon: const Icon(Icons.open_in_full),
+              ),
+              IconButton(
+                tooltip: 'Edit section',
+                onPressed: () => onEdit(section),
+                icon: const Icon(Icons.edit_outlined),
+              ),
+              IconButton(
+                tooltip: section.isPublished ? 'Unpublish' : 'Publish',
+                onPressed: () => onTogglePublished(section),
+                icon: Icon(
+                  section.isPublished
+                      ? Icons.visibility_off_outlined
+                      : Icons.publish_outlined,
+                ),
+              ),
+              IconButton(
+                tooltip: 'Duplicate',
+                onPressed: () => onDuplicate(section),
+                icon: const Icon(Icons.copy_outlined),
+              ),
+              IconButton(
+                tooltip: 'Delete section',
+                onPressed: section.id == null ? null : () => onDelete(section),
+                icon: const Icon(Icons.delete_outline),
+              ),
+            ],
           ),
         ],
       ),
@@ -86,28 +94,44 @@ class PageSectionPreviewToolbar extends StatelessWidget {
 }
 
 class BuiltInPageBand extends StatelessWidget {
-  const BuiltInPageBand({super.key, required this.label, required this.title});
+  const BuiltInPageBand({
+    super.key,
+    required this.label,
+    required this.title,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
   final String title;
+  final bool selected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFFC7D2CC)),
-        color: const Color(0xFFEAF3F1),
-      ),
-      child: Row(
-        children: [
-          AdminStatusChip(label: label, tone: AdminStatusTone.info),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: selected ? const Color(0xFF00836B) : const Color(0xFFC7D2CC),
+            width: selected ? 2 : 1,
           ),
-        ],
+          color: const Color(0xFFEAF3F1),
+        ),
+        child: Row(
+          children: [
+            AdminStatusChip(label: label, tone: AdminStatusTone.info),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+            ),
+            if (onTap != null)
+              const Icon(Icons.chevron_right, color: Color(0xFF00836B)),
+          ],
+        ),
       ),
     );
   }
@@ -117,35 +141,45 @@ class EmptyPreviewDropZone extends StatelessWidget {
   const EmptyPreviewDropZone({
     super.key,
     required this.label,
+    required this.selected,
+    required this.onSelect,
     required this.onAdd,
   });
 
   final String label;
+  final bool selected;
+  final VoidCallback onSelect;
   final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFFD7DFDA)),
-        color: const Color(0xFFFBFDFC),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              'No custom section ${label.toLowerCase()}.',
-              style: Theme.of(context).textTheme.bodySmall,
+    return InkWell(
+      onTap: onSelect,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: selected ? const Color(0xFF00836B) : const Color(0xFFD7DFDA),
+            width: selected ? 2 : 1,
+          ),
+          color: const Color(0xFFFBFDFC),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'No custom section ${label.toLowerCase()}.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ),
-          ),
-          TextButton.icon(
-            onPressed: onAdd,
-            icon: const Icon(Icons.add),
-            label: const Text('Add here'),
-          ),
-        ],
+            TextButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add),
+              label: const Text('Add here'),
+            ),
+          ],
+        ),
       ),
     );
   }

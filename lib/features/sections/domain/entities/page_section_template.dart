@@ -1,4 +1,5 @@
 import 'page_section.dart';
+import 'page_section_template_payloads.dart';
 
 final class PageSectionTemplate {
   const PageSectionTemplate({
@@ -14,29 +15,29 @@ final class PageSectionTemplate {
 
 const pageSectionTemplates = <PageSectionTemplate>[
   PageSectionTemplate(
-    name: 'Proof Grid',
-    description: 'Three evidence cards for systems, constraints, and outcomes.',
+    name: 'Featured Case Study',
+    description: 'A recruiter-facing case-study spotlight before projects.',
     section: PageSection(
-      sectionKey: 'systems-proof',
-      title: 'Engineering Proof, Not Decoration',
-      eyebrow: 'Proof Layer',
+      sectionKey: 'featured-case-study',
+      title: 'Featured System Build',
+      eyebrow: 'Case Study',
       body:
-          'Use this section to show technical judgment, operational detail, and measurable outcomes before recruiters hit the project grid.',
+          'Use this to highlight one strong build with problem, architecture, and outcome.',
       placement: PageSectionPlacement.beforeProjects,
       sectionType: PageSectionType.contentGrid,
       layout: PageSectionLayout.grid,
       tone: PageSectionTone.panel,
       density: PageSectionDensity.standard,
       alignment: PageSectionAlignment.left,
-      contentJson: _proofGridContent,
-      designJson: _signalDesign,
+      contentJson: featuredCaseStudyContent,
+      designJson: signalDesign,
     ),
   ),
   PageSectionTemplate(
-    name: 'Metric Strip',
+    name: 'Proof Metrics',
     description: 'Compact KPI row for performance, shipping, or system stats.',
     section: PageSection(
-      sectionKey: 'system-metrics',
+      sectionKey: 'proof-metrics',
       title: 'Operating Metrics',
       eyebrow: 'Telemetry',
       body: 'Use short numbers and labels. Keep it honest and easy to scan.',
@@ -46,52 +47,95 @@ const pageSectionTemplates = <PageSectionTemplate>[
       tone: PageSectionTone.ink,
       density: PageSectionDensity.compact,
       alignment: PageSectionAlignment.center,
-      contentJson: _metricContent,
-      designJson: _signalDesign,
+      contentJson: metricContent,
+      designJson: signalDesign,
     ),
   ),
   PageSectionTemplate(
-    name: 'Process Timeline',
-    description:
-        'A focused timeline for method, delivery, or architecture flow.',
+    name: 'Technical Stack Matrix',
+    description: 'A structured capability map for tools and system domains.',
     section: PageSection(
-      sectionKey: 'build-process',
-      title: 'How I Build Systems',
-      eyebrow: 'Execution Model',
-      body: 'A structured view of how ideas move from architecture to release.',
+      sectionKey: 'technical-stack-matrix',
+      title: 'Technical Stack Matrix',
+      eyebrow: 'Capability Map',
+      body:
+          'Group your engineering depth by system layer instead of buzzwords.',
       placement: PageSectionPlacement.beforeSkills,
-      sectionType: PageSectionType.timeline,
-      layout: PageSectionLayout.rail,
+      sectionType: PageSectionType.contentGrid,
+      layout: PageSectionLayout.grid,
       tone: PageSectionTone.minimal,
       density: PageSectionDensity.standard,
       alignment: PageSectionAlignment.left,
-      contentJson: _timelineContent,
-      designJson: _minimalDesign,
+      contentJson: stackMatrixContent,
+      designJson: minimalDesign,
     ),
   ),
   PageSectionTemplate(
-    name: 'Contact CTA',
+    name: 'AI Lab',
+    description:
+        'A focused lab callout for agents, automation, and prototypes.',
+    section: PageSection(
+      sectionKey: 'ai-lab-signal',
+      title: 'Agentic Systems Lab',
+      eyebrow: 'Lab',
+      body:
+          'Use this before the Lab section to frame experiments as engineering research.',
+      placement: PageSectionPlacement.beforeLab,
+      sectionType: PageSectionType.callout,
+      layout: PageSectionLayout.split,
+      tone: PageSectionTone.studio,
+      density: PageSectionDensity.standard,
+      alignment: PageSectionAlignment.left,
+      contentJson: aiLabContent,
+      designJson: signalDesign,
+    ),
+  ),
+  PageSectionTemplate(
+    name: 'WebRTC System Map',
+    description: 'Architecture-panel template for peer-to-peer systems.',
+    section: PageSection(
+      sectionKey: 'webrtc-system-map',
+      title: 'Decentralized System Map',
+      eyebrow: 'Architecture',
+      body: 'Show signaling, peers, state sync, and failure handling.',
+      placement: PageSectionPlacement.beforeProjects,
+      sectionType: PageSectionType.contentGrid,
+      layout: PageSectionLayout.rail,
+      tone: PageSectionTone.ink,
+      density: PageSectionDensity.standard,
+      alignment: PageSectionAlignment.left,
+      contentJson: webrtcMapContent,
+      designJson: signalDesign,
+    ),
+  ),
+  PageSectionTemplate(
+    name: 'Resume CTA',
     description: 'High-signal callout before the contact route.',
     section: PageSection(
-      sectionKey: 'availability-signal',
-      title: 'Need a builder who can reason across product, systems, and UI?',
-      eyebrow: 'Availability',
-      body:
-          'Use this CTA for direct conversion without turning the portfolio into a landing page.',
+      sectionKey: 'resume-cta',
+      title: 'Review the full engineering profile',
+      eyebrow: 'Resume',
+      body: 'Use this CTA for direct conversion without visual noise.',
       placement: PageSectionPlacement.beforeContact,
       sectionType: PageSectionType.cta,
       layout: PageSectionLayout.banner,
       tone: PageSectionTone.signal,
       density: PageSectionDensity.spacious,
       alignment: PageSectionAlignment.center,
-      contentJson: _ctaContent,
-      designJson: _signalDesign,
+      contentJson: resumeCtaContent,
+      designJson: signalDesign,
     ),
   ),
 ];
 
-PageSection sectionFromTemplate(PageSectionTemplate template) {
-  return _draftCopy(template.section);
+PageSection sectionFromTemplate(
+  PageSectionTemplate template, {
+  PageSectionPlacement? placement,
+  int? displayOrder,
+}) {
+  return _draftCopy(
+    template.section.copyWith(placement: placement, displayOrder: displayOrder),
+  );
 }
 
 PageSection duplicateSection(PageSection section) {
@@ -131,82 +175,3 @@ PageSection _draftCopy(PageSection section) {
     displayOrder: section.displayOrder,
   );
 }
-
-const _proofGridContent = <String, Object?>{
-  'items': [
-    {
-      'label': '01',
-      'title': 'Architecture',
-      'copy': 'Clear boundaries, typed data contracts, and release-safe flows.',
-    },
-    {
-      'label': '02',
-      'title': 'Execution',
-      'copy':
-          'Fast iteration with validation, deployment, and operational feedback.',
-    },
-    {
-      'label': '03',
-      'title': 'Signal',
-      'copy': 'Projects are presented as evidence, not just screenshots.',
-    },
-  ],
-};
-
-const _metricContent = <String, Object?>{
-  'items': [
-    {
-      'label': 'SSG',
-      'title': 'Static-first',
-      'copy': 'No public runtime DB dependency.',
-    },
-    {
-      'label': 'RLS',
-      'title': 'Hardened CMS',
-      'copy': 'Admin write boundary with public read.',
-    },
-    {
-      'label': '0 USD',
-      'title': 'Monthly Infra',
-      'copy': 'Designed around free deployment limits.',
-    },
-  ],
-};
-
-const _timelineContent = <String, Object?>{
-  'items': [
-    {
-      'label': '01',
-      'title': 'Model',
-      'copy': 'Define the system boundary and data shape.',
-    },
-    {
-      'label': '02',
-      'title': 'Build',
-      'copy': 'Implement lower layers before the surface.',
-    },
-    {
-      'label': '03',
-      'title': 'Verify',
-      'copy': 'Analyze, test, build, and deploy deliberately.',
-    },
-  ],
-};
-
-const _ctaContent = <String, Object?>{
-  'actions': [
-    {'label': 'Contact', 'url': '#contact'},
-    {'label': 'Review Systems', 'url': '#projects'},
-  ],
-};
-
-const _signalDesign = <String, Object?>{
-  'accent': 'signal',
-  'mediaUrl': '',
-  'caption': '',
-};
-const _minimalDesign = <String, Object?>{
-  'accent': 'minimal',
-  'mediaUrl': '',
-  'caption': '',
-};

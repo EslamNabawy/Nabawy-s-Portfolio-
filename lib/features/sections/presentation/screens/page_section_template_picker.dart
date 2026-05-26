@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/entities/page_section.dart';
 import '../../domain/entities/page_section_template.dart';
 
 Future<PageSectionTemplate?> showPageSectionTemplatePicker(
-  BuildContext context,
-) {
+  BuildContext context, {
+  PageSectionPlacement? placement,
+}) {
   return showDialog<PageSectionTemplate>(
     context: context,
-    builder: (context) => const _TemplateDialog(),
+    builder: (context) => _TemplateDialog(placement: placement),
   );
 }
 
 class _TemplateDialog extends StatelessWidget {
-  const _TemplateDialog();
+  const _TemplateDialog({this.placement});
+
+  final PageSectionPlacement? placement;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +45,12 @@ class _TemplateDialog extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Templates are editable drafts. Pick one, then tune placement, layout, tone, and JSON content.',
+                'Templates are editable drafts. Pick one, then tune content, layout, tone, and blocks.',
               ),
+              if (placement != null) ...[
+                const SizedBox(height: 8),
+                Text('Insertion point: ${placement!.label}'),
+              ],
               const SizedBox(height: 18),
               Expanded(
                 child: GridView.builder(

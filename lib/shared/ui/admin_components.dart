@@ -88,12 +88,16 @@ class AdminStatusChip extends StatelessWidget {
             Icon(icon, size: 14, color: palette.foreground),
             const SizedBox(width: 6),
           ],
-          Text(
-            label,
-            style: TextStyle(
-              color: palette.foreground,
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: TextStyle(
+                color: palette.foreground,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
         ],

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/errors/app_exception.dart';
+import '../../../../shared/ui/admin_shell.dart';
+import '../../../deployment/presentation/controllers/cms_deployment_state.dart';
 import '../../application/section_providers.dart';
 import '../../domain/entities/page_section.dart';
 import '../../domain/entities/page_section_template.dart';
+import 'page_builder_inspector.dart';
+import 'page_builder_selection.dart';
 import 'page_section_canvas_view.dart';
 import 'page_section_form_screen.dart';
-import 'page_section_inspector.dart';
 import 'page_section_list_header.dart';
 import 'page_section_list_mode.dart';
 import 'page_section_list_support.dart';
@@ -16,17 +19,20 @@ import 'page_section_table_view.dart';
 import 'page_section_template_picker.dart';
 
 class PageSectionListScreen extends ConsumerStatefulWidget {
-  const PageSectionListScreen({super.key});
+  const PageSectionListScreen({super.key, this.onNavigate});
+
+  final ValueChanged<AdminSection>? onNavigate;
 
   @override
   ConsumerState<PageSectionListScreen> createState() =>
       _PageSectionListScreenState();
 }
 
-class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
+class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen>
+    with CmsDeploymentState<PageSectionListScreen> {
   SectionListViewMode _view = SectionListViewMode.canvas;
   bool _isSaving = false;
-  String? _selectedSectionId;
+  PageBuilderSelection _selection = const PageBuilderSelection.none();
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +47,11 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
             isSaving: _isSaving,
             onViewChanged: (view) => setState(() => _view = view),
             onRefresh: () => ref.invalidate(pageSectionsProvider),
-            onCreate: () => _openForm(),
+            onCreate: _openTemplate,
             onTemplate: () => _openTemplate(),
+            onDeploy: () => runCmsDeployment(
+              message: 'Deployment requested from Page Builder.',
+            ),
             onPublishAll: () => _bulkPublish(true),
             onUnpublishAll: () => _bulkPublish(false),
           ),
@@ -53,9 +62,10 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
                 preview: _view == SectionListViewMode.canvas
                     ? PageSectionCanvasView(
                         sections: sections,
-                        selectedSectionId: _selectedSectionId,
-                        onSelect: _selectSection,
-                        onAddAtPlacement: _openAddAt,
+                        selection: _selection,
+                        onSelectionChanged: (selection) =>
+                            setState(() => _selection = selection),
+                        onAddAtPlacement: _openTemplateAt,
                         onEdit: _openForm,
                         onPreview: _preview,
                         onDuplicate: _duplicate,
@@ -72,10 +82,18 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
                         onDelete: _deleteSection,
                         onTogglePublished: _togglePublished,
                       ),
-                inspector: PageSectionInspector(
-                  section: selectedPageSection(sections, _selectedSectionId),
+                inspector: PageBuilderInspector(
+                  selection: _selection,
+                  section: selectedPageSection(sections, _selection.sectionId),
                   isSaving: _isSaving,
+                  isDeploying: isDeploying,
+                  deploymentProgress: deploymentProgress,
+                  deploymentResult: deploymentResult,
+                  deploymentError: deploymentError,
+                  onNavigate: _navigate,
+                  onCreateAtPlacement: _openTemplateAt,
                   onSave: _saveSection,
+                  onSaveAndDeploy: _saveAndDeploySection,
                   onEditAdvanced: _openForm,
                   onPreview: _preview,
                   onDuplicate: _duplicate,
@@ -108,31 +126,38 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
     }
   }
 
-  Future<void> _openAddAt(PageSectionPlacement placement) async {
-    final sections = ref.read(pageSectionsProvider).value ?? const [];
-    await _openForm(
-      PageSection(
-        sectionKey: '',
-        title: '',
-        placement: placement,
-        displayOrder: nextPageSectionDisplayOrder(sections, placement),
-      ),
-    );
-  }
-
   Future<void> _openTemplate() async {
     final template = await showPageSectionTemplatePicker(context);
     if (template != null && mounted) {
-      await _openForm(sectionFromTemplate(template));
+      final sections = ref.read(pageSectionsProvider).value ?? const [];
+      final draft = sectionFromTemplate(template);
+      await _openForm(
+        draft.copyWith(
+          displayOrder: nextPageSectionDisplayOrder(sections, draft.placement),
+        ),
+      );
+    }
+  }
+
+  Future<void> _openTemplateAt(PageSectionPlacement placement) async {
+    final template = await showPageSectionTemplatePicker(
+      context,
+      placement: placement,
+    );
+    if (template != null && mounted) {
+      final sections = ref.read(pageSectionsProvider).value ?? const [];
+      await _openForm(
+        sectionFromTemplate(
+          template,
+          placement: placement,
+          displayOrder: nextPageSectionDisplayOrder(sections, placement),
+        ),
+      );
     }
   }
 
   void _preview(PageSection section) {
     showPageSectionPreview(context, section);
-  }
-
-  void _selectSection(PageSection section) {
-    setState(() => _selectedSectionId = pageSectionIdentity(section));
   }
 
   void _duplicate(PageSection section) {
@@ -145,16 +170,29 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
 
   Future<void> _saveSection(PageSection section) async {
     final sections = ref.read(pageSectionsProvider).value ?? const [];
-    final original = selectedPageSection(
-      sections,
-      pageSectionIdentity(section),
-    );
-    final displayOrder =
-        original != null && original.placement != section.placement
-        ? nextPageSectionDisplayOrder(sections, section.placement)
-        : section.displayOrder;
-    await _saveMany([section.copyWith(displayOrder: displayOrder)]);
-    setState(() => _selectedSectionId = pageSectionIdentity(section));
+    final saved = await _saveMany([
+      normalizePageSectionOrder(sections, section),
+    ]);
+    if (saved) {
+      setState(
+        () => _selection = PageBuilderSelection.customSection(
+          pageSectionIdentity(section),
+        ),
+      );
+    }
+  }
+
+  Future<void> _saveAndDeploySection(PageSection section) async {
+    final sections = ref.read(pageSectionsProvider).value ?? const [];
+    final saved = await _saveMany([
+      normalizePageSectionOrder(sections, section),
+    ]);
+    if (saved) {
+      await runCmsDeployment(
+        message:
+            'Deployment requested after saving page section "${section.title}".',
+      );
+    }
   }
 
   Future<void> _bulkPublish(bool isPublished) async {
@@ -188,9 +226,9 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
     await _saveMany(updated);
   }
 
-  Future<void> _saveMany(List<PageSection> sections) async {
+  Future<bool> _saveMany(List<PageSection> sections) async {
     if (sections.isEmpty) {
-      return;
+      return true;
     }
     setState(() => _isSaving = true);
     try {
@@ -202,6 +240,7 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
       _showMessage(
         'Sections saved. Deploy when ready to update the public site.',
       );
+      return true;
     } on AppException catch (error) {
       _showMessage(error.message);
     } catch (error) {
@@ -211,35 +250,20 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
         setState(() => _isSaving = false);
       }
     }
+    return false;
   }
 
   Future<void> _deleteSection(PageSection section) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete section'),
-        content: Text('Delete "${section.title}"? This cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || section.id == null) {
+    final confirmed = await confirmDeletePageSection(context, section);
+    if (!confirmed || section.id == null) {
       return;
     }
     setState(() => _isSaving = true);
     try {
       await ref.read(pageSectionRepositoryProvider).deleteSection(section.id!);
       ref.invalidate(pageSectionsProvider);
-      if (_selectedSectionId == pageSectionIdentity(section)) {
-        _selectedSectionId = null;
+      if (_selection.isCustom(section)) {
+        _selection = const PageBuilderSelection.none();
       }
     } on AppException catch (error) {
       _showMessage(error.message);
@@ -250,6 +274,15 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
         setState(() => _isSaving = false);
       }
     }
+  }
+
+  void _navigate(AdminSection section) {
+    final navigate = widget.onNavigate;
+    if (navigate == null) {
+      _showMessage('Navigation is unavailable in this context.');
+      return;
+    }
+    navigate(section);
   }
 
   void _showMessage(String message) {

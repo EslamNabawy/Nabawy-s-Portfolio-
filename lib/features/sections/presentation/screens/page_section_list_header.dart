@@ -12,6 +12,7 @@ class PageSectionListHeader extends StatelessWidget {
     required this.onRefresh,
     required this.onCreate,
     required this.onTemplate,
+    required this.onDeploy,
     required this.onPublishAll,
     required this.onUnpublishAll,
   });
@@ -22,6 +23,7 @@ class PageSectionListHeader extends StatelessWidget {
   final VoidCallback onRefresh;
   final VoidCallback onCreate;
   final VoidCallback onTemplate;
+  final VoidCallback onDeploy;
   final VoidCallback onPublishAll;
   final VoidCallback onUnpublishAll;
 
@@ -61,10 +63,15 @@ class PageSectionListHeader extends StatelessWidget {
           icon: const Icon(Icons.refresh),
         ),
         CommandButton(
-          label: 'New Section',
+          label: 'Add Template',
           icon: Icons.add,
           primary: true,
           onPressed: isSaving ? null : onCreate,
+        ),
+        CommandButton(
+          label: 'Deploy',
+          icon: Icons.rocket_launch_outlined,
+          onPressed: isSaving ? null : onDeploy,
         ),
         PopupMenuButton<_SectionCommand>(
           tooltip: 'More section actions',

@@ -35,7 +35,7 @@ class PageSectionBlockEditor extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(child: Text('Block ${index + 1}')),
                 SizedBox(
-                  width: 220,
+                  width: 190,
                   child: SectionDropdown(
                     label: 'Block Type',
                     value: block.type,

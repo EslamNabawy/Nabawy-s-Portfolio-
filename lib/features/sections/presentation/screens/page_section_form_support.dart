@@ -97,6 +97,7 @@ class SectionDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
       initialValue: value,
+      isExpanded: true,
       decoration: InputDecoration(labelText: label),
       items: [
         for (final item in values)

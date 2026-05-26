@@ -1,5 +1,6 @@
 ---
-import type { PageSection, SectionBlock, SectionBlockItem } from '../lib/types';
+import CustomSectionBlock from './CustomSectionBlock.astro';
+import type { PageSection } from '../lib/types';
 import { readSectionBlocks } from '../lib/section-blocks';
 
 const { section } = Astro.props as { section: PageSection };
@@ -16,11 +17,6 @@ const classes = [
   hasMedia ? 'custom-section--has-media' : '',
 ].join(' ');
 
-const itemLinkLabel = (item: SectionBlockItem) =>
-  `Open ${item.title || item.label || 'item'}`;
-
-const hasItems = (block: SectionBlock) => (block.items?.length ?? 0) > 0;
-const hasActions = (block: SectionBlock) => (block.actions?.length ?? 0) > 0;
 ---
 
 <section class={classes} id={section.section_key} aria-labelledby={sectionTitleId}>
@@ -31,51 +27,6 @@ const hasActions = (block: SectionBlock) => (block.actions?.length ?? 0) > 0;
       {section.body && <p class="custom-section__body">{section.body}</p>}
     </div>
 
-    {blocks.map((block) => (
-      <>
-        {(block.type === 'heroText' || block.type === 'callout') && (
-          <article class={`custom-section__block custom-section__block--${block.type}`}>
-            {block.label && <p class="custom-section__item-label">{block.label}</p>}
-            {block.title && <h3>{block.title}</h3>}
-            {block.copy && <p>{block.copy}</p>}
-            {block.url && <a href={block.url}>Open</a>}
-          </article>
-        )}
-
-        {block.type === 'media' && block.mediaUrl && (
-          <figure class="custom-section__media">
-            <img
-              src={block.mediaUrl}
-              alt={block.altText || block.caption || section.title}
-              loading="lazy"
-            />
-            {block.caption && <figcaption>{block.caption}</figcaption>}
-          </figure>
-        )}
-
-        {hasItems(block) && (
-          <div class={`custom-section__items custom-section__items--${block.type}`}>
-            {block.items?.map((item, index) => (
-              <article class="custom-section__item">
-                <p class="custom-section__item-label">
-                  {item.label || String(index + 1).padStart(2, '0')}
-                </p>
-                {item.title && <h3>{item.title}</h3>}
-                {item.copy && <p>{item.copy}</p>}
-                {item.url && <a aria-label={itemLinkLabel(item)} href={item.url}>Open</a>}
-              </article>
-            ))}
-          </div>
-        )}
-
-        {hasActions(block) && (
-          <div class="custom-section__actions">
-            {block.actions?.map((action) => (
-              <a href={action.url}>{action.label}</a>
-            ))}
-          </div>
-        )}
-      </>
-    ))}
+    {blocks.map((block) => <CustomSectionBlock block={block} sectionTitle={section.title} />)}
   </div>
 </section>

@@ -1,32 +1,44 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/json_readers.dart';
 import '../../../../shared/ui/admin_components.dart';
-import '../../../projects/presentation/screens/project_form_support.dart';
+import '../../../deployment/domain/entities/deployment_result.dart';
 import '../../domain/entities/page_section.dart';
 import '../../domain/entities/page_section_readiness.dart';
-import 'page_section_form_support.dart';
+import 'page_section_blocks_inspector.dart';
+import 'page_section_inspector_controls.dart';
 
 class PageSectionInspector extends StatefulWidget {
   const PageSectionInspector({
     super.key,
     required this.section,
     required this.isSaving,
+    required this.isDeploying,
     required this.onSave,
+    required this.onSaveAndDeploy,
     required this.onEditAdvanced,
     required this.onPreview,
     required this.onDuplicate,
     required this.onDelete,
     required this.onTogglePublished,
+    this.deploymentProgress,
+    this.deploymentResult,
+    this.deploymentError,
   });
 
   final PageSection? section;
   final bool isSaving;
+  final bool isDeploying;
   final Future<void> Function(PageSection section) onSave;
+  final Future<void> Function(PageSection section) onSaveAndDeploy;
   final ValueChanged<PageSection> onEditAdvanced;
   final ValueChanged<PageSection> onPreview;
   final ValueChanged<PageSection> onDuplicate;
   final ValueChanged<PageSection> onDelete;
   final ValueChanged<PageSection> onTogglePublished;
+  final DeploymentProgress? deploymentProgress;
+  final DeploymentResult? deploymentResult;
+  final String? deploymentError;
 
   @override
   State<PageSectionInspector> createState() => _PageSectionInspectorState();
@@ -34,9 +46,12 @@ class PageSectionInspector extends StatefulWidget {
 
 class _PageSectionInspectorState extends State<PageSectionInspector> {
   final _formKey = GlobalKey<FormState>();
+  final _sectionKey = TextEditingController();
   final _title = TextEditingController();
   final _eyebrow = TextEditingController();
   final _body = TextEditingController();
+  JsonMap _contentJson = const <String, Object?>{};
+  JsonMap _designJson = const <String, Object?>{};
   PageSectionPlacement _placement = PageSectionPlacement.afterHero;
   PageSectionType _sectionType = PageSectionType.contentGrid;
   PageSectionLayout _layout = PageSectionLayout.stack;
@@ -60,6 +75,7 @@ class _PageSectionInspectorState extends State<PageSectionInspector> {
 
   @override
   void dispose() {
+    _sectionKey.dispose();
     _title.dispose();
     _eyebrow.dispose();
     _body.dispose();
@@ -93,126 +109,59 @@ class _PageSectionInspectorState extends State<PageSectionInspector> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextFormField(
-              controller: _title,
-              decoration: const InputDecoration(labelText: 'Title'),
-              validator: requiredField('Title'),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: _eyebrow,
-              decoration: const InputDecoration(labelText: 'Eyebrow'),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: _body,
-              decoration: const InputDecoration(labelText: 'Body'),
-              minLines: 3,
-              maxLines: 6,
+            PageSectionIdentityFields(
+              sectionKey: _sectionKey,
+              title: _title,
+              eyebrow: _eyebrow,
+              body: _body,
             ),
             const SizedBox(height: 14),
-            SectionDropdown(
-              label: 'Placement',
-              value: _placement,
-              values: PageSectionPlacement.values,
-              labelFor: (value) => value.label,
-              onChanged: (value) => setState(() => _placement = value),
-            ),
-            const SizedBox(height: 10),
-            SectionDropdown(
-              label: 'Type',
-              value: _sectionType,
-              values: PageSectionType.values,
-              labelFor: (value) => value.label,
-              onChanged: (value) => setState(() => _sectionType = value),
-            ),
-            const SizedBox(height: 10),
-            SectionDropdown(
-              label: 'Layout',
-              value: _layout,
-              values: PageSectionLayout.values,
-              labelFor: (value) => value.label,
-              onChanged: (value) => setState(() => _layout = value),
-            ),
-            const SizedBox(height: 10),
-            SectionDropdown(
-              label: 'Tone',
-              value: _tone,
-              values: PageSectionTone.values,
-              labelFor: (value) => value.label,
-              onChanged: (value) => setState(() => _tone = value),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: SectionDropdown(
-                    label: 'Density',
-                    value: _density,
-                    values: PageSectionDensity.values,
-                    labelFor: (value) => value.label,
-                    onChanged: (value) => setState(() => _density = value),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: SectionDropdown(
-                    label: 'Align',
-                    value: _alignment,
-                    values: PageSectionAlignment.values,
-                    labelFor: (value) => value.label,
-                    onChanged: (value) => setState(() => _alignment = value),
-                  ),
-                ),
-              ],
+            PageSectionDesignFields(
+              placement: _placement,
+              sectionType: _sectionType,
+              layout: _layout,
+              tone: _tone,
+              density: _density,
+              alignment: _alignment,
+              onPlacementChanged: (value) => setState(() => _placement = value),
+              onTypeChanged: (value) => setState(() => _sectionType = value),
+              onLayoutChanged: (value) => setState(() => _layout = value),
+              onToneChanged: (value) => setState(() => _tone = value),
+              onDensityChanged: (value) => setState(() => _density = value),
+              onAlignmentChanged: (value) => setState(() => _alignment = value),
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               value: section.isPublished,
               title: const Text('Published'),
-              onChanged: widget.isSaving
+              onChanged: _busy
                   ? null
                   : (_) => widget.onTogglePublished(section),
             ),
             const Divider(height: 24),
+            PageSectionBlocksInspector(
+              key: ValueKey(_identity(section)),
+              contentJson: _contentJson,
+              onChanged: (value) => setState(() => _contentJson = value),
+            ),
+            const SizedBox(height: 14),
             ValidationList(messages: readiness.messages),
             const SizedBox(height: 14),
-            FilledButton.icon(
-              onPressed: widget.isSaving ? null : () => _save(section),
-              icon: const Icon(Icons.save_outlined),
-              label: const Text('Save Inspector Changes'),
+            PageSectionInspectorActions(
+              busy: _busy,
+              isDeploying: widget.isDeploying,
+              section: section,
+              onSave: () => _save(section),
+              onSaveAndDeploy: () => _saveAndDeploy(section),
+              onEditAdvanced: widget.onEditAdvanced,
+              onPreview: widget.onPreview,
+              onDuplicate: widget.onDuplicate,
+              onDelete: widget.onDelete,
             ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: widget.isSaving
-                  ? null
-                  : () => widget.onEditAdvanced(section),
-              icon: const Icon(Icons.dashboard_customize_outlined),
-              label: const Text('Open Builder'),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: () => widget.onPreview(section),
-                  icon: const Icon(Icons.open_in_full),
-                  label: const Text('Preview'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () => widget.onDuplicate(section),
-                  icon: const Icon(Icons.copy_outlined),
-                  label: const Text('Duplicate'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: section.id == null
-                      ? null
-                      : () => widget.onDelete(section),
-                  icon: const Icon(Icons.delete_outline),
-                  label: const Text('Delete'),
-                ),
-              ],
+            PageSectionDeploymentFeedback(
+              progress: widget.deploymentProgress,
+              result: widget.deploymentResult,
+              error: widget.deploymentError,
             ),
           ],
         ),
@@ -227,10 +176,17 @@ class _PageSectionInspectorState extends State<PageSectionInspector> {
     await widget.onSave(_draft(section));
   }
 
+  Future<void> _saveAndDeploy(PageSection section) async {
+    if (_formKey.currentState?.validate() != true) {
+      return;
+    }
+    await widget.onSaveAndDeploy(_draft(section));
+  }
+
   PageSection _draft(PageSection section) {
     return PageSection(
       id: section.id,
-      sectionKey: section.sectionKey,
+      sectionKey: _sectionKey.text.trim(),
       title: _title.text.trim(),
       eyebrow: _optional(_eyebrow.text),
       body: _optional(_body.text),
@@ -240,8 +196,8 @@ class _PageSectionInspectorState extends State<PageSectionInspector> {
       tone: _tone,
       density: _density,
       alignment: _alignment,
-      contentJson: section.contentJson,
-      designJson: section.designJson,
+      contentJson: _contentJson,
+      designJson: _designJson,
       displayOrder: section.displayOrder,
       isPublished: section.isPublished,
       createdAt: section.createdAt,
@@ -250,9 +206,12 @@ class _PageSectionInspectorState extends State<PageSectionInspector> {
   }
 
   void _load(PageSection? section) {
+    _sectionKey.text = section?.sectionKey ?? '';
     _title.text = section?.title ?? '';
     _eyebrow.text = section?.eyebrow ?? '';
     _body.text = section?.body ?? '';
+    _contentJson = section?.contentJson ?? const <String, Object?>{};
+    _designJson = section?.designJson ?? const <String, Object?>{};
     _placement = section?.placement ?? PageSectionPlacement.afterHero;
     _sectionType = section?.sectionType ?? PageSectionType.contentGrid;
     _layout = section?.layout ?? PageSectionLayout.stack;
@@ -260,6 +219,8 @@ class _PageSectionInspectorState extends State<PageSectionInspector> {
     _density = section?.density ?? PageSectionDensity.standard;
     _alignment = section?.alignment ?? PageSectionAlignment.left;
   }
+
+  bool get _busy => widget.isSaving || widget.isDeploying;
 }
 
 String _identity(PageSection? section) =>

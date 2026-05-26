@@ -15,7 +15,10 @@ class PageSectionEditorSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveTwoPane(primary: preview, secondary: inspector);
+    return ResponsiveTwoPane(
+      primary: preview,
+      secondary: ListView(padding: EdgeInsets.zero, children: [inspector]),
+    );
   }
 }
 
@@ -77,4 +80,44 @@ int nextPageSectionDisplayOrder(
     }
   }
   return maxOrder + 10;
+}
+
+PageSection normalizePageSectionOrder(
+  List<PageSection> sections,
+  PageSection section,
+) {
+  final original = selectedPageSection(sections, pageSectionIdentity(section));
+  final moved = original != null && original.placement != section.placement;
+  return moved
+      ? section.copyWith(
+          displayOrder: nextPageSectionDisplayOrder(
+            sections,
+            section.placement,
+          ),
+        )
+      : section;
+}
+
+Future<bool> confirmDeletePageSection(
+  BuildContext context,
+  PageSection section,
+) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Delete section'),
+      content: Text('Delete "${section.title}"? This cannot be undone.'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Delete'),
+        ),
+      ],
+    ),
+  );
+  return confirmed == true;
 }

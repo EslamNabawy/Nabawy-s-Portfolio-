@@ -51,8 +51,23 @@ void main() {
     expect(draft.id, isNull);
     expect(draft.isPublished, isFalse);
     expect(draft.sectionKey, isNotEmpty);
-    expect(draft.contentJson['items'], isA<List<Object?>>());
+    expect(sectionBlocksFromContent(draft.contentJson), isNotEmpty);
+    expect(draft.contentJson['schemaVersion'], 2);
   });
+
+  test(
+    'section templates can be placement overridden for insertion points',
+    () {
+      final draft = sectionFromTemplate(
+        pageSectionTemplates.first,
+        placement: PageSectionPlacement.beforeContact,
+        displayOrder: 40,
+      );
+
+      expect(draft.placement, PageSectionPlacement.beforeContact);
+      expect(draft.displayOrder, 40);
+    },
+  );
 
   test('duplicate section clears identity and appends copy suffix', () {
     final duplicate = duplicateSection(

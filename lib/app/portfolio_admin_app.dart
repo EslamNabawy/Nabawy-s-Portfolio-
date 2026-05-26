@@ -103,7 +103,9 @@ class _AdminHomeState extends State<AdminHome> {
         AdminSection.skills => const SkillListScreen(),
         AdminSection.experiments => const ExperimentListScreen(),
         AdminSection.designStudio => const DesignStudioScreen(),
-        AdminSection.sections => const PageSectionListScreen(),
+        AdminSection.sections => PageSectionListScreen(
+          onNavigate: (section) => setState(() => _section = section),
+        ),
         AdminSection.config => const SiteConfigScreen(),
         AdminSection.deploy => const DeployScreen(),
         AdminSection.healthChecks => const HealthChecksScreen(),

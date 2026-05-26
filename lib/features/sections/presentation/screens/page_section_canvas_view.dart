@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/page_section.dart';
-import '../../domain/entities/page_section_readiness.dart';
-import 'page_section_preview.dart';
+import 'page_builder_selection.dart';
+import 'page_section_editable_preview_section.dart';
 import 'page_section_preview_widgets.dart';
 
 class PageSectionCanvasView extends StatelessWidget {
   const PageSectionCanvasView({
     super.key,
     required this.sections,
-    required this.selectedSectionId,
-    required this.onSelect,
+    required this.selection,
+    required this.onSelectionChanged,
     required this.onAddAtPlacement,
     required this.onEdit,
     required this.onPreview,
@@ -21,8 +21,8 @@ class PageSectionCanvasView extends StatelessWidget {
   });
 
   final List<PageSection> sections;
-  final String? selectedSectionId;
-  final ValueChanged<PageSection> onSelect;
+  final PageBuilderSelection selection;
+  final ValueChanged<PageBuilderSelection> onSelectionChanged;
   final ValueChanged<PageSectionPlacement> onAddAtPlacement;
   final ValueChanged<PageSection> onEdit;
   final ValueChanged<PageSection> onPreview;
@@ -41,15 +41,19 @@ class PageSectionCanvasView extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const BuiltInPageBand(
+        BuiltInPageBand(
+          selected: selection.isBuiltIn(BuiltInPageSection.hero),
           label: 'Hero',
           title: 'Public hero and primary proof summary',
+          onTap: () => onSelectionChanged(
+            const PageBuilderSelection.builtIn(BuiltInPageSection.hero),
+          ),
         ),
         _PlacementPreviewLane(
           placement: PageSectionPlacement.afterHero,
           sections: _sectionsFor(PageSectionPlacement.afterHero),
-          selectedSectionId: selectedSectionId,
-          onSelect: onSelect,
+          selection: selection,
+          onSelectionChanged: onSelectionChanged,
           onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
@@ -59,14 +63,16 @@ class PageSectionCanvasView extends StatelessWidget {
           onReorder: onReorder,
         ),
         const BuiltInPageBand(
+          selected: false,
           label: 'System Signal',
           title: 'Static proof band rendered by the portfolio template',
+          onTap: null,
         ),
         _PlacementPreviewLane(
           placement: PageSectionPlacement.beforeProjects,
           sections: _sectionsFor(PageSectionPlacement.beforeProjects),
-          selectedSectionId: selectedSectionId,
-          onSelect: onSelect,
+          selection: selection,
+          onSelectionChanged: onSelectionChanged,
           onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
@@ -75,15 +81,19 @@ class PageSectionCanvasView extends StatelessWidget {
           onTogglePublished: onTogglePublished,
           onReorder: onReorder,
         ),
-        const BuiltInPageBand(
+        BuiltInPageBand(
+          selected: selection.isBuiltIn(BuiltInPageSection.projects),
           label: 'Projects',
           title: 'Published project dossier grid',
+          onTap: () => onSelectionChanged(
+            const PageBuilderSelection.builtIn(BuiltInPageSection.projects),
+          ),
         ),
         _PlacementPreviewLane(
           placement: PageSectionPlacement.beforeLab,
           sections: _sectionsFor(PageSectionPlacement.beforeLab),
-          selectedSectionId: selectedSectionId,
-          onSelect: onSelect,
+          selection: selection,
+          onSelectionChanged: onSelectionChanged,
           onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
@@ -92,12 +102,19 @@ class PageSectionCanvasView extends StatelessWidget {
           onTogglePublished: onTogglePublished,
           onReorder: onReorder,
         ),
-        const BuiltInPageBand(label: 'Lab', title: 'Experiment cards'),
+        BuiltInPageBand(
+          selected: selection.isBuiltIn(BuiltInPageSection.lab),
+          label: 'Lab',
+          title: 'Experiment cards',
+          onTap: () => onSelectionChanged(
+            const PageBuilderSelection.builtIn(BuiltInPageSection.lab),
+          ),
+        ),
         _PlacementPreviewLane(
           placement: PageSectionPlacement.beforeSkills,
           sections: _sectionsFor(PageSectionPlacement.beforeSkills),
-          selectedSectionId: selectedSectionId,
-          onSelect: onSelect,
+          selection: selection,
+          onSelectionChanged: onSelectionChanged,
           onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
@@ -106,12 +123,19 @@ class PageSectionCanvasView extends StatelessWidget {
           onTogglePublished: onTogglePublished,
           onReorder: onReorder,
         ),
-        const BuiltInPageBand(label: 'Skills', title: 'Capability matrix'),
+        BuiltInPageBand(
+          selected: selection.isBuiltIn(BuiltInPageSection.skills),
+          label: 'Skills',
+          title: 'Capability matrix',
+          onTap: () => onSelectionChanged(
+            const PageBuilderSelection.builtIn(BuiltInPageSection.skills),
+          ),
+        ),
         _PlacementPreviewLane(
           placement: PageSectionPlacement.beforeContact,
           sections: _sectionsFor(PageSectionPlacement.beforeContact),
-          selectedSectionId: selectedSectionId,
-          onSelect: onSelect,
+          selection: selection,
+          onSelectionChanged: onSelectionChanged,
           onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
@@ -120,24 +144,29 @@ class PageSectionCanvasView extends StatelessWidget {
           onTogglePublished: onTogglePublished,
           onReorder: onReorder,
         ),
-        const BuiltInPageBand(label: 'Contact', title: 'Conversion links'),
+        BuiltInPageBand(
+          selected: selection.isBuiltIn(BuiltInPageSection.contact),
+          label: 'Contact',
+          title: 'Conversion links',
+          onTap: () => onSelectionChanged(
+            const PageBuilderSelection.builtIn(BuiltInPageSection.contact),
+          ),
+        ),
       ],
     );
   }
 
-  List<PageSection> _sectionsFor(PageSectionPlacement placement) {
-    return sections
-        .where((section) => section.placement == placement)
-        .toList(growable: false);
-  }
+  List<PageSection> _sectionsFor(PageSectionPlacement placement) => sections
+      .where((section) => section.placement == placement)
+      .toList(growable: false);
 }
 
 class _PlacementPreviewLane extends StatelessWidget {
   const _PlacementPreviewLane({
     required this.placement,
     required this.sections,
-    required this.selectedSectionId,
-    required this.onSelect,
+    required this.selection,
+    required this.onSelectionChanged,
     required this.onAddAtPlacement,
     required this.onEdit,
     required this.onPreview,
@@ -149,8 +178,8 @@ class _PlacementPreviewLane extends StatelessWidget {
 
   final PageSectionPlacement placement;
   final List<PageSection> sections;
-  final String? selectedSectionId;
-  final ValueChanged<PageSection> onSelect;
+  final PageBuilderSelection selection;
+  final ValueChanged<PageBuilderSelection> onSelectionChanged;
   final ValueChanged<PageSectionPlacement> onAddAtPlacement;
   final ValueChanged<PageSection> onEdit;
   final ValueChanged<PageSection> onPreview;
@@ -169,6 +198,9 @@ class _PlacementPreviewLane extends StatelessWidget {
     if (sections.isEmpty) {
       return EmptyPreviewDropZone(
         label: placement.label,
+        selected: selection.isEmptyPlacement(placement),
+        onSelect: () =>
+            onSelectionChanged(PageBuilderSelection.emptyPlacement(placement)),
         onAdd: () => onAddAtPlacement(placement),
       );
     }
@@ -182,11 +214,15 @@ class _PlacementPreviewLane extends StatelessWidget {
               onReorder(placement, oldIndex, newIndex),
           itemBuilder: (context, index) {
             final section = sections[index];
-            return _EditablePreviewSection(
+            return EditablePageSectionPreview(
               key: ValueKey(section.id ?? section.sectionKey),
               section: section,
-              selected: _sectionIdentity(section) == selectedSectionId,
-              onSelect: onSelect,
+              selected: selection.isCustom(section),
+              onSelect: (value) => onSelectionChanged(
+                PageBuilderSelection.customSection(
+                  value.id ?? value.sectionKey,
+                ),
+              ),
               onEdit: onEdit,
               onPreview: onPreview,
               onDuplicate: onDuplicate,
@@ -203,66 +239,3 @@ class _PlacementPreviewLane extends StatelessWidget {
     );
   }
 }
-
-class _EditablePreviewSection extends StatelessWidget {
-  const _EditablePreviewSection({
-    super.key,
-    required this.section,
-    required this.selected,
-    required this.onSelect,
-    required this.onEdit,
-    required this.onPreview,
-    required this.onDuplicate,
-    required this.onDelete,
-    required this.onTogglePublished,
-  });
-
-  final PageSection section;
-  final bool selected;
-  final ValueChanged<PageSection> onSelect;
-  final ValueChanged<PageSection> onEdit;
-  final ValueChanged<PageSection> onPreview;
-  final ValueChanged<PageSection> onDuplicate;
-  final ValueChanged<PageSection> onDelete;
-  final ValueChanged<PageSection> onTogglePublished;
-
-  @override
-  Widget build(BuildContext context) {
-    final readiness = assessPageSectionReadiness(section);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: InkWell(
-        onTap: () => onSelect(section),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: selected
-                  ? const Color(0xFF00836B)
-                  : const Color(0xFFC7D2CC),
-              width: selected ? 2 : 1,
-            ),
-            color: Colors.white,
-          ),
-          child: Column(
-            children: [
-              PageSectionPreviewToolbar(
-                section: section,
-                readiness: readiness,
-                selected: selected,
-                onEdit: onEdit,
-                onPreview: onPreview,
-                onDuplicate: onDuplicate,
-                onDelete: onDelete,
-                onTogglePublished: onTogglePublished,
-              ),
-              PageSectionPreview(section: section),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-String _sectionIdentity(PageSection section) =>
-    section.id ?? section.sectionKey;
