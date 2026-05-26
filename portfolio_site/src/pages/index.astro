@@ -32,16 +32,16 @@ const skillGroups =
           items: ['AI Orchestration', 'Prompt Systems', 'Tooling', 'Automation'],
         },
       ];
-const systemSignals = [
-  ['01', 'Static Surface', 'Astro generates recruiter-fast pages with build-time CMS data.'],
-  ['02', 'Control Room', 'Flutter Admin keeps content edits, deploys, and health checks separate.'],
-  ['03', 'Shared Brain', 'Supabase stores portfolio data with RLS and public read boundaries.'],
-  ['04', 'Release Loop', 'GitHub Actions rebuilds the static site on demand or schedule.'],
+const quickFacts = [
+  ['Role', 'Flutter Software Engineer', 'Cross-platform app delivery with clean UI and Firebase-backed workflows.'],
+  ['Focus', 'Mobile + Product UI', 'Flutter, responsive interfaces, API handling, and practical state management.'],
+  ['Leadership', 'Mentor + Community Lead', 'GDSC Flutter Head, ICPC core team member, and programming instructor.'],
+  ['Education', 'Computer Science Graduate', 'Bachelor of Computer Science, AEA Academy, July 2024.'],
 ];
 const queuedLab = [
-  ['WebRTC Mesh Lab', 'Peer discovery, signaling constraints, and resilience tests.'],
-  ['Agent Console', 'Workflow orchestration notes for tool-using AI systems.'],
-  ['Interface Physics', 'Flutter and web interaction studies with reduced-motion support.'],
+  ['Flutter Workshops', 'Led Flutter learning sessions and mentored student developers.'],
+  ['Programming Instruction', 'Designed lessons to simplify programming and software fundamentals.'],
+  ['ICPC Volunteering', 'Organized problem-solving contests and supported new members.'],
 ];
 const sectionsFor = (placement: string) =>
   sections.filter((section) => section.placement === placement);
@@ -59,18 +59,18 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('after_hero').map((section) => <CustomSection section={section} />)}
 
-    <section class="border-b border-line bg-panel px-6 py-14 lg:px-8" id="signal">
+    <section class="border-b border-line bg-panel px-6 py-10 lg:px-8" id="summary">
       <div class="mx-auto max-w-7xl">
         <SectionHeader
-          eyebrow="System Signal"
-          title="A Portfolio Built Like A Product System"
-          copy="The experience is designed to make engineering depth visible fast: architecture, constraints, proof, and operational discipline."
+          eyebrow="30-Second Summary"
+          title="What Recruiters Need To Know Fast"
+          copy="Flutter engineer with practical app delivery, Firebase experience, mentorship history, and computer science fundamentals."
         />
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {systemSignals.map(([number, title, copy]) => (
+          {quickFacts.map(([label, title, copy]) => (
             <article class="border border-line bg-white p-5">
               <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-                Signal {number}
+                {label}
               </p>
               <h3 class="mt-4 text-2xl font-black text-ink">{title}</h3>
               <p class="mt-3 text-sm leading-7 text-quiet">{copy}</p>
@@ -82,18 +82,18 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('before_projects').map((section) => <CustomSection section={section} />)}
 
-    <section class="border-b border-line bg-white px-6 py-14 lg:px-8" id="projects">
+    <section class="border-b border-line bg-white px-6 py-12 lg:px-8" id="projects">
       <div class="mx-auto max-w-7xl">
         <div class="flex flex-col justify-between gap-6 border-b border-line pb-8 lg:flex-row lg:items-end">
           <SectionHeader
-            eyebrow="Selected Systems"
-            title="Project Dossiers With Architecture, Tradeoffs, And Evidence"
-            copy="Every published project should read like a technical case file: problem, role, architecture, stack, links, and outcome."
+            eyebrow="Selected Projects"
+            title="Relevant Flutter Projects"
+            copy="Two quick project examples from the resume, focused on the role, stack, and practical delivery value."
           />
           <div class="grid w-full max-w-md grid-cols-2 border border-line bg-panel">
             <div class="border-r border-line p-4">
               <p class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">
-                Published
+                Projects
               </p>
               <p class="mt-1 text-4xl font-black text-ink">{projects.length}</p>
             </div>
@@ -113,10 +113,10 @@ const sectionsFor = (placement: string) =>
           {projects.length === 0 && (
             <div class="border border-line bg-panel p-6">
               <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-                Awaiting Dossier
+                Awaiting Project
               </p>
               <p class="mt-4 text-sm leading-7 text-quiet">
-                Publish the first project from the dashboard to populate this system grid.
+                Publish the first project from the dashboard.
               </p>
             </div>
           )}
@@ -126,13 +126,13 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('before_lab').map((section) => <CustomSection section={section} />)}
 
-    <section class="border-b border-line bg-ink px-6 py-14 text-white lg:px-8" id="lab">
+    <section class="border-b border-line bg-ink px-6 py-12 text-white lg:px-8" id="experience">
       <div class="mx-auto max-w-7xl">
         <div class="flex flex-col justify-between gap-6 border-b border-white/15 pb-8 lg:flex-row lg:items-end">
           <SectionHeader
-            eyebrow="Lab / Experiments"
-            title="Experimental Layer For AI, P2P, Flutter, And Interface Systems"
-            copy="Experimental work gets its own lane, so recruiters can scan the main proof path while technical readers can go deeper."
+            eyebrow="Experience And Leadership"
+            title="Teaching, Community Work, And Technical Leadership"
+            copy="Relevant proof beyond projects: Flutter workshops, ICPC volunteering, mentoring, and programming instruction."
             inverse
           />
           <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href="#contact">
@@ -148,7 +148,7 @@ const sectionsFor = (placement: string) =>
             queuedLab.map(([title, copy]) => (
               <article class="border border-white/15 bg-white/5 p-5">
                 <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-                  Queued Lab File
+                  Experience
                 </p>
                 <h3 class="mt-4 text-2xl font-black text-white">{title}</h3>
                 <p class="mt-3 text-sm leading-7 text-slate-300">{copy}</p>
@@ -160,12 +160,12 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('before_skills').map((section) => <CustomSection section={section} />)}
 
-    <section class="border-b border-line bg-panel px-6 py-14 lg:px-8" id="skills">
+    <section class="border-b border-line bg-panel px-6 py-12 lg:px-8" id="skills">
       <div class="mx-auto max-w-7xl">
         <SectionHeader
-          eyebrow="Capability Matrix"
-          title="Technical Range Organized By System Domain"
-          copy="The matrix keeps skills scannable without flattening them into a generic keyword cloud."
+          eyebrow="Skills"
+          title="Core Skills"
+          copy="Grouped for fast screening."
         />
         <div class="grid gap-5 lg:grid-cols-3">
           {skillGroups.map((skill) => (
@@ -173,7 +173,7 @@ const sectionsFor = (placement: string) =>
               <div class="mb-5 flex items-center justify-between gap-4 border-b border-line pb-4">
                 <h3 class="text-xl font-black text-ink">{skill.category}</h3>
                 <span class="font-mono text-xs font-black uppercase tracking-[0.14em] text-alert">
-                  {skill.items.length} nodes
+                  {skill.items.length} skills
                 </span>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -187,23 +187,28 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('before_contact').map((section) => <CustomSection section={section} />)}
 
-    <section class="bg-ink px-6 py-14 text-white lg:px-8" id="contact">
+    <section class="bg-ink px-6 py-12 text-white lg:px-8" id="contact">
       <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.72fr] lg:items-end">
         <div>
           <p class="font-mono text-xs font-black uppercase tracking-[0.18em] text-signal">
-            Contact Route
+            Contact
           </p>
           <h2 class="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-6xl">
-            Need the complete engineering context?
+            Want the resume or a quick conversation?
           </h2>
           <p class="mt-5 max-w-2xl text-base leading-8 text-slate-300">
-            Review the case files, source links, resume, and experiments from one static surface.
+            The fastest path is email, resume, LinkedIn, or GitHub.
           </p>
         </div>
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           {config.email && (
             <a class="bg-white px-5 py-3 text-sm font-black text-ink" href={`mailto:${config.email}`}>
               Email
+            </a>
+          )}
+          {config.resume_url && (
+            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.resume_url}>
+              Resume
             </a>
           )}
           {config.github_url && (
