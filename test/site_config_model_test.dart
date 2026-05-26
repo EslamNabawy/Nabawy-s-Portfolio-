@@ -45,11 +45,19 @@ void main() {
         'density': 'compact',
         'motionIntensity': 'standard',
         'heroTreatment': 'forge',
+        'heroLayout': 'compact',
+        'sectionOrder': 'projects_first',
+        'projectCardStyle': 'visual',
+        'showFeaturedProjectPanel': false,
       },
     });
 
     expect(config.designVariant, PublicDesignVariant.systemForge);
     expect(config.themeConfig.toJson()['heroTreatment'], 'forge');
+    expect(config.themeConfig.toJson()['heroLayout'], 'compact');
+    expect(config.themeConfig.toJson()['sectionOrder'], 'projects_first');
+    expect(config.themeConfig.toJson()['projectCardStyle'], 'visual');
+    expect(config.themeConfig.toJson()['showFeaturedProjectPanel'], false);
     expect(config.toJson()['theme_json'], isA<Map<String, Object?>>());
   });
 }

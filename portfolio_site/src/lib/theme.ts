@@ -9,6 +9,10 @@ const defaults: Required<SiteThemeConfig> = {
   density: 'standard',
   motionIntensity: 'standard',
   heroTreatment: 'console',
+  heroLayout: 'split',
+  sectionOrder: 'recruiter_first',
+  projectCardStyle: 'proof',
+  showFeaturedProjectPanel: true,
 };
 
 const tokenValues = {
@@ -20,6 +24,9 @@ const tokenValues = {
   density: ['compact', 'standard', 'spacious'],
   motionIntensity: ['none', 'reduced', 'standard', 'expressive'],
   heroTreatment: ['console', 'dossier', 'terminal', 'studio', 'forge'],
+  heroLayout: ['split', 'statement', 'compact'],
+  sectionOrder: ['recruiter_first', 'projects_first'],
+  projectCardStyle: ['proof', 'visual', 'compact'],
 } as const;
 
 export function normalizeThemeConfig(theme: unknown): Required<SiteThemeConfig> {
@@ -36,6 +43,13 @@ export function normalizeThemeConfig(theme: unknown): Required<SiteThemeConfig> 
     density: readToken(source, 'density'),
     motionIntensity: readToken(source, 'motionIntensity'),
     heroTreatment: readToken(source, 'heroTreatment'),
+    heroLayout: readToken(source, 'heroLayout'),
+    sectionOrder: readToken(source, 'sectionOrder'),
+    projectCardStyle: readToken(source, 'projectCardStyle'),
+    showFeaturedProjectPanel:
+      typeof source.showFeaturedProjectPanel === 'boolean'
+        ? source.showFeaturedProjectPanel
+        : defaults.showFeaturedProjectPanel,
   };
 }
 
@@ -46,6 +60,12 @@ export function themeClass(theme: SiteThemeConfig): string {
     `theme-surface-${normalized.surfaceStyle}`,
     `theme-motion-${normalized.motionIntensity}`,
     `theme-hero-${normalized.heroTreatment}`,
+    `theme-hero-layout-${normalized.heroLayout}`,
+    `theme-section-order-${normalized.sectionOrder}`,
+    `theme-project-cards-${normalized.projectCardStyle}`,
+    normalized.showFeaturedProjectPanel
+      ? 'theme-featured-panel-on'
+      : 'theme-featured-panel-off',
   ].join(' ');
 }
 

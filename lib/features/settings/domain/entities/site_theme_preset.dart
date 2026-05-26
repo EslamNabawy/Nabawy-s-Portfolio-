@@ -28,6 +28,9 @@ const siteThemePresets = <SiteThemePreset>[
       density: ThemeDensity.standard,
       motionIntensity: ThemeMotionIntensity.standard,
       heroTreatment: ThemeHeroTreatment.console,
+      heroLayout: ThemeHeroLayout.split,
+      sectionOrder: ThemeSectionOrder.projectsFirst,
+      projectCardStyle: ThemeProjectCardStyle.visual,
     ),
   ),
   SiteThemePreset(
@@ -43,6 +46,10 @@ const siteThemePresets = <SiteThemePreset>[
       density: ThemeDensity.standard,
       motionIntensity: ThemeMotionIntensity.reduced,
       heroTreatment: ThemeHeroTreatment.dossier,
+      heroLayout: ThemeHeroLayout.statement,
+      sectionOrder: ThemeSectionOrder.recruiterFirst,
+      projectCardStyle: ThemeProjectCardStyle.compact,
+      showFeaturedProjectPanel: false,
     ),
   ),
   SiteThemePreset(
@@ -58,6 +65,9 @@ const siteThemePresets = <SiteThemePreset>[
       density: ThemeDensity.compact,
       motionIntensity: ThemeMotionIntensity.reduced,
       heroTreatment: ThemeHeroTreatment.terminal,
+      heroLayout: ThemeHeroLayout.split,
+      sectionOrder: ThemeSectionOrder.recruiterFirst,
+      projectCardStyle: ThemeProjectCardStyle.proof,
     ),
   ),
   SiteThemePreset(
@@ -73,6 +83,9 @@ const siteThemePresets = <SiteThemePreset>[
       density: ThemeDensity.spacious,
       motionIntensity: ThemeMotionIntensity.standard,
       heroTreatment: ThemeHeroTreatment.studio,
+      heroLayout: ThemeHeroLayout.split,
+      sectionOrder: ThemeSectionOrder.projectsFirst,
+      projectCardStyle: ThemeProjectCardStyle.visual,
     ),
   ),
   SiteThemePreset(
@@ -88,6 +101,9 @@ const siteThemePresets = <SiteThemePreset>[
       density: ThemeDensity.compact,
       motionIntensity: ThemeMotionIntensity.standard,
       heroTreatment: ThemeHeroTreatment.forge,
+      heroLayout: ThemeHeroLayout.compact,
+      sectionOrder: ThemeSectionOrder.projectsFirst,
+      projectCardStyle: ThemeProjectCardStyle.proof,
     ),
   ),
 ];

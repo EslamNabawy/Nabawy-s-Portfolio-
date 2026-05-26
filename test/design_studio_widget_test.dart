@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio_admin/features/settings/domain/entities/site_config.dart';
+import 'package:portfolio_admin/features/settings/domain/entities/site_theme_config.dart';
 import 'package:portfolio_admin/features/settings/domain/entities/site_theme_preset.dart';
+import 'package:portfolio_admin/features/settings/presentation/screens/design_structure_controls.dart';
 import 'package:portfolio_admin/features/settings/presentation/screens/design_studio_widgets.dart';
 
 void main() {
@@ -22,5 +24,28 @@ void main() {
     await tester.pump();
 
     expect(selected?.variantValue, 'system_forge');
+  });
+
+  testWidgets('PortfolioStructureControls updates layout tokens', (
+    tester,
+  ) async {
+    var theme = const SiteThemeConfig();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PortfolioStructureControls(
+            theme: theme,
+            onChanged: (value) => theme = value,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Split').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Statement').last);
+    await tester.pumpAndSettle();
+
+    expect(theme.heroLayout, ThemeHeroLayout.statement);
   });
 }

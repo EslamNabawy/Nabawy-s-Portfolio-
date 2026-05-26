@@ -1,25 +1,31 @@
 ---
 import { getProjectHeroImage } from '../lib/portfolio-data';
-import type { Project, SiteConfig } from '../lib/types';
+import type { Project, SiteConfig, SiteThemeConfig } from '../lib/types';
+
+type NormalizedThemeConfig = Required<SiteThemeConfig>;
 
 interface Props {
   config: SiteConfig;
   projectCount: number;
   skillCount: number;
   experimentCount: number;
+  theme: NormalizedThemeConfig;
   featuredProject?: Project;
 }
 
-const { config, projectCount, skillCount, experimentCount, featuredProject } = Astro.props;
+const { config, projectCount, skillCount, experimentCount, theme, featuredProject } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const featuredImage = featuredProject ? getProjectHeroImage(featuredProject) : '';
 const featuredHref = featuredProject ? `${base}projects/${featuredProject.slug}/` : `${base}#projects`;
 const status = projectCount > 0 ? 'Ready to review' : 'Portfolio loading';
+const showFeaturedPanel =
+  theme.showFeaturedProjectPanel && theme.heroLayout !== 'statement';
+const heroClass = `os-hero os-hero--${theme.heroLayout} relative min-h-[64svh] overflow-hidden bg-ink text-white`;
 ---
 
-<section class="os-hero relative min-h-[64svh] overflow-hidden bg-ink text-white">
+<section class={heroClass}>
   {featuredImage && (
     <img
       src={featuredImage}
@@ -87,7 +93,8 @@ const status = projectCount > 0 ? 'Ready to review' : 'Portfolio loading';
         </div>
       </div>
 
-      <div class="hero-command-frame grid w-full gap-4 lg:max-w-none lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+      {showFeaturedPanel && (
+        <div class="hero-command-frame grid w-full gap-4 lg:max-w-none lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
         <a
           href={featuredHref}
           class="os-glass-panel group grid min-h-[220px] gap-5 p-5 sm:grid-cols-[1fr_1.05fr]"
@@ -142,6 +149,7 @@ const status = projectCount > 0 ? 'Ready to review' : 'Portfolio loading';
           </div>
         </dl>
       </div>
+      )}
     </div>
   </div>
 </section>

@@ -1,14 +1,17 @@
 ---
 import { getProjectHeroImage } from '../lib/portfolio-data';
-import type { Project } from '../lib/types';
+import type { Project, SiteThemeConfig } from '../lib/types';
+
+type ProjectCardStyle = NonNullable<SiteThemeConfig['projectCardStyle']>;
 
 interface Props {
   project: Project;
   prominent?: boolean;
+  styleVariant?: ProjectCardStyle;
   index?: number;
 }
 
-const { project, prominent = false, index = 0 } = Astro.props;
+const { project, prominent = false, styleVariant = 'proof', index = 0 } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
@@ -16,9 +19,10 @@ const heroImage = getProjectHeroImage(project);
 const summary = project.short_description ?? project.description;
 const caseNumber = String(index + 1).padStart(2, '0');
 const stackLabel = project.tech_stack[0] ?? 'Project';
+const showImage = styleVariant !== 'compact';
 const articleClass = prominent
-  ? 'group border border-line bg-white transition hover:border-ink md:col-span-2 xl:col-span-2'
-  : 'group border border-line bg-white transition hover:border-ink';
+  ? `project-card project-card--${styleVariant} group border border-line bg-white transition hover:border-ink md:col-span-2 xl:col-span-2`
+  : `project-card project-card--${styleVariant} group border border-line bg-white transition hover:border-ink`;
 ---
 
 <article class={articleClass}>
@@ -26,19 +30,21 @@ const articleClass = prominent
     href={`${base}projects/${project.slug}/`}
     class={prominent ? 'grid h-full min-w-0 lg:grid-cols-[1.12fr_0.88fr]' : 'block h-full min-w-0'}
   >
-    <div class={prominent ? 'relative min-h-[320px] overflow-hidden border-b border-line lg:border-b-0 lg:border-r' : 'relative overflow-hidden border-b border-line'}>
-      <img
-        src={heroImage}
-        alt={`${project.title} preview`}
-        loading="lazy"
-        class={prominent
-          ? 'h-full min-h-[320px] w-full object-cover transition duration-300 group-hover:scale-[1.02]'
-          : 'aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-[1.02]'}
-      />
-      <div class="absolute left-3 top-3 bg-ink px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.14em] text-white">
-        Project {caseNumber}
+    {showImage && (
+      <div class={prominent ? 'relative min-h-[320px] overflow-hidden border-b border-line lg:border-b-0 lg:border-r' : 'relative overflow-hidden border-b border-line'}>
+        <img
+          src={heroImage}
+          alt={`${project.title} preview`}
+          loading="lazy"
+          class={prominent
+            ? 'h-full min-h-[320px] w-full object-cover transition duration-300 group-hover:scale-[1.02]'
+            : 'aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-[1.02]'}
+        />
+        <div class="absolute left-3 top-3 bg-ink px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.14em] text-white">
+          Project {caseNumber}
+        </div>
       </div>
-    </div>
+    )}
 
     <div class="flex h-full min-w-0 flex-col p-5">
       <div class="flex items-start justify-between gap-4">

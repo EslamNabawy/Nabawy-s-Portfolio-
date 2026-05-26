@@ -61,6 +61,19 @@ body {
   max-width: min(80rem, calc(100vw - 48px));
 }
 
+.os-hero--statement .hero-command-frame {
+  display: none;
+}
+
+.os-hero--compact > .relative {
+  min-height: auto;
+  padding-bottom: 48px;
+}
+
+.project-card--compact .line-clamp-4 {
+  display: block;
+}
+
 @media (width < 640px) {
   .hero-copy-frame,
   .hero-command-frame {
@@ -311,6 +324,15 @@ body {
   min-height: clamp(720px, 92svh, 980px);
 }
 
+.design-terminal_ops .os-hero--compact,
+.design-terminal_ops .os-hero--compact > .relative {
+  min-height: 720px;
+}
+
+.design-terminal_ops .os-hero--statement .hero-copy-frame {
+  max-width: 76rem;
+}
+
 .design-terminal_ops .os-hero > img {
   display: none;
 }
@@ -491,6 +513,14 @@ body {
   background: #eee6d5;
 }
 
+.design-terminal_ops #projects .project-card--compact {
+  display: block;
+}
+
+.design-terminal_ops #projects .project-card--compact a {
+  display: block;
+}
+
 .design-terminal_ops #experience,
 .design-terminal_ops #contact {
   background:
@@ -527,6 +557,11 @@ body {
   .design-terminal_ops .hero-main-grid {
     grid-template-columns: minmax(0, 1fr) minmax(360px, 0.54fr);
     align-items: end;
+  }
+
+  .design-terminal_ops.theme-featured-panel-off .hero-main-grid,
+  .design-terminal_ops .os-hero--statement .hero-main-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .design-terminal_ops #summary,

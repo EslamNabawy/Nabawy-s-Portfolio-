@@ -10,6 +10,7 @@ import '../../application/settings_providers.dart';
 import '../../domain/entities/site_config.dart';
 import '../../domain/entities/site_theme_config.dart';
 import '../../domain/entities/site_theme_preset.dart';
+import 'design_structure_controls.dart';
 import 'design_studio_widgets.dart';
 
 class DesignStudioScreen extends ConsumerWidget {
@@ -84,6 +85,16 @@ class _DesignStudioFormState extends ConsumerState<DesignStudioForm>
                 subtitle:
                     'Bounded controls rendered as CSS variables at build.',
                 child: ThemeTokenControls(
+                  theme: _theme,
+                  onChanged: (theme) => setState(() => _theme = theme),
+                ),
+              ),
+              const SizedBox(height: 16),
+              AdminPanel(
+                title: 'Portfolio Structure',
+                subtitle:
+                    'Controls public section order, hero composition, and card density.',
+                child: PortfolioStructureControls(
                   theme: _theme,
                   onChanged: (theme) => setState(() => _theme = theme),
                 ),

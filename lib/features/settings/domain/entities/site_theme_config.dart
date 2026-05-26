@@ -1,4 +1,7 @@
 import '../../../../core/utils/json_readers.dart';
+import 'site_theme_layout_config.dart';
+
+export 'site_theme_layout_config.dart';
 
 enum ThemeAccentColor {
   signal('signal', 'Signal Green'),
@@ -106,6 +109,10 @@ final class SiteThemeConfig {
     this.density = ThemeDensity.standard,
     this.motionIntensity = ThemeMotionIntensity.standard,
     this.heroTreatment = ThemeHeroTreatment.console,
+    this.heroLayout = ThemeHeroLayout.split,
+    this.sectionOrder = ThemeSectionOrder.recruiterFirst,
+    this.projectCardStyle = ThemeProjectCardStyle.proof,
+    this.showFeaturedProjectPanel = true,
   });
 
   final ThemeAccentColor accentColor;
@@ -116,6 +123,10 @@ final class SiteThemeConfig {
   final ThemeDensity density;
   final ThemeMotionIntensity motionIntensity;
   final ThemeHeroTreatment heroTreatment;
+  final ThemeHeroLayout heroLayout;
+  final ThemeSectionOrder sectionOrder;
+  final ThemeProjectCardStyle projectCardStyle;
+  final bool showFeaturedProjectPanel;
 
   factory SiteThemeConfig.fromJson(JsonMap json) {
     return SiteThemeConfig(
@@ -167,6 +178,29 @@ final class SiteThemeConfig {
         ThemeHeroTreatment.values,
         ThemeHeroTreatment.console,
       ),
+      heroLayout: _readOption(
+        json,
+        'heroLayout',
+        ThemeHeroLayout.values,
+        ThemeHeroLayout.split,
+      ),
+      sectionOrder: _readOption(
+        json,
+        'sectionOrder',
+        ThemeSectionOrder.values,
+        ThemeSectionOrder.recruiterFirst,
+      ),
+      projectCardStyle: _readOption(
+        json,
+        'projectCardStyle',
+        ThemeProjectCardStyle.values,
+        ThemeProjectCardStyle.proof,
+      ),
+      showFeaturedProjectPanel: readBool(
+        json,
+        'showFeaturedProjectPanel',
+        defaultValue: true,
+      ),
     );
   }
 
@@ -180,6 +214,10 @@ final class SiteThemeConfig {
       'density': density.value,
       'motionIntensity': motionIntensity.value,
       'heroTreatment': heroTreatment.value,
+      'heroLayout': heroLayout.value,
+      'sectionOrder': sectionOrder.value,
+      'projectCardStyle': projectCardStyle.value,
+      'showFeaturedProjectPanel': showFeaturedProjectPanel,
     };
   }
 
@@ -192,6 +230,10 @@ final class SiteThemeConfig {
     ThemeDensity? density,
     ThemeMotionIntensity? motionIntensity,
     ThemeHeroTreatment? heroTreatment,
+    ThemeHeroLayout? heroLayout,
+    ThemeSectionOrder? sectionOrder,
+    ThemeProjectCardStyle? projectCardStyle,
+    bool? showFeaturedProjectPanel,
   }) {
     return SiteThemeConfig(
       accentColor: accentColor ?? this.accentColor,
@@ -202,6 +244,11 @@ final class SiteThemeConfig {
       density: density ?? this.density,
       motionIntensity: motionIntensity ?? this.motionIntensity,
       heroTreatment: heroTreatment ?? this.heroTreatment,
+      heroLayout: heroLayout ?? this.heroLayout,
+      sectionOrder: sectionOrder ?? this.sectionOrder,
+      projectCardStyle: projectCardStyle ?? this.projectCardStyle,
+      showFeaturedProjectPanel:
+          showFeaturedProjectPanel ?? this.showFeaturedProjectPanel,
     );
   }
 }

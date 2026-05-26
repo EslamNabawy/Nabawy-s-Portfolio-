@@ -74,6 +74,10 @@ export type SiteThemeConfig = {
   density?: 'compact' | 'standard' | 'spacious';
   motionIntensity?: 'none' | 'reduced' | 'standard' | 'expressive';
   heroTreatment?: 'console' | 'dossier' | 'terminal' | 'studio' | 'forge';
+  heroLayout?: 'split' | 'statement' | 'compact';
+  sectionOrder?: 'recruiter_first' | 'projects_first';
+  projectCardStyle?: 'proof' | 'visual' | 'compact';
+  showFeaturedProjectPanel?: boolean;
 };
 
 export type SiteConfig = {

@@ -2,19 +2,21 @@
 import ExperimentCard from '../components/ExperimentCard.astro';
 import CustomSection from '../components/CustomSection.astro';
 import HeroSection from '../components/HeroSection.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import ProjectProofSection from '../components/ProjectProofSection.astro';
+import RecruiterBriefSection from '../components/RecruiterBriefSection.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import SkillBadge from '../components/SkillBadge.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPortfolioData } from '../lib/portfolio-data';
-import { themeClass, themeStyleAttribute } from '../lib/theme';
+import { normalizeThemeConfig, themeClass, themeStyleAttribute } from '../lib/theme';
 
 const { config, projects, skills, experiments, sections } = await getPortfolioData();
 const featuredProject = projects.find((project) => project.featured) ?? projects[0];
 const featuredCount = projects.filter((project) => project.featured).length;
 const designClass = `design-${config.design_variant}`;
-const themeClasses = themeClass(config.theme_json);
-const themeStyle = themeStyleAttribute(config.theme_json);
+const theme = normalizeThemeConfig(config.theme_json);
+const themeClasses = themeClass(theme);
+const themeStyle = themeStyleAttribute(theme);
 const skillGroups =
   skills.length > 0
     ? skills
@@ -32,13 +34,13 @@ const skillGroups =
           items: ['AI Orchestration', 'Prompt Systems', 'Tooling', 'Automation'],
         },
       ];
-const quickFacts = [
+const quickFacts: [string, string, string][] = [
   ['Role', 'Flutter Software Engineer', 'Cross-platform app delivery with clean UI and Firebase-backed workflows.'],
   ['Focus', 'Mobile + Product UI', 'Flutter, responsive interfaces, API handling, and practical state management.'],
   ['Leadership', 'Mentor + Community Lead', 'GDSC Flutter Head, ICPC core team member, and programming instructor.'],
   ['Education', 'Computer Science Graduate', 'Bachelor of Computer Science, AEA Academy, July 2024.'],
 ];
-const queuedLab = [
+const queuedLab: [string, string][] = [
   ['Flutter Workshops', 'Led Flutter learning sessions and mentored student developers.'],
   ['Programming Instruction', 'Designed lessons to simplify programming and software fundamentals.'],
   ['ICPC Volunteering', 'Organized problem-solving contests and supported new members.'],
@@ -54,75 +56,20 @@ const sectionsFor = (placement: string) =>
       projectCount={projects.length}
       skillCount={skillGroups.length}
       experimentCount={experiments.length}
+      theme={theme}
       featuredProject={featuredProject}
     />
 
     {sectionsFor('after_hero').map((section) => <CustomSection section={section} />)}
 
-    <section class="border-b border-line bg-panel px-6 py-10 lg:px-8" id="summary">
-      <div class="mx-auto max-w-7xl">
-        <SectionHeader
-          eyebrow="Recruiter Brief"
-          title="What To Know In 30 Seconds"
-          copy="Flutter engineer with practical app delivery, Firebase experience, mentorship history, and computer science fundamentals."
-        />
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {quickFacts.map(([label, title, copy]) => (
-            <article class="border border-line bg-white p-5">
-              <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-                {label}
-              </p>
-              <h3 class="mt-4 text-2xl font-black text-ink">{title}</h3>
-              <p class="mt-3 text-sm leading-7 text-quiet">{copy}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-
+    {theme.sectionOrder === 'recruiter_first' && <RecruiterBriefSection facts={quickFacts} />}
     {sectionsFor('before_projects').map((section) => <CustomSection section={section} />)}
-
-    <section class="border-b border-line bg-white px-6 py-12 lg:px-8" id="projects">
-      <div class="mx-auto max-w-7xl">
-        <div class="flex flex-col justify-between gap-6 border-b border-line pb-8 lg:flex-row lg:items-end">
-          <SectionHeader
-            eyebrow="Selected Projects"
-            title="Proof Of Work"
-            copy="Two Flutter/Firebase builds from the resume, focused on stack, role, and delivery value."
-          />
-          <div class="grid w-full max-w-md grid-cols-2 border border-line bg-panel">
-            <div class="border-r border-line p-4">
-              <p class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">
-                Projects
-              </p>
-              <p class="mt-1 text-4xl font-black text-ink">{projects.length}</p>
-            </div>
-            <div class="p-4">
-              <p class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">
-                Featured
-              </p>
-              <p class="mt-1 text-4xl font-black text-ink">{featuredCount}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-8 grid gap-5 md:grid-cols-2">
-          {projects.map((project, index) => (
-            <ProjectCard project={project} index={index} />
-          ))}
-          {projects.length === 0 && (
-            <div class="border border-line bg-panel p-6">
-              <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-                Awaiting Project
-              </p>
-              <p class="mt-4 text-sm leading-7 text-quiet">
-                Publish the first project from the dashboard.
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
+    <ProjectProofSection
+      projects={projects}
+      featuredCount={featuredCount}
+      cardStyle={theme.projectCardStyle}
+    />
+    {theme.sectionOrder === 'projects_first' && <RecruiterBriefSection facts={quickFacts} />}
 
     {sectionsFor('before_lab').map((section) => <CustomSection section={section} />)}
 
