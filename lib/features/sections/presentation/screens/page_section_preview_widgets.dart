@@ -9,6 +9,7 @@ class PageSectionPreviewToolbar extends StatelessWidget {
     super.key,
     required this.section,
     required this.readiness,
+    required this.selected,
     required this.onEdit,
     required this.onPreview,
     required this.onDuplicate,
@@ -18,6 +19,7 @@ class PageSectionPreviewToolbar extends StatelessWidget {
 
   final PageSection section;
   final PageSectionReadiness readiness;
+  final bool selected;
   final ValueChanged<PageSection> onEdit;
   final ValueChanged<PageSection> onPreview;
   final ValueChanged<PageSection> onDuplicate;
@@ -39,6 +41,15 @@ class PageSectionPreviewToolbar extends StatelessWidget {
           Expanded(
             child: _SectionMeta(section: section, readiness: readiness),
           ),
+          if (selected)
+            const Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: AdminStatusChip(
+                label: 'Selected',
+                tone: AdminStatusTone.info,
+                icon: Icons.ads_click,
+              ),
+            ),
           IconButton(
             tooltip: 'Open full preview',
             onPressed: () => onPreview(section),
@@ -103,9 +114,14 @@ class BuiltInPageBand extends StatelessWidget {
 }
 
 class EmptyPreviewDropZone extends StatelessWidget {
-  const EmptyPreviewDropZone({super.key, required this.label});
+  const EmptyPreviewDropZone({
+    super.key,
+    required this.label,
+    required this.onAdd,
+  });
 
   final String label;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -116,9 +132,45 @@ class EmptyPreviewDropZone extends StatelessWidget {
         border: Border.all(color: const Color(0xFFD7DFDA)),
         color: const Color(0xFFFBFDFC),
       ),
-      child: Text(
-        'No custom section ${label.toLowerCase()}.',
-        style: Theme.of(context).textTheme.bodySmall,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'No custom section ${label.toLowerCase()}.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: onAdd,
+            icon: const Icon(Icons.add),
+            label: const Text('Add here'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AddSectionInsertionPoint extends StatelessWidget {
+  const AddSectionInsertionPoint({
+    super.key,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Center(
+        child: OutlinedButton.icon(
+          onPressed: onPressed,
+          icon: const Icon(Icons.add),
+          label: Text('Add section ${label.toLowerCase()}'),
+        ),
       ),
     );
   }

@@ -7,8 +7,10 @@ import '../../domain/entities/page_section.dart';
 import '../../domain/entities/page_section_template.dart';
 import 'page_section_canvas_view.dart';
 import 'page_section_form_screen.dart';
+import 'page_section_inspector.dart';
 import 'page_section_list_header.dart';
 import 'page_section_list_mode.dart';
+import 'page_section_list_support.dart';
 import 'page_section_preview_dialog.dart';
 import 'page_section_table_view.dart';
 import 'page_section_template_picker.dart';
@@ -24,6 +26,7 @@ class PageSectionListScreen extends ConsumerStatefulWidget {
 class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
   SectionListViewMode _view = SectionListViewMode.canvas;
   bool _isSaving = false;
+  String? _selectedSectionId;
 
   @override
   Widget build(BuildContext context) {
@@ -46,27 +49,42 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
           const SizedBox(height: 16),
           Expanded(
             child: sectionsState.when(
-              data: (sections) => _view == SectionListViewMode.canvas
-                  ? PageSectionCanvasView(
-                      sections: sections,
-                      onEdit: _openForm,
-                      onPreview: _preview,
-                      onDuplicate: _duplicate,
-                      onDelete: _deleteSection,
-                      onTogglePublished: _togglePublished,
-                      onReorder: (placement, oldIndex, newIndex) =>
-                          _reorder(sections, placement, oldIndex, newIndex),
-                    )
-                  : PageSectionTableView(
-                      sections: sections,
-                      onEdit: _openForm,
-                      onPreview: _preview,
-                      onDuplicate: _duplicate,
-                      onDelete: _deleteSection,
-                      onTogglePublished: _togglePublished,
-                    ),
+              data: (sections) => PageSectionEditorSurface(
+                preview: _view == SectionListViewMode.canvas
+                    ? PageSectionCanvasView(
+                        sections: sections,
+                        selectedSectionId: _selectedSectionId,
+                        onSelect: _selectSection,
+                        onAddAtPlacement: _openAddAt,
+                        onEdit: _openForm,
+                        onPreview: _preview,
+                        onDuplicate: _duplicate,
+                        onDelete: _deleteSection,
+                        onTogglePublished: _togglePublished,
+                        onReorder: (placement, oldIndex, newIndex) =>
+                            _reorder(sections, placement, oldIndex, newIndex),
+                      )
+                    : PageSectionTableView(
+                        sections: sections,
+                        onEdit: _openForm,
+                        onPreview: _preview,
+                        onDuplicate: _duplicate,
+                        onDelete: _deleteSection,
+                        onTogglePublished: _togglePublished,
+                      ),
+                inspector: PageSectionInspector(
+                  section: selectedPageSection(sections, _selectedSectionId),
+                  isSaving: _isSaving,
+                  onSave: _saveSection,
+                  onEditAdvanced: _openForm,
+                  onPreview: _preview,
+                  onDuplicate: _duplicate,
+                  onDelete: _deleteSection,
+                  onTogglePublished: _togglePublished,
+                ),
+              ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => _ErrorState(
+              error: (error, _) => PageSectionErrorState(
                 message: 'Failed to load sections: $error',
                 onRetry: () => ref.invalidate(pageSectionsProvider),
               ),
@@ -90,6 +108,18 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
     }
   }
 
+  Future<void> _openAddAt(PageSectionPlacement placement) async {
+    final sections = ref.read(pageSectionsProvider).value ?? const [];
+    await _openForm(
+      PageSection(
+        sectionKey: '',
+        title: '',
+        placement: placement,
+        displayOrder: nextPageSectionDisplayOrder(sections, placement),
+      ),
+    );
+  }
+
   Future<void> _openTemplate() async {
     final template = await showPageSectionTemplatePicker(context);
     if (template != null && mounted) {
@@ -101,12 +131,30 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
     showPageSectionPreview(context, section);
   }
 
+  void _selectSection(PageSection section) {
+    setState(() => _selectedSectionId = pageSectionIdentity(section));
+  }
+
   void _duplicate(PageSection section) {
     _openForm(duplicateSection(section));
   }
 
   Future<void> _togglePublished(PageSection section) async {
     await _saveMany([section.copyWith(isPublished: !section.isPublished)]);
+  }
+
+  Future<void> _saveSection(PageSection section) async {
+    final sections = ref.read(pageSectionsProvider).value ?? const [];
+    final original = selectedPageSection(
+      sections,
+      pageSectionIdentity(section),
+    );
+    final displayOrder =
+        original != null && original.placement != section.placement
+        ? nextPageSectionDisplayOrder(sections, section.placement)
+        : section.displayOrder;
+    await _saveMany([section.copyWith(displayOrder: displayOrder)]);
+    setState(() => _selectedSectionId = pageSectionIdentity(section));
   }
 
   Future<void> _bulkPublish(bool isPublished) async {
@@ -190,6 +238,9 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
     try {
       await ref.read(pageSectionRepositoryProvider).deleteSection(section.id!);
       ref.invalidate(pageSectionsProvider);
+      if (_selectedSectionId == pageSectionIdentity(section)) {
+        _selectedSectionId = null;
+      }
     } on AppException catch (error) {
       _showMessage(error.message);
     } catch (_) {
@@ -207,30 +258,5 @@ class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
     }
-  }
-}
-
-class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.message, required this.onRetry});
-
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(message, textAlign: TextAlign.center),
-          const SizedBox(height: 12),
-          OutlinedButton.icon(
-            onPressed: onRetry,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Retry'),
-          ),
-        ],
-      ),
-    );
   }
 }

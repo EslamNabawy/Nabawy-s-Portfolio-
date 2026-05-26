@@ -9,6 +9,9 @@ class PageSectionCanvasView extends StatelessWidget {
   const PageSectionCanvasView({
     super.key,
     required this.sections,
+    required this.selectedSectionId,
+    required this.onSelect,
+    required this.onAddAtPlacement,
     required this.onEdit,
     required this.onPreview,
     required this.onDuplicate,
@@ -18,6 +21,9 @@ class PageSectionCanvasView extends StatelessWidget {
   });
 
   final List<PageSection> sections;
+  final String? selectedSectionId;
+  final ValueChanged<PageSection> onSelect;
+  final ValueChanged<PageSectionPlacement> onAddAtPlacement;
   final ValueChanged<PageSection> onEdit;
   final ValueChanged<PageSection> onPreview;
   final ValueChanged<PageSection> onDuplicate;
@@ -42,6 +48,9 @@ class PageSectionCanvasView extends StatelessWidget {
         _PlacementPreviewLane(
           placement: PageSectionPlacement.afterHero,
           sections: _sectionsFor(PageSectionPlacement.afterHero),
+          selectedSectionId: selectedSectionId,
+          onSelect: onSelect,
+          onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
           onDuplicate: onDuplicate,
@@ -56,6 +65,9 @@ class PageSectionCanvasView extends StatelessWidget {
         _PlacementPreviewLane(
           placement: PageSectionPlacement.beforeProjects,
           sections: _sectionsFor(PageSectionPlacement.beforeProjects),
+          selectedSectionId: selectedSectionId,
+          onSelect: onSelect,
+          onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
           onDuplicate: onDuplicate,
@@ -70,6 +82,9 @@ class PageSectionCanvasView extends StatelessWidget {
         _PlacementPreviewLane(
           placement: PageSectionPlacement.beforeLab,
           sections: _sectionsFor(PageSectionPlacement.beforeLab),
+          selectedSectionId: selectedSectionId,
+          onSelect: onSelect,
+          onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
           onDuplicate: onDuplicate,
@@ -81,6 +96,9 @@ class PageSectionCanvasView extends StatelessWidget {
         _PlacementPreviewLane(
           placement: PageSectionPlacement.beforeSkills,
           sections: _sectionsFor(PageSectionPlacement.beforeSkills),
+          selectedSectionId: selectedSectionId,
+          onSelect: onSelect,
+          onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
           onDuplicate: onDuplicate,
@@ -92,6 +110,9 @@ class PageSectionCanvasView extends StatelessWidget {
         _PlacementPreviewLane(
           placement: PageSectionPlacement.beforeContact,
           sections: _sectionsFor(PageSectionPlacement.beforeContact),
+          selectedSectionId: selectedSectionId,
+          onSelect: onSelect,
+          onAddAtPlacement: onAddAtPlacement,
           onEdit: onEdit,
           onPreview: onPreview,
           onDuplicate: onDuplicate,
@@ -115,6 +136,9 @@ class _PlacementPreviewLane extends StatelessWidget {
   const _PlacementPreviewLane({
     required this.placement,
     required this.sections,
+    required this.selectedSectionId,
+    required this.onSelect,
+    required this.onAddAtPlacement,
     required this.onEdit,
     required this.onPreview,
     required this.onDuplicate,
@@ -125,6 +149,9 @@ class _PlacementPreviewLane extends StatelessWidget {
 
   final PageSectionPlacement placement;
   final List<PageSection> sections;
+  final String? selectedSectionId;
+  final ValueChanged<PageSection> onSelect;
+  final ValueChanged<PageSectionPlacement> onAddAtPlacement;
   final ValueChanged<PageSection> onEdit;
   final ValueChanged<PageSection> onPreview;
   final ValueChanged<PageSection> onDuplicate;
@@ -140,26 +167,39 @@ class _PlacementPreviewLane extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (sections.isEmpty) {
-      return EmptyPreviewDropZone(label: placement.label);
+      return EmptyPreviewDropZone(
+        label: placement.label,
+        onAdd: () => onAddAtPlacement(placement),
+      );
     }
-    return ReorderableListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: sections.length,
-      onReorderItem: (oldIndex, newIndex) =>
-          onReorder(placement, oldIndex, newIndex),
-      itemBuilder: (context, index) {
-        final section = sections[index];
-        return _EditablePreviewSection(
-          key: ValueKey(section.id ?? section.sectionKey),
-          section: section,
-          onEdit: onEdit,
-          onPreview: onPreview,
-          onDuplicate: onDuplicate,
-          onDelete: onDelete,
-          onTogglePublished: onTogglePublished,
-        );
-      },
+    return Column(
+      children: [
+        ReorderableListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: sections.length,
+          onReorderItem: (oldIndex, newIndex) =>
+              onReorder(placement, oldIndex, newIndex),
+          itemBuilder: (context, index) {
+            final section = sections[index];
+            return _EditablePreviewSection(
+              key: ValueKey(section.id ?? section.sectionKey),
+              section: section,
+              selected: _sectionIdentity(section) == selectedSectionId,
+              onSelect: onSelect,
+              onEdit: onEdit,
+              onPreview: onPreview,
+              onDuplicate: onDuplicate,
+              onDelete: onDelete,
+              onTogglePublished: onTogglePublished,
+            );
+          },
+        ),
+        AddSectionInsertionPoint(
+          label: placement.label,
+          onPressed: () => onAddAtPlacement(placement),
+        ),
+      ],
     );
   }
 }
@@ -168,6 +208,8 @@ class _EditablePreviewSection extends StatelessWidget {
   const _EditablePreviewSection({
     super.key,
     required this.section,
+    required this.selected,
+    required this.onSelect,
     required this.onEdit,
     required this.onPreview,
     required this.onDuplicate,
@@ -176,6 +218,8 @@ class _EditablePreviewSection extends StatelessWidget {
   });
 
   final PageSection section;
+  final bool selected;
+  final ValueChanged<PageSection> onSelect;
   final ValueChanged<PageSection> onEdit;
   final ValueChanged<PageSection> onPreview;
   final ValueChanged<PageSection> onDuplicate;
@@ -187,26 +231,38 @@ class _EditablePreviewSection extends StatelessWidget {
     final readiness = assessPageSectionReadiness(section);
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFF00836B), width: 1.5),
-          color: Colors.white,
-        ),
-        child: Column(
-          children: [
-            PageSectionPreviewToolbar(
-              section: section,
-              readiness: readiness,
-              onEdit: onEdit,
-              onPreview: onPreview,
-              onDuplicate: onDuplicate,
-              onDelete: onDelete,
-              onTogglePublished: onTogglePublished,
+      child: InkWell(
+        onTap: () => onSelect(section),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: selected
+                  ? const Color(0xFF00836B)
+                  : const Color(0xFFC7D2CC),
+              width: selected ? 2 : 1,
             ),
-            PageSectionPreview(section: section),
-          ],
+            color: Colors.white,
+          ),
+          child: Column(
+            children: [
+              PageSectionPreviewToolbar(
+                section: section,
+                readiness: readiness,
+                selected: selected,
+                onEdit: onEdit,
+                onPreview: onPreview,
+                onDuplicate: onDuplicate,
+                onDelete: onDelete,
+                onTogglePublished: onTogglePublished,
+              ),
+              PageSectionPreview(section: section),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+String _sectionIdentity(PageSection section) =>
+    section.id ?? section.sectionKey;
