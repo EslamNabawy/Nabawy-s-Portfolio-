@@ -43,12 +43,12 @@ class PageSectionListHeader extends StatelessWidget {
           segments: const [
             ButtonSegment(
               value: SectionListViewMode.canvas,
-              label: Text('Canvas'),
-              icon: Icon(Icons.view_quilt_outlined),
+              label: Text('Page Preview'),
+              icon: Icon(Icons.preview_outlined),
             ),
             ButtonSegment(
               value: SectionListViewMode.table,
-              label: Text('Table'),
+              label: Text('Data Table'),
               icon: Icon(Icons.table_rows_outlined),
             ),
           ],
@@ -61,27 +61,42 @@ class PageSectionListHeader extends StatelessWidget {
           icon: const Icon(Icons.refresh),
         ),
         CommandButton(
-          label: 'Templates',
-          icon: Icons.dashboard_customize_outlined,
-          onPressed: isSaving ? null : onTemplate,
-        ),
-        CommandButton(
-          label: 'Publish Drafts',
-          icon: Icons.publish_outlined,
-          onPressed: isSaving ? null : onPublishAll,
-        ),
-        CommandButton(
-          label: 'Unpublish All',
-          icon: Icons.visibility_off_outlined,
-          onPressed: isSaving ? null : onUnpublishAll,
-        ),
-        CommandButton(
           label: 'New Section',
           icon: Icons.add,
           primary: true,
           onPressed: isSaving ? null : onCreate,
         ),
+        PopupMenuButton<_SectionCommand>(
+          tooltip: 'More section actions',
+          enabled: !isSaving,
+          onSelected: (command) {
+            switch (command) {
+              case _SectionCommand.templates:
+                onTemplate();
+              case _SectionCommand.publishDrafts:
+                onPublishAll();
+              case _SectionCommand.unpublishAll:
+                onUnpublishAll();
+            }
+          },
+          itemBuilder: (context) => const [
+            PopupMenuItem(
+              value: _SectionCommand.templates,
+              child: Text('Start From Template'),
+            ),
+            PopupMenuItem(
+              value: _SectionCommand.publishDrafts,
+              child: Text('Publish All Drafts'),
+            ),
+            PopupMenuItem(
+              value: _SectionCommand.unpublishAll,
+              child: Text('Unpublish All Sections'),
+            ),
+          ],
+        ),
       ],
     );
   }
 }
+
+enum _SectionCommand { templates, publishDrafts, unpublishAll }

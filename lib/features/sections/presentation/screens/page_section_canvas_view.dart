@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/ui/admin_components.dart';
 import '../../domain/entities/page_section.dart';
 import '../../domain/entities/page_section_readiness.dart';
+import 'page_section_preview.dart';
+import 'page_section_preview_widgets.dart';
 
 class PageSectionCanvasView extends StatelessWidget {
   const PageSectionCanvasView({
@@ -31,23 +32,74 @@ class PageSectionCanvasView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (sections.isEmpty) {
-      return const Center(child: Text('No custom page sections yet.'));
-    }
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        for (final placement in PageSectionPlacement.values)
-          _PlacementLane(
-            placement: placement,
-            sections: _sectionsFor(placement),
-            onEdit: onEdit,
-            onPreview: onPreview,
-            onDuplicate: onDuplicate,
-            onDelete: onDelete,
-            onTogglePublished: onTogglePublished,
-            onReorder: onReorder,
-          ),
+        const BuiltInPageBand(
+          label: 'Hero',
+          title: 'Public hero and primary proof summary',
+        ),
+        _PlacementPreviewLane(
+          placement: PageSectionPlacement.afterHero,
+          sections: _sectionsFor(PageSectionPlacement.afterHero),
+          onEdit: onEdit,
+          onPreview: onPreview,
+          onDuplicate: onDuplicate,
+          onDelete: onDelete,
+          onTogglePublished: onTogglePublished,
+          onReorder: onReorder,
+        ),
+        const BuiltInPageBand(
+          label: 'System Signal',
+          title: 'Static proof band rendered by the portfolio template',
+        ),
+        _PlacementPreviewLane(
+          placement: PageSectionPlacement.beforeProjects,
+          sections: _sectionsFor(PageSectionPlacement.beforeProjects),
+          onEdit: onEdit,
+          onPreview: onPreview,
+          onDuplicate: onDuplicate,
+          onDelete: onDelete,
+          onTogglePublished: onTogglePublished,
+          onReorder: onReorder,
+        ),
+        const BuiltInPageBand(
+          label: 'Projects',
+          title: 'Published project dossier grid',
+        ),
+        _PlacementPreviewLane(
+          placement: PageSectionPlacement.beforeLab,
+          sections: _sectionsFor(PageSectionPlacement.beforeLab),
+          onEdit: onEdit,
+          onPreview: onPreview,
+          onDuplicate: onDuplicate,
+          onDelete: onDelete,
+          onTogglePublished: onTogglePublished,
+          onReorder: onReorder,
+        ),
+        const BuiltInPageBand(label: 'Lab', title: 'Experiment cards'),
+        _PlacementPreviewLane(
+          placement: PageSectionPlacement.beforeSkills,
+          sections: _sectionsFor(PageSectionPlacement.beforeSkills),
+          onEdit: onEdit,
+          onPreview: onPreview,
+          onDuplicate: onDuplicate,
+          onDelete: onDelete,
+          onTogglePublished: onTogglePublished,
+          onReorder: onReorder,
+        ),
+        const BuiltInPageBand(label: 'Skills', title: 'Capability matrix'),
+        _PlacementPreviewLane(
+          placement: PageSectionPlacement.beforeContact,
+          sections: _sectionsFor(PageSectionPlacement.beforeContact),
+          onEdit: onEdit,
+          onPreview: onPreview,
+          onDuplicate: onDuplicate,
+          onDelete: onDelete,
+          onTogglePublished: onTogglePublished,
+          onReorder: onReorder,
+        ),
+        const BuiltInPageBand(label: 'Contact', title: 'Conversion links'),
       ],
     );
   }
@@ -59,8 +111,8 @@ class PageSectionCanvasView extends StatelessWidget {
   }
 }
 
-class _PlacementLane extends StatelessWidget {
-  const _PlacementLane({
+class _PlacementPreviewLane extends StatelessWidget {
+  const _PlacementPreviewLane({
     required this.placement,
     required this.sections,
     required this.onEdit,
@@ -87,39 +139,33 @@ class _PlacementLane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: AdminPanel(
-        title: placement.label,
-        subtitle: '${sections.length} sections in this page position',
-        child: sections.isEmpty
-            ? const Text('No sections in this lane.')
-            : ReorderableListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: sections.length,
-                onReorderItem: (oldIndex, newIndex) =>
-                    onReorder(placement, oldIndex, newIndex),
-                itemBuilder: (context, index) {
-                  final section = sections[index];
-                  return _SectionCanvasCard(
-                    key: ValueKey(section.id ?? section.sectionKey),
-                    section: section,
-                    onEdit: onEdit,
-                    onPreview: onPreview,
-                    onDuplicate: onDuplicate,
-                    onDelete: onDelete,
-                    onTogglePublished: onTogglePublished,
-                  );
-                },
-              ),
-      ),
+    if (sections.isEmpty) {
+      return EmptyPreviewDropZone(label: placement.label);
+    }
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sections.length,
+      onReorderItem: (oldIndex, newIndex) =>
+          onReorder(placement, oldIndex, newIndex),
+      itemBuilder: (context, index) {
+        final section = sections[index];
+        return _EditablePreviewSection(
+          key: ValueKey(section.id ?? section.sectionKey),
+          section: section,
+          onEdit: onEdit,
+          onPreview: onPreview,
+          onDuplicate: onDuplicate,
+          onDelete: onDelete,
+          onTogglePublished: onTogglePublished,
+        );
+      },
     );
   }
 }
 
-class _SectionCanvasCard extends StatelessWidget {
-  const _SectionCanvasCard({
+class _EditablePreviewSection extends StatelessWidget {
+  const _EditablePreviewSection({
     super.key,
     required this.section,
     required this.onEdit,
@@ -139,77 +185,25 @@ class _SectionCanvasCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final readiness = assessPageSectionReadiness(section);
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xFF00836B), width: 1.5),
+          color: Colors.white,
+        ),
+        child: Column(
           children: [
-            const Icon(Icons.drag_indicator),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    section.title,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 6,
-                    children: [
-                      AdminStatusChip(label: section.sectionType.label),
-                      AdminStatusChip(label: section.tone.label),
-                      AdminStatusChip(
-                        label: section.isPublished ? 'Published' : 'Draft',
-                        tone: section.isPublished
-                            ? AdminStatusTone.success
-                            : AdminStatusTone.warning,
-                      ),
-                      AdminStatusChip(
-                        label: readiness.isReady
-                            ? 'Ready'
-                            : '${readiness.messages.length} issues',
-                        tone: readiness.isReady
-                            ? AdminStatusTone.success
-                            : AdminStatusTone.danger,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            PageSectionPreviewToolbar(
+              section: section,
+              readiness: readiness,
+              onEdit: onEdit,
+              onPreview: onPreview,
+              onDuplicate: onDuplicate,
+              onDelete: onDelete,
+              onTogglePublished: onTogglePublished,
             ),
-            IconButton(
-              tooltip: 'Preview',
-              onPressed: () => onPreview(section),
-              icon: const Icon(Icons.visibility_outlined),
-            ),
-            IconButton(
-              tooltip: 'Edit',
-              onPressed: () => onEdit(section),
-              icon: const Icon(Icons.edit_outlined),
-            ),
-            IconButton(
-              tooltip: section.isPublished ? 'Unpublish' : 'Publish',
-              onPressed: () => onTogglePublished(section),
-              icon: Icon(
-                section.isPublished
-                    ? Icons.visibility_off_outlined
-                    : Icons.publish_outlined,
-              ),
-            ),
-            IconButton(
-              tooltip: 'Duplicate as draft',
-              onPressed: () => onDuplicate(section),
-              icon: const Icon(Icons.copy_outlined),
-            ),
-            IconButton(
-              tooltip: 'Delete',
-              onPressed: section.id == null ? null : () => onDelete(section),
-              icon: const Icon(Icons.delete_outline),
-            ),
+            PageSectionPreview(section: section),
           ],
         ),
       ),
