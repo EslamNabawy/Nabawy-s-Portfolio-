@@ -259,6 +259,113 @@
   color: #080b0c;
 }
 
+.design-clean_dossier .custom-section {
+  background: #ffffff;
+  border-color: #dce5e0;
+  padding-bottom: 40px;
+  padding-top: 40px;
+}
+
+.design-clean_dossier .custom-section h2 {
+  color: #0f172a;
+  font-size: clamp(1.9rem, 3.2vw, 3.4rem);
+  line-height: 1.06;
+}
+
+.design-clean_dossier .custom-section__body {
+  color: #475569;
+  font-size: 0.98rem;
+}
+
+.design-clean_dossier .custom-section__eyebrow,
+.design-clean_dossier .custom-section__item-label {
+  color: #0f766e;
+}
+
+.design-clean_dossier .custom-section__item,
+.design-clean_dossier .custom-section__block {
+  background: #ffffff;
+  border-color: #dce5e0;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.055);
+}
+
+.design-clean_dossier .custom-section__item h3,
+.design-clean_dossier .custom-section__block h3 {
+  color: #0f172a;
+  font-size: clamp(1.15rem, 1.8vw, 1.55rem);
+  line-height: 1.16;
+}
+
+.design-clean_dossier .custom-section__item p:not(.custom-section__item-label),
+.design-clean_dossier .custom-section__block p:not(.custom-section__item-label) {
+  color: #475569;
+}
+
+.design-clean_dossier .custom-section--ink,
+.design-clean_dossier .custom-section--signal,
+.design-clean_dossier .custom-section--studio,
+.design-clean_dossier .custom-section--minimal {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.design-clean_dossier .custom-section--signal {
+  background: #eef7f4;
+}
+
+.design-clean_dossier .custom-section--ink .custom-section__body,
+.design-clean_dossier .custom-section--signal .custom-section__body,
+.design-clean_dossier .custom-section--ink .custom-section__item p:not(.custom-section__item-label),
+.design-clean_dossier .custom-section--signal .custom-section__item p:not(.custom-section__item-label) {
+  color: #475569;
+}
+
+.design-clean_dossier .custom-section--ink .custom-section__item,
+.design-clean_dossier .custom-section--signal .custom-section__item,
+.design-clean_dossier .custom-section--ink .custom-section__block,
+.design-clean_dossier .custom-section--signal .custom-section__block {
+  background: #ffffff;
+  border-color: #dce5e0;
+}
+
+.design-clean_dossier .custom-section--metric_strip .custom-section__item h3,
+.design-clean_dossier .custom-section__items--metricStrip .custom-section__item h3 {
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  line-height: 1.12;
+}
+
+.design-clean_dossier .custom-section--metric_strip .custom-section__item p:not(.custom-section__item-label),
+.design-clean_dossier .custom-section__items--metricStrip .custom-section__item p:not(.custom-section__item-label) {
+  color: #475569;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.design-clean_dossier .custom-section--timeline .custom-section__items,
+.design-clean_dossier .custom-section__items--timeline {
+  border-left-color: rgba(15, 118, 110, 0.26);
+}
+
+.design-clean_dossier .custom-section--timeline .custom-section__item::before,
+.design-clean_dossier .custom-section__items--timeline .custom-section__item::before {
+  background: #0f766e;
+  border-color: #ffffff;
+  border-radius: 999px;
+}
+
+.design-clean_dossier .custom-section--cta {
+  background: #eef7f4;
+}
+
+.design-clean_dossier .custom-section--cta .custom-section__actions a:first-child {
+  background: #0f172a;
+  color: #ffffff;
+}
+
 .custom-section--callout .custom-section__inner {
   border: 1px solid currentColor;
   padding: clamp(24px, 5vw, 48px);

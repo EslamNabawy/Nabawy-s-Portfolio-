@@ -19,7 +19,7 @@ const featuredHref = featuredProject ? `${base}projects/${featuredProject.slug}/
 const status = projectCount > 0 ? 'Ready to review' : 'Portfolio loading';
 ---
 
-<section class="os-hero relative min-h-[76svh] overflow-hidden bg-ink text-white">
+<section class="os-hero relative min-h-[64svh] overflow-hidden bg-ink text-white">
   {featuredImage && (
     <img
       src={featuredImage}
@@ -30,7 +30,7 @@ const status = projectCount > 0 ? 'Ready to review' : 'Portfolio loading';
   <div class="os-hero-grid absolute inset-0"></div>
   <div class="absolute inset-x-0 top-0 h-px bg-signal"></div>
 
-  <div class="relative mx-auto flex min-h-[76svh] max-w-7xl flex-col px-6 py-6 lg:px-8">
+  <div class="relative mx-auto flex min-h-[64svh] max-w-7xl flex-col px-6 py-6 lg:px-8">
     <nav class="flex min-w-0 flex-wrap items-center justify-between gap-4 border-b border-white/15 pb-4">
       <a class="shrink-0 font-mono text-sm font-black uppercase tracking-[0.18em] text-white" href={base}>
         Eslam Tarek
@@ -43,7 +43,7 @@ const status = projectCount > 0 ? 'Ready to review' : 'Portfolio loading';
       </div>
     </nav>
 
-    <div class="grid flex-1 content-between gap-8 py-9 lg:py-12">
+    <div class="grid flex-1 content-between gap-7 py-8 lg:py-11">
       <div class="hero-copy-frame w-full">
         <div class="mb-5 flex max-w-full flex-wrap gap-3 font-mono text-xs font-black uppercase tracking-[0.16em]">
           <span class="max-w-full border border-signal/50 bg-signal/10 px-3 py-2 leading-5 text-signal">
@@ -56,7 +56,7 @@ const status = projectCount > 0 ? 'Ready to review' : 'Portfolio loading';
             6th October City, Egypt
           </span>
         </div>
-        <h1 class="break-words text-5xl font-black leading-[0.95] text-white sm:text-7xl">
+        <h1 class="break-words text-4xl font-black leading-[1] text-white sm:text-6xl">
           {config.name}
         </h1>
         <p class="mt-6 max-w-3xl text-xl font-semibold leading-8 text-white sm:text-2xl">
