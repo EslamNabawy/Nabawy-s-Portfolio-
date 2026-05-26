@@ -5,35 +5,66 @@ import '../../../../core/errors/app_exception.dart';
 import '../../application/section_providers.dart';
 import '../../domain/entities/page_section.dart';
 import '../../domain/entities/page_section_template.dart';
+import 'page_section_canvas_view.dart';
 import 'page_section_form_screen.dart';
+import 'page_section_list_header.dart';
+import 'page_section_list_mode.dart';
+import 'page_section_preview_dialog.dart';
+import 'page_section_table_view.dart';
 import 'page_section_template_picker.dart';
 
-class PageSectionListScreen extends ConsumerWidget {
+class PageSectionListScreen extends ConsumerStatefulWidget {
   const PageSectionListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PageSectionListScreen> createState() =>
+      _PageSectionListScreenState();
+}
+
+class _PageSectionListScreenState extends ConsumerState<PageSectionListScreen> {
+  SectionListViewMode _view = SectionListViewMode.canvas;
+  bool _isSaving = false;
+
+  @override
+  Widget build(BuildContext context) {
     final sectionsState = ref.watch(pageSectionsProvider);
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _Header(
+          PageSectionListHeader(
+            view: _view,
+            isSaving: _isSaving,
+            onViewChanged: (view) => setState(() => _view = view),
             onRefresh: () => ref.invalidate(pageSectionsProvider),
-            onCreate: () => _openForm(context, ref),
-            onTemplate: () => _openTemplate(context, ref),
+            onCreate: () => _openForm(),
+            onTemplate: () => _openTemplate(),
+            onPublishAll: () => _bulkPublish(true),
+            onUnpublishAll: () => _bulkPublish(false),
           ),
           const SizedBox(height: 16),
           Expanded(
             child: sectionsState.when(
-              data: (sections) => _SectionTable(
-                sections: sections,
-                onEdit: (section) => _openForm(context, ref, section),
-                onDuplicate: (section) =>
-                    _openForm(context, ref, duplicateSection(section)),
-                onDelete: (section) => _deleteSection(context, ref, section),
-              ),
+              data: (sections) => _view == SectionListViewMode.canvas
+                  ? PageSectionCanvasView(
+                      sections: sections,
+                      onEdit: _openForm,
+                      onPreview: _preview,
+                      onDuplicate: _duplicate,
+                      onDelete: _deleteSection,
+                      onTogglePublished: _togglePublished,
+                      onReorder: (placement, oldIndex, newIndex) =>
+                          _reorder(sections, placement, oldIndex, newIndex),
+                    )
+                  : PageSectionTableView(
+                      sections: sections,
+                      onEdit: _openForm,
+                      onPreview: _preview,
+                      onDuplicate: _duplicate,
+                      onDelete: _deleteSection,
+                      onTogglePublished: _togglePublished,
+                    ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => _ErrorState(
                 message: 'Failed to load sections: $error',
@@ -46,11 +77,7 @@ class PageSectionListScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _openForm(
-    BuildContext context,
-    WidgetRef ref, [
-    PageSection? section,
-  ]) async {
+  Future<void> _openForm([PageSection? section]) async {
     final changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => section?.id == null
@@ -63,19 +90,82 @@ class PageSectionListScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _openTemplate(BuildContext context, WidgetRef ref) async {
+  Future<void> _openTemplate() async {
     final template = await showPageSectionTemplatePicker(context);
-    if (template == null || !context.mounted) {
-      return;
+    if (template != null && mounted) {
+      await _openForm(sectionFromTemplate(template));
     }
-    await _openForm(context, ref, sectionFromTemplate(template));
   }
 
-  Future<void> _deleteSection(
-    BuildContext context,
-    WidgetRef ref,
-    PageSection section,
+  void _preview(PageSection section) {
+    showPageSectionPreview(context, section);
+  }
+
+  void _duplicate(PageSection section) {
+    _openForm(duplicateSection(section));
+  }
+
+  Future<void> _togglePublished(PageSection section) async {
+    await _saveMany([section.copyWith(isPublished: !section.isPublished)]);
+  }
+
+  Future<void> _bulkPublish(bool isPublished) async {
+    final sections = ref.read(pageSectionsProvider).value ?? const [];
+    await _saveMany(
+      sections
+          .where((section) => section.isPublished != isPublished)
+          .map((section) => section.copyWith(isPublished: isPublished))
+          .toList(growable: false),
+    );
+  }
+
+  Future<void> _reorder(
+    List<PageSection> allSections,
+    PageSectionPlacement placement,
+    int oldIndex,
+    int newIndex,
   ) async {
+    final lane = allSections
+        .where((section) => section.placement == placement)
+        .toList(growable: true);
+    final moved = lane.removeAt(oldIndex);
+    lane.insert(newIndex, moved);
+    final updated = <PageSection>[];
+    for (var index = 0; index < lane.length; index++) {
+      final order = (index + 1) * 10;
+      if (lane[index].displayOrder != order) {
+        updated.add(lane[index].copyWith(displayOrder: order));
+      }
+    }
+    await _saveMany(updated);
+  }
+
+  Future<void> _saveMany(List<PageSection> sections) async {
+    if (sections.isEmpty) {
+      return;
+    }
+    setState(() => _isSaving = true);
+    try {
+      final repository = ref.read(pageSectionRepositoryProvider);
+      for (final section in sections) {
+        await repository.updateSection(section);
+      }
+      ref.invalidate(pageSectionsProvider);
+      _showMessage(
+        'Sections saved. Deploy when ready to update the public site.',
+      );
+    } on AppException catch (error) {
+      _showMessage(error.message);
+    } catch (error) {
+      _showMessage('Section update failed: $error');
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
+  }
+
+  Future<void> _deleteSection(PageSection section) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -96,180 +186,27 @@ class PageSectionListScreen extends ConsumerWidget {
     if (confirmed != true || section.id == null) {
       return;
     }
+    setState(() => _isSaving = true);
     try {
       await ref.read(pageSectionRepositoryProvider).deleteSection(section.id!);
       ref.invalidate(pageSectionsProvider);
     } on AppException catch (error) {
-      if (context.mounted) {
-        _showMessage(context, error.message);
-      }
+      _showMessage(error.message);
     } catch (_) {
-      if (context.mounted) {
-        _showMessage(
-          context,
-          'Delete failed. Retry after checking connection.',
-        );
+      _showMessage('Delete failed. Retry after checking connection.');
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
       }
     }
   }
 
-  void _showMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({
-    required this.onRefresh,
-    required this.onCreate,
-    required this.onTemplate,
-  });
-
-  final VoidCallback onRefresh;
-  final VoidCallback onCreate;
-  final VoidCallback onTemplate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            'Page Sections',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-        ),
-        IconButton(
-          tooltip: 'Refresh',
-          onPressed: onRefresh,
-          icon: const Icon(Icons.refresh),
-        ),
-        const SizedBox(width: 8),
-        OutlinedButton.icon(
-          onPressed: onTemplate,
-          icon: const Icon(Icons.dashboard_customize_outlined),
-          label: const Text('Templates'),
-        ),
-        const SizedBox(width: 8),
-        FilledButton.icon(
-          onPressed: onCreate,
-          icon: const Icon(Icons.add),
-          label: const Text('New Section'),
-        ),
-      ],
-    );
-  }
-}
-
-class _SectionTable extends StatelessWidget {
-  const _SectionTable({
-    required this.sections,
-    required this.onEdit,
-    required this.onDuplicate,
-    required this.onDelete,
-  });
-
-  final List<PageSection> sections;
-  final ValueChanged<PageSection> onEdit;
-  final ValueChanged<PageSection> onDuplicate;
-  final ValueChanged<PageSection> onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    if (sections.isEmpty) {
-      return const Center(child: Text('No custom page sections yet.'));
+  void _showMessage(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: SingleChildScrollView(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columns: const [
-              DataColumn(label: Text('Order')),
-              DataColumn(label: Text('Title')),
-              DataColumn(label: Text('Placement')),
-              DataColumn(label: Text('Type')),
-              DataColumn(label: Text('Tone')),
-              DataColumn(label: Text('Layout')),
-              DataColumn(label: Text('Status')),
-              DataColumn(label: Text('Updated')),
-              DataColumn(label: Text('Actions')),
-            ],
-            rows: [
-              for (final section in sections)
-                DataRow(
-                  cells: [
-                    DataCell(Text(section.displayOrder.toString())),
-                    DataCell(SizedBox(width: 220, child: Text(section.title))),
-                    DataCell(Text(section.placement.label)),
-                    DataCell(Text(section.sectionType.label)),
-                    DataCell(Text(section.tone.label)),
-                    DataCell(Text(section.layout.label)),
-                    DataCell(_StatusChip(isPublished: section.isPublished)),
-                    DataCell(Text(_formatDate(section.updatedAt))),
-                    DataCell(
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            tooltip: 'Edit',
-                            onPressed: () => onEdit(section),
-                            icon: const Icon(Icons.edit_outlined),
-                          ),
-                          IconButton(
-                            tooltip: 'Duplicate as draft',
-                            onPressed: () => onDuplicate(section),
-                            icon: const Icon(Icons.copy_outlined),
-                          ),
-                          IconButton(
-                            tooltip: 'Delete',
-                            onPressed: section.id == null
-                                ? null
-                                : () => onDelete(section),
-                            icon: const Icon(Icons.delete_outline),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _formatDate(DateTime? value) {
-    if (value == null) {
-      return '-';
-    }
-    return value.toLocal().toString().split('.').first;
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.isPublished});
-
-  final bool isPublished;
-
-  @override
-  Widget build(BuildContext context) {
-    final background = isPublished
-        ? const Color(0xFFDCFCE7)
-        : const Color(0xFFFFF7ED);
-    final foreground = isPublished
-        ? const Color(0xFF166534)
-        : const Color(0xFF9A3412);
-    return Chip(
-      label: Text(isPublished ? 'Published' : 'Draft'),
-      backgroundColor: background,
-      labelStyle: TextStyle(color: foreground, fontWeight: FontWeight.w700),
-      side: BorderSide.none,
-    );
   }
 }
 

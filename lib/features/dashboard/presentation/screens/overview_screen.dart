@@ -5,6 +5,7 @@ import '../../../projects/application/project_providers.dart';
 import '../../../projects/domain/entities/experiment.dart';
 import '../../../projects/domain/entities/project.dart';
 import '../../../projects/domain/entities/skill.dart';
+import '../../../sections/application/section_providers.dart';
 import '../../../settings/application/settings_providers.dart';
 import '../../../settings/domain/entities/publish_log.dart';
 import 'overview_content_health.dart';
@@ -18,11 +19,13 @@ class OverviewScreen extends ConsumerWidget {
     final projectsState = ref.watch(projectsProvider);
     final skillsState = ref.watch(skillsProvider);
     final experimentsState = ref.watch(experimentsProvider);
+    final sectionsState = ref.watch(pageSectionsProvider);
     final logsState = ref.watch(publishLogsProvider);
 
     if (projectsState.isLoading ||
         skillsState.isLoading ||
         experimentsState.isLoading ||
+        sectionsState.isLoading ||
         logsState.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -31,6 +34,7 @@ class OverviewScreen extends ConsumerWidget {
         projectsState.error ??
         skillsState.error ??
         experimentsState.error ??
+        sectionsState.error ??
         logsState.error;
     if (error != null) {
       return _ErrorState(message: '$error', onRetry: () => _refresh(ref));
@@ -39,6 +43,7 @@ class OverviewScreen extends ConsumerWidget {
     final projects = projectsState.value ?? const <Project>[];
     final skills = skillsState.value ?? const <Skill>[];
     final experiments = experimentsState.value ?? const <Experiment>[];
+    final sections = sectionsState.value ?? const [];
     final logs = logsState.value ?? const <PublishLog>[];
     final health = OverviewContentHealth.from(projects, skills, experiments);
 
@@ -55,6 +60,11 @@ class OverviewScreen extends ConsumerWidget {
               OverviewMetric('Draft Projects', health.draftProjects),
               OverviewMetric('Lab Experiments', health.publishedExperiments),
               OverviewMetric('Skill Groups', health.publishedSkillGroups),
+              OverviewMetric('Custom Sections', sections.length),
+              OverviewMetric(
+                'Draft Sections',
+                sections.where((section) => !section.isPublished).length,
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -72,6 +82,7 @@ class OverviewScreen extends ConsumerWidget {
       ..invalidate(projectsProvider)
       ..invalidate(skillsProvider)
       ..invalidate(experimentsProvider)
+      ..invalidate(pageSectionsProvider)
       ..invalidate(publishLogsProvider);
   }
 }

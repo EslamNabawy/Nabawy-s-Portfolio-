@@ -47,6 +47,8 @@ class SiteDesignSection extends StatelessWidget {
         'High-contrast terminal operations style for a more tactical mood.',
       PublicDesignVariant.signalStudio =>
         'Bright creative studio surface with bold signal accents and premium contrast.',
+      PublicDesignVariant.systemForge =>
+        'Sharper industrial engineering surface with amber telemetry.',
     };
   }
 }

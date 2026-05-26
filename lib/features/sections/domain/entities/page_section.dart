@@ -199,4 +199,44 @@ final class PageSection {
       if (updatedAt != null) 'updated_at': updatedAt!.toIso8601String(),
     };
   }
+
+  PageSection copyWith({
+    String? id,
+    String? sectionKey,
+    String? title,
+    String? eyebrow,
+    String? body,
+    PageSectionPlacement? placement,
+    PageSectionType? sectionType,
+    PageSectionLayout? layout,
+    PageSectionTone? tone,
+    PageSectionDensity? density,
+    PageSectionAlignment? alignment,
+    JsonMap? contentJson,
+    JsonMap? designJson,
+    int? displayOrder,
+    bool? isPublished,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return PageSection(
+      id: id ?? this.id,
+      sectionKey: sectionKey ?? this.sectionKey,
+      title: title ?? this.title,
+      eyebrow: eyebrow ?? this.eyebrow,
+      body: body ?? this.body,
+      placement: placement ?? this.placement,
+      sectionType: sectionType ?? this.sectionType,
+      layout: layout ?? this.layout,
+      tone: tone ?? this.tone,
+      density: density ?? this.density,
+      alignment: alignment ?? this.alignment,
+      contentJson: contentJson ?? this.contentJson,
+      designJson: designJson ?? this.designJson,
+      displayOrder: displayOrder ?? this.displayOrder,
+      isPublished: isPublished ?? this.isPublished,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

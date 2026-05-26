@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:portfolio_admin/features/sections/domain/entities/page_section.dart';
+import 'package:portfolio_admin/features/sections/domain/entities/page_section_readiness.dart';
 import 'package:portfolio_admin/features/sections/domain/entities/page_section_template.dart';
+import 'package:portfolio_admin/features/sections/domain/entities/section_block.dart';
 import 'package:portfolio_admin/features/sections/presentation/screens/page_section_form_support.dart';
 
 void main() {
@@ -78,5 +80,43 @@ void main() {
     expect(validateOptionalHref('https://example.com'), isNull);
     expect(validateOptionalHref('mailto:test@example.com'), isNull);
     expect(validateOptionalHref('javascript:alert(1)'), isNotNull);
+  });
+
+  test('section blocks parse v2 and legacy content', () {
+    final v2 = sectionBlocksFromContent(const {
+      'schemaVersion': 2,
+      'blocks': [
+        {
+          'type': 'metricStrip',
+          'items': [
+            {'label': 'SSG', 'title': 'Static', 'copy': 'Fast'},
+          ],
+        },
+      ],
+    });
+    final legacy = sectionBlocksFromContent(const {
+      'items': [
+        {'label': '01', 'title': 'Legacy', 'copy': 'Supported'},
+      ],
+    });
+
+    expect(v2.single.type, SectionBlockType.metricStrip);
+    expect(legacy.single.type, SectionBlockType.cardGrid);
+  });
+
+  test('published section readiness blocks empty published sections', () {
+    final readiness = assessPageSectionReadiness(
+      const PageSection(
+        sectionKey: 'empty-section',
+        title: 'Empty Section',
+        isPublished: true,
+      ),
+    );
+
+    expect(readiness.isReady, isFalse);
+    expect(
+      readiness.messages,
+      contains('Published sections need at least one content block.'),
+    );
   });
 }

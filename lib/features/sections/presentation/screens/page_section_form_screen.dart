@@ -7,9 +7,11 @@ import '../../../deployment/presentation/widgets/deployment_automation_panel.dar
 import '../../../projects/presentation/screens/project_form_support.dart';
 import '../../application/section_providers.dart';
 import '../../domain/entities/page_section.dart';
+import '../../domain/entities/page_section_readiness.dart';
 import 'page_section_form_sections.dart';
 import 'page_section_form_support.dart';
 import 'page_section_live_preview.dart';
+import 'page_section_readiness_panel.dart';
 import 'page_section_structured_editor.dart';
 
 class PageSectionFormScreen extends ConsumerStatefulWidget {
@@ -165,6 +167,23 @@ class _PageSectionFormScreenState extends ConsumerState<PageSectionFormScreen>
                   designJson: _designJson,
                 ),
                 const SizedBox(height: 16),
+                PageSectionReadinessPanel(
+                  title: _title,
+                  sectionKey: _sectionKey,
+                  eyebrow: _eyebrow,
+                  body: _body,
+                  placement: _placement,
+                  sectionType: _sectionType,
+                  layout: _layout,
+                  tone: _tone,
+                  density: _density,
+                  alignment: _alignment,
+                  contentJson: _contentJson,
+                  designJson: _designJson,
+                  displayOrder: _displayOrder,
+                  isPublished: _isPublished,
+                ),
+                const SizedBox(height: 16),
                 PageSectionAdvancedJsonSection(
                   contentJson: _contentJson,
                   designJson: _designJson,
@@ -226,6 +245,11 @@ class _PageSectionFormScreenState extends ConsumerState<PageSectionFormScreen>
     try {
       final repository = ref.read(pageSectionRepositoryProvider);
       final section = _sectionFromFields();
+      final readiness = assessPageSectionReadiness(section);
+      if (section.isPublished && !readiness.isReady) {
+        _setError('Fix publish readiness before saving as published.');
+        return;
+      }
       final saved = _isEditing
           ? await repository.updateSection(section)
           : await repository.createSection(section);

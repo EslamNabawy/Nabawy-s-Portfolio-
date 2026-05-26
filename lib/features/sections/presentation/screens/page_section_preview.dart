@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/page_section.dart';
+import '../../domain/entities/section_block.dart';
 
 class PageSectionPreview extends StatelessWidget {
   const PageSectionPreview({super.key, required this.section});
@@ -10,8 +11,9 @@ class PageSectionPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = _PreviewColors.forTone(section.tone);
-    final items = _readItems(section.contentJson['items']);
-    final actions = _readActions(section.contentJson['actions']);
+    final blocks = sectionBlocksFromContent(section.contentJson);
+    final items = _itemsFromBlocks(blocks);
+    final actions = _actionsFromBlocks(blocks);
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: colors.line),
@@ -257,36 +259,40 @@ final class _PreviewAction {
   final String label;
 }
 
-List<_PreviewItem> _readItems(Object? value) {
-  if (value is! Iterable) {
-    return const <_PreviewItem>[];
-  }
-  return value
-      .whereType<Map>()
-      .map(
-        (item) => _PreviewItem(
-          label: _readString(item['label'], fallback: '01'),
-          title: _readString(item['title'], fallback: 'Untitled'),
-          copy: _readString(item['copy'], fallback: 'No copy configured.'),
+List<_PreviewItem> _itemsFromBlocks(List<SectionBlock> blocks) {
+  final items = <_PreviewItem>[];
+  for (final block in blocks) {
+    if (block.type == SectionBlockType.heroText ||
+        block.type == SectionBlockType.callout ||
+        block.type == SectionBlockType.media) {
+      if ((block.title ?? block.copy ?? '').trim().isNotEmpty) {
+        items.add(
+          _PreviewItem(
+            label: block.label ?? block.type.label,
+            title: block.title ?? block.caption ?? block.type.label,
+            copy: block.copy ?? block.mediaUrl ?? '',
+          ),
+        );
+      }
+    }
+    for (final item in block.items) {
+      items.add(
+        _PreviewItem(
+          label: item.label ?? block.type.label,
+          title: item.title ?? block.type.label,
+          copy: item.copy ?? '',
         ),
-      )
-      .toList(growable: false);
+      );
+    }
+  }
+  return items;
 }
 
-List<_PreviewAction> _readActions(Object? value) {
-  if (value is! Iterable) {
-    return const <_PreviewAction>[];
-  }
-  return value
-      .whereType<Map>()
-      .map((item) => _PreviewAction(label: _readString(item['label'])))
-      .where((item) => item.label.isNotEmpty)
-      .toList(growable: false);
-}
-
-String _readString(Object? value, {String fallback = ''}) {
-  if (value is String && value.trim().isNotEmpty) {
-    return value.trim();
-  }
-  return fallback;
+List<_PreviewAction> _actionsFromBlocks(List<SectionBlock> blocks) {
+  return [
+    for (final block in blocks)
+      ...block.actions
+          .where((action) => (action.label ?? '').trim().isNotEmpty)
+          .map((action) => _PreviewAction(label: action.label!.trim())),
+  ];
 }

@@ -1,10 +1,12 @@
 import '../../../../core/utils/json_readers.dart';
+import 'site_theme_config.dart';
 
 enum PublicDesignVariant {
   commandCenter('command_center', 'Command Center'),
   cleanDossier('clean_dossier', 'Clean Dossier'),
   terminalOps('terminal_ops', 'Terminal Ops'),
-  signalStudio('signal_studio', 'Signal Studio');
+  signalStudio('signal_studio', 'Signal Studio'),
+  systemForge('system_forge', 'System Forge');
 
   const PublicDesignVariant(this.value, this.label);
 
@@ -17,6 +19,7 @@ enum PublicDesignVariant {
       'clean_dossier' => PublicDesignVariant.cleanDossier,
       'terminal_ops' => PublicDesignVariant.terminalOps,
       'signal_studio' => PublicDesignVariant.signalStudio,
+      'system_forge' => PublicDesignVariant.systemForge,
       _ => throw FormatException('Unknown public design variant "$value".'),
     };
   }
@@ -33,6 +36,7 @@ final class SiteConfig {
     this.linkedinUrl,
     this.email,
     this.designVariant = PublicDesignVariant.commandCenter,
+    this.themeConfig = const SiteThemeConfig(),
     this.createdAt,
     this.updatedAt,
   });
@@ -46,6 +50,7 @@ final class SiteConfig {
   final String? linkedinUrl;
   final String? email;
   final PublicDesignVariant designVariant;
+  final SiteThemeConfig themeConfig;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -62,6 +67,7 @@ final class SiteConfig {
       designVariant: PublicDesignVariant.fromJson(
         readOptionalString(json, 'design_variant') ?? 'command_center',
       ),
+      themeConfig: SiteThemeConfig.fromJson(readJsonObject(json, 'theme_json')),
       createdAt: readOptionalDateTime(json, 'created_at'),
       updatedAt: readOptionalDateTime(json, 'updated_at'),
     );
@@ -78,6 +84,7 @@ final class SiteConfig {
       'linkedin_url': linkedinUrl,
       'email': email,
       'design_variant': designVariant.value,
+      'theme_json': themeConfig.toJson(),
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
       if (updatedAt != null) 'updated_at': updatedAt!.toIso8601String(),
     };
@@ -93,6 +100,7 @@ final class SiteConfig {
     String? linkedinUrl,
     String? email,
     PublicDesignVariant? designVariant,
+    SiteThemeConfig? themeConfig,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -106,6 +114,7 @@ final class SiteConfig {
       linkedinUrl: linkedinUrl ?? this.linkedinUrl,
       email: email ?? this.email,
       designVariant: designVariant ?? this.designVariant,
+      themeConfig: themeConfig ?? this.themeConfig,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

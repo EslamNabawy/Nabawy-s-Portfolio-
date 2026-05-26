@@ -1,0 +1,1 @@
+enum SectionListViewMode { canvas, table }

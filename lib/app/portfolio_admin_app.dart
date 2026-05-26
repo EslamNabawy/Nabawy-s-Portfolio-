@@ -5,12 +5,14 @@ import '../core/errors/app_exception.dart';
 import '../features/auth/application/auth_providers.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/dashboard/presentation/screens/overview_screen.dart';
+import '../features/dashboard/presentation/screens/health_checks_screen.dart';
 import '../features/deployment/presentation/screens/deploy_screen.dart';
 import '../features/developer_tools/presentation/screens/code_tools_screen.dart';
 import '../features/projects/presentation/screens/experiment_list_screen.dart';
 import '../features/projects/presentation/screens/project_list_screen.dart';
 import '../features/projects/presentation/screens/skill_list_screen.dart';
 import '../features/sections/presentation/screens/page_section_list_screen.dart';
+import '../features/settings/presentation/screens/design_studio_screen.dart';
 import '../features/settings/presentation/screens/publish_log_screen.dart';
 import '../features/settings/presentation/screens/site_config_screen.dart';
 import '../shared/ui/admin_shell.dart';
@@ -100,9 +102,11 @@ class _AdminHomeState extends State<AdminHome> {
         AdminSection.projects => const ProjectListScreen(),
         AdminSection.skills => const SkillListScreen(),
         AdminSection.experiments => const ExperimentListScreen(),
+        AdminSection.designStudio => const DesignStudioScreen(),
         AdminSection.sections => const PageSectionListScreen(),
         AdminSection.config => const SiteConfigScreen(),
         AdminSection.deploy => const DeployScreen(),
+        AdminSection.healthChecks => const HealthChecksScreen(),
         AdminSection.publishLog => const PublishLogScreen(),
         AdminSection.codeTools => const CodeToolsScreen(),
       },

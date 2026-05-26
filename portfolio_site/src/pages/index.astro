@@ -7,11 +7,14 @@ import SectionHeader from '../components/SectionHeader.astro';
 import SkillBadge from '../components/SkillBadge.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPortfolioData } from '../lib/portfolio-data';
+import { themeClass, themeStyleAttribute } from '../lib/theme';
 
 const { config, projects, skills, experiments, sections } = await getPortfolioData();
 const featuredProject = projects.find((project) => project.featured) ?? projects[0];
 const featuredCount = projects.filter((project) => project.featured).length;
 const designClass = `design-${config.design_variant}`;
+const themeClasses = themeClass(config.theme_json);
+const themeStyle = themeStyleAttribute(config.theme_json);
 const skillGroups =
   skills.length > 0
     ? skills
@@ -45,7 +48,7 @@ const sectionsFor = (placement: string) =>
 ---
 
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
-  <main class={designClass}>
+  <main class={`${designClass} ${themeClasses}`} style={themeStyle}>
     <HeroSection
       config={config}
       projectCount={projects.length}

@@ -7,7 +7,6 @@ import '../../../deployment/presentation/widgets/deployment_automation_panel.dar
 import '../../../projects/presentation/screens/project_form_support.dart';
 import '../../application/settings_providers.dart';
 import '../../domain/entities/site_config.dart';
-import 'site_design_section.dart';
 
 class SiteConfigScreen extends ConsumerWidget {
   const SiteConfigScreen({super.key});
@@ -51,7 +50,6 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm>
   late final TextEditingController _githubUrl;
   late final TextEditingController _linkedinUrl;
   late final TextEditingController _email;
-  late PublicDesignVariant _designVariant;
   bool _isSaving = false;
   bool _deployAfterSave = false;
   String? _error;
@@ -67,7 +65,6 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm>
     _githubUrl = TextEditingController(text: config.githubUrl ?? '');
     _linkedinUrl = TextEditingController(text: config.linkedinUrl ?? '');
     _email = TextEditingController(text: config.email ?? '');
-    _designVariant = config.designVariant;
   }
 
   @override
@@ -167,11 +164,6 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm>
             ],
           ),
           const SizedBox(height: 16),
-          SiteDesignSection(
-            designVariant: _designVariant,
-            onChanged: (value) => setState(() => _designVariant = value),
-          ),
-          const SizedBox(height: 16),
           DeploymentAutomationPanel(
             enabled: true,
             disabledReason: '',
@@ -229,7 +221,8 @@ class _SiteConfigFormState extends ConsumerState<SiteConfigForm>
               githubUrl: optionalText(_githubUrl.text),
               linkedinUrl: optionalText(_linkedinUrl.text),
               email: optionalText(_email.text),
-              designVariant: _designVariant,
+              designVariant: widget.config.designVariant,
+              themeConfig: widget.config.themeConfig,
             ),
           );
       ref.invalidate(siteConfigProvider);

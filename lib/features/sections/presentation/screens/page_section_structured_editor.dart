@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../projects/presentation/screens/project_form_support.dart';
-import 'page_section_builder_rows.dart';
+import '../../domain/entities/section_block.dart';
+import 'page_section_block_editor.dart';
 import 'page_section_editor_drafts.dart';
 import 'page_section_form_support.dart';
 
@@ -24,10 +25,7 @@ class PageSectionStructuredEditor extends StatefulWidget {
 
 class _PageSectionStructuredEditorState
     extends State<PageSectionStructuredEditor> {
-  late final TextEditingController _mediaUrl;
-  late final TextEditingController _caption;
-  late final List<SectionItemDraft> _items;
-  late final List<SectionActionDraft> _actions;
+  late final List<SectionBlockDraft> _blocks;
 
   @override
   void initState() {
@@ -36,25 +34,18 @@ class _PageSectionStructuredEditorState
       widget.contentJson.text,
       'Content JSON',
     );
-    final design = parseJsonObjectText(widget.designJson.text, 'Design JSON');
-    _items = _readItems(content['items']);
-    _actions = _readActions(content['actions']);
-    if (_items.isEmpty) {
-      _items.add(SectionItemDraft.empty(_items.length));
+    _blocks = sectionBlocksFromContent(
+      content,
+    ).map(SectionBlockDraft.fromBlock).toList(growable: true);
+    if (_blocks.isEmpty) {
+      _blocks.add(SectionBlockDraft.empty(SectionBlockType.cardGrid));
     }
-    _mediaUrl = TextEditingController(text: _readString(design['mediaUrl']));
-    _caption = TextEditingController(text: _readString(design['caption']));
   }
 
   @override
   void dispose() {
-    _mediaUrl.dispose();
-    _caption.dispose();
-    for (final item in _items) {
-      item.dispose();
-    }
-    for (final action in _actions) {
-      action.dispose();
+    for (final block in _blocks) {
+      block.dispose();
     }
     super.dispose();
   }
@@ -64,144 +55,118 @@ class _PageSectionStructuredEditorState
     return ProjectFormSection(
       title: 'Structured Builder',
       children: [
-        Text('Content Cards', style: Theme.of(context).textTheme.titleSmall),
-        const SizedBox(height: 10),
-        for (var index = 0; index < _items.length; index++) ...[
-          SectionItemEditor(
-            index: index,
-            item: _items[index],
-            onRemove: _items.length == 1 ? null : () => _removeItem(index),
-            onChanged: _syncJson,
-          ),
-          const SizedBox(height: 10),
-        ],
+        ReorderableListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _blocks.length,
+          onReorderItem: _reorder,
+          itemBuilder: (context, index) {
+            final block = _blocks[index];
+            return Padding(
+              key: ValueKey(block),
+              padding: const EdgeInsets.only(bottom: 10),
+              child: PageSectionBlockEditor(
+                index: index,
+                block: block,
+                onTypeChanged: (value) => _changeType(index, value),
+                onRemove: _blocks.length == 1 ? null : () => _remove(index),
+                onChanged: _syncJson,
+              ),
+            );
+          },
+        ),
         Align(
           alignment: Alignment.centerLeft,
-          child: OutlinedButton.icon(
-            onPressed: _addItem,
-            icon: const Icon(Icons.add),
-            label: const Text('Add Card'),
+          child: PopupMenuButton<SectionBlockType>(
+            onSelected: _addBlock,
+            itemBuilder: (context) => [
+              for (final type in SectionBlockType.values)
+                PopupMenuItem(value: type, child: Text(type.label)),
+            ],
+            child: const _AddBlockButton(),
           ),
-        ),
-        const Divider(height: 28),
-        Text('CTA Buttons', style: Theme.of(context).textTheme.titleSmall),
-        const SizedBox(height: 10),
-        for (var index = 0; index < _actions.length; index++) ...[
-          SectionActionEditor(
-            action: _actions[index],
-            onRemove: () => _removeAction(index),
-            onChanged: _syncJson,
-          ),
-          const SizedBox(height: 10),
-        ],
-        Align(
-          alignment: Alignment.centerLeft,
-          child: OutlinedButton.icon(
-            onPressed: _addAction,
-            icon: const Icon(Icons.add_link),
-            label: const Text('Add CTA'),
-          ),
-        ),
-        const Divider(height: 28),
-        Text('Media', style: Theme.of(context).textTheme.titleSmall),
-        const SizedBox(height: 10),
-        TextFormField(
-          controller: _mediaUrl,
-          decoration: const InputDecoration(labelText: 'Media URL'),
-          validator: validateOptionalUrl,
-          onChanged: (_) => _syncJson(),
-        ),
-        const SizedBox(height: 10),
-        TextFormField(
-          controller: _caption,
-          decoration: const InputDecoration(labelText: 'Media Caption'),
-          onChanged: (_) => _syncJson(),
         ),
       ],
     );
   }
 
-  void _addItem() {
-    setState(() => _items.add(SectionItemDraft.empty(_items.length)));
+  void _addBlock(SectionBlockType type) {
+    setState(() => _blocks.add(SectionBlockDraft.empty(type)));
     _syncJson();
   }
 
-  void _removeItem(int index) {
-    final removed = _items.removeAt(index);
-    removed.dispose();
+  void _remove(int index) {
+    _blocks.removeAt(index).dispose();
     setState(() {});
     _syncJson();
   }
 
-  void _addAction() {
-    setState(() => _actions.add(SectionActionDraft.empty()));
+  void _reorder(int oldIndex, int newIndex) {
+    final block = _blocks.removeAt(oldIndex);
+    _blocks.insert(newIndex, block);
+    setState(() {});
     _syncJson();
   }
 
-  void _removeAction(int index) {
-    final removed = _actions.removeAt(index);
-    removed.dispose();
-    setState(() {});
+  void _changeType(int index, SectionBlockType type) {
+    final block = _blocks[index];
+    setState(() {
+      block.type = type;
+      if (!_hasItems(type)) {
+        for (final item in block.items) {
+          item.dispose();
+        }
+        block.items.clear();
+      } else if (block.items.isEmpty) {
+        block.items.add(SectionItemDraft.empty(0));
+      }
+      if (type != SectionBlockType.ctaRow) {
+        for (final action in block.actions) {
+          action.dispose();
+        }
+        block.actions.clear();
+      } else if (block.actions.isEmpty) {
+        block.actions.add(SectionActionDraft.empty());
+      }
+    });
     _syncJson();
   }
 
   void _syncJson() {
-    widget.contentJson.text = prettyJson(<String, Object?>{
-      'items': [
-        for (final item in _items)
-          {
-            'label': item.label.text.trim(),
-            'title': item.title.text.trim(),
-            'copy': item.copy.text.trim(),
-            'url': item.url.text.trim(),
-          },
-      ],
-      'actions': [
-        for (final action in _actions)
-          {'label': action.label.text.trim(), 'url': action.url.text.trim()},
-      ],
-    });
+    widget.contentJson.text = prettyJson(
+      sectionBlocksToContent(_blocks.map((block) => block.toBlock()).toList()),
+    );
+    final design = parseJsonObjectText(widget.designJson.text, 'Design JSON');
     widget.designJson.text = prettyJson(<String, Object?>{
-      'accent': 'signal',
-      'mediaUrl': _mediaUrl.text.trim(),
-      'caption': _caption.text.trim(),
+      ...design,
+      'accent': design['accent'] ?? 'signal',
     });
     widget.onChanged();
   }
+}
 
-  List<SectionItemDraft> _readItems(Object? value) {
-    if (value is! Iterable) {
-      return <SectionItemDraft>[];
-    }
-    return value
-        .whereType<Map>()
-        .map(
-          (item) => SectionItemDraft(
-            label: _readString(item['label']),
-            title: _readString(item['title']),
-            copy: _readString(item['copy']),
-            url: _readString(item['url']),
-          ),
-        )
-        .toList(growable: true);
-  }
+class _AddBlockButton extends StatelessWidget {
+  const _AddBlockButton();
 
-  List<SectionActionDraft> _readActions(Object? value) {
-    if (value is! Iterable) {
-      return <SectionActionDraft>[];
-    }
-    return value
-        .whereType<Map>()
-        .map(
-          (item) => SectionActionDraft(
-            label: _readString(item['label']),
-            url: _readString(item['url']),
-          ),
-        )
-        .toList(growable: true);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [Icon(Icons.add), SizedBox(width: 8), Text('Add Block')],
+      ),
+    );
   }
+}
 
-  String _readString(Object? value) {
-    return value is String ? value.trim() : '';
-  }
+bool _hasItems(SectionBlockType type) {
+  return type == SectionBlockType.cardGrid ||
+      type == SectionBlockType.metricStrip ||
+      type == SectionBlockType.timeline ||
+      type == SectionBlockType.architecturePanel;
 }

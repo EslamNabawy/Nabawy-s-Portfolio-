@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/auth/application/auth_providers.dart';
+import 'admin_status_strip.dart';
 
 enum AdminSection {
   overview('Overview', Icons.space_dashboard_outlined),
   projects('Projects', Icons.view_list_outlined),
   skills('Skills', Icons.bolt_outlined),
   experiments('Lab', Icons.science_outlined),
+  designStudio('Design Studio', Icons.palette_outlined),
   sections('Sections', Icons.dashboard_customize_outlined),
   config('Site Config', Icons.tune_outlined),
   deploy('Deploy', Icons.rocket_launch_outlined),
+  healthChecks('Health Checks', Icons.health_and_safety_outlined),
   publishLog('Publish Log', Icons.history_outlined),
   codeTools('Code Tools', Icons.code);
 
@@ -56,14 +59,21 @@ class AdminShell extends ConsumerWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: Row(
+      body: Column(
         children: [
-          _AdminSidebar(
-            selectedSection: selectedSection,
-            onSectionChanged: onSectionChanged,
+          const AdminStatusStrip(),
+          Expanded(
+            child: Row(
+              children: [
+                _AdminSidebar(
+                  selectedSection: selectedSection,
+                  onSectionChanged: onSectionChanged,
+                ),
+                const VerticalDivider(width: 1),
+                Expanded(child: child),
+              ],
+            ),
           ),
-          const VerticalDivider(width: 1),
-          Expanded(child: child),
         ],
       ),
     );
@@ -101,10 +111,14 @@ class _AdminSidebar extends StatelessWidget {
         AdminSection.projects,
         AdminSection.skills,
         AdminSection.experiments,
-        AdminSection.sections,
         AdminSection.config,
       ]),
-      _NavGroup('Operations', [AdminSection.deploy, AdminSection.publishLog]),
+      _NavGroup('Design', [AdminSection.designStudio, AdminSection.sections]),
+      _NavGroup('Operations', [
+        AdminSection.deploy,
+        AdminSection.healthChecks,
+        AdminSection.publishLog,
+      ]),
       _NavGroup('Tools', [AdminSection.codeTools]),
     ];
     return SizedBox(

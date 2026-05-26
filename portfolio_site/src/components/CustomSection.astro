@@ -1,29 +1,11 @@
 ---
-import type { PageSection } from '../lib/types';
-
-type SectionItem = {
-  label?: string;
-  title?: string;
-  copy?: string;
-  url?: string;
-};
-
-type SectionAction = {
-  label?: string;
-  url?: string;
-};
+import type { PageSection, SectionBlock, SectionBlockItem } from '../lib/types';
+import { readSectionBlocks } from '../lib/section-blocks';
 
 const { section } = Astro.props as { section: PageSection };
-
-const items = readItems(section.content_json.items);
-const actions = readActions(section.content_json.actions);
-const mediaUrl = safeMediaUrl(section.design_json.mediaUrl);
-const caption = readString(section.design_json.caption);
+const blocks = readSectionBlocks(section.content_json);
+const hasMedia = blocks.some((block) => block.type === 'media' && block.mediaUrl);
 const sectionTitleId = `section-${section.section_key}-title`;
-const hasMedia = mediaUrl.length > 0;
-const hasItems = items.length > 0;
-const hasActions = actions.length > 0;
-const itemLinkLabel = (item: SectionItem) => `Open ${item.title || item.label || 'item'}`;
 const classes = [
   'custom-section',
   `custom-section--${section.tone}`,
@@ -34,59 +16,11 @@ const classes = [
   hasMedia ? 'custom-section--has-media' : '',
 ].join(' ');
 
-function readString(value: unknown): string {
-  return typeof value === 'string' ? value.trim() : '';
-}
+const itemLinkLabel = (item: SectionBlockItem) =>
+  `Open ${item.title || item.label || 'item'}`;
 
-function readItems(value: unknown): SectionItem[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-  return value
-    .filter((item): item is Record<string, unknown> => item !== null && typeof item === 'object')
-    .map((item) => ({
-      label: readString(item.label),
-      title: readString(item.title),
-      copy: readString(item.copy),
-      url: safeHref(item.url),
-    }))
-    .filter((item) => item.title || item.copy || item.label);
-}
-
-function readActions(value: unknown): SectionAction[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-  return value
-    .filter((item): item is Record<string, unknown> => item !== null && typeof item === 'object')
-    .map((item) => ({
-      label: readString(item.label),
-      url: safeHref(item.url),
-    }))
-    .filter((item) => item.label && item.url);
-}
-
-function safeHref(value: unknown): string {
-  const url = readString(value);
-  if (
-    url.startsWith('#') ||
-    url.startsWith('/') ||
-    url.startsWith('https://') ||
-    url.startsWith('http://') ||
-    url.startsWith('mailto:')
-  ) {
-    return url;
-  }
-  return '';
-}
-
-function safeMediaUrl(value: unknown): string {
-  const url = readString(value);
-  if (url.startsWith('https://') || url.startsWith('http://')) {
-    return url;
-  }
-  return '';
-}
+const hasItems = (block: SectionBlock) => (block.items?.length ?? 0) > 0;
+const hasActions = (block: SectionBlock) => (block.actions?.length ?? 0) > 0;
 ---
 
 <section class={classes} id={section.section_key} aria-labelledby={sectionTitleId}>
@@ -95,33 +29,53 @@ function safeMediaUrl(value: unknown): string {
       {section.eyebrow && <p class="custom-section__eyebrow">{section.eyebrow}</p>}
       <h2 id={sectionTitleId}>{section.title}</h2>
       {section.body && <p class="custom-section__body">{section.body}</p>}
-      {hasActions && (
-        <div class="custom-section__actions">
-          {actions.map((action) => (
-            <a href={action.url}>{action.label}</a>
-          ))}
-        </div>
-      )}
     </div>
 
-    {mediaUrl && (
-      <figure class="custom-section__media">
-        <img src={mediaUrl} alt={caption || section.title} loading="lazy" />
-        {caption && <figcaption>{caption}</figcaption>}
-      </figure>
-    )}
-
-    {hasItems && (
-      <div class="custom-section__items">
-        {items.map((item, index) => (
-          <article class="custom-section__item">
-            <p class="custom-section__item-label">{item.label || String(index + 1).padStart(2, '0')}</p>
-            {item.title && <h3>{item.title}</h3>}
-            {item.copy && <p>{item.copy}</p>}
-            {item.url && <a aria-label={itemLinkLabel(item)} href={item.url}>Open</a>}
+    {blocks.map((block) => (
+      <>
+        {(block.type === 'heroText' || block.type === 'callout') && (
+          <article class={`custom-section__block custom-section__block--${block.type}`}>
+            {block.label && <p class="custom-section__item-label">{block.label}</p>}
+            {block.title && <h3>{block.title}</h3>}
+            {block.copy && <p>{block.copy}</p>}
+            {block.url && <a href={block.url}>Open</a>}
           </article>
-        ))}
-      </div>
-    )}
+        )}
+
+        {block.type === 'media' && block.mediaUrl && (
+          <figure class="custom-section__media">
+            <img
+              src={block.mediaUrl}
+              alt={block.altText || block.caption || section.title}
+              loading="lazy"
+            />
+            {block.caption && <figcaption>{block.caption}</figcaption>}
+          </figure>
+        )}
+
+        {hasItems(block) && (
+          <div class={`custom-section__items custom-section__items--${block.type}`}>
+            {block.items?.map((item, index) => (
+              <article class="custom-section__item">
+                <p class="custom-section__item-label">
+                  {item.label || String(index + 1).padStart(2, '0')}
+                </p>
+                {item.title && <h3>{item.title}</h3>}
+                {item.copy && <p>{item.copy}</p>}
+                {item.url && <a aria-label={itemLinkLabel(item)} href={item.url}>Open</a>}
+              </article>
+            ))}
+          </div>
+        )}
+
+        {hasActions(block) && (
+          <div class="custom-section__actions">
+            {block.actions?.map((action) => (
+              <a href={action.url}>{action.label}</a>
+            ))}
+          </div>
+        )}
+      </>
+    ))}
   </div>
 </section>

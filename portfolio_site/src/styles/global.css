@@ -248,6 +248,56 @@ body {
     #eaf3f1;
 }
 
+.design-system_forge {
+  background: #10100d;
+}
+
+.design-system_forge .os-hero {
+  background: #080807;
+}
+
+.design-system_forge .os-hero > img {
+  opacity: 0.2;
+  filter: sepia(0.45) contrast(1.2) saturate(1.12);
+}
+
+.design-system_forge .os-hero-grid {
+  background:
+    linear-gradient(rgba(184, 97, 5, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 97, 5, 0.1) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(184, 97, 5, 0.18), transparent 40%),
+    #080807;
+  background-size: 40px 40px, 40px 40px, auto, auto;
+}
+
+.design-system_forge .os-glass-panel,
+.design-system_forge .os-hero dl {
+  border-color: rgba(184, 97, 5, 0.38);
+  background: rgba(16, 16, 13, 0.84);
+}
+
+.design-system_forge .text-signal,
+.design-system_forge .hover\:text-signal:hover {
+  color: var(--theme-accent, #b86105);
+}
+
+.theme-bg-clean {
+  background: #f8fafc;
+}
+
+.theme-bg-terminal,
+.theme-bg-forge {
+  background: #080b0c;
+}
+
+.theme-surface-glass .os-glass-panel {
+  backdrop-filter: blur(18px);
+}
+
+.theme-surface-elevated .border-line {
+  box-shadow: 0 18px 50px rgba(8, 11, 12, 0.08);
+}
+
 a {
   text-decoration: none;
 }
@@ -270,12 +320,12 @@ a:hover {
 }
 
 ::selection {
-  background: #00836b;
+  background: var(--theme-accent, #00836b);
   color: #ffffff;
 }
 
 :focus-visible {
-  outline: 3px solid #00836b;
+  outline: 3px solid var(--theme-accent, #00836b);
   outline-offset: 3px;
 }
 

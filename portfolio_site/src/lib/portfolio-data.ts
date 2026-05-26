@@ -1,5 +1,7 @@
 import { supabase } from './supabase';
 import type { Experiment, PageSection, Project, SiteConfig, Skill } from './types';
+import { readSectionBlocks, validateSectionBlocks } from './section-blocks';
+import { normalizeThemeConfig } from './theme';
 
 const projectSelect = '*, project_images(*)';
 
@@ -57,7 +59,7 @@ export async function getPortfolioData(): Promise<PortfolioData> {
     throw new Error(`Failed to load published page sections: ${sectionsResult.error.message}`);
   }
 
-  const config = configResult.data as SiteConfig;
+  const config = normalizeSiteConfig(configResult.data as SiteConfig);
   const skills = (skillsResult.data ?? []) as Skill[];
   const projects = ((projectsResult.data ?? []) as Project[]).map(normalizeProject);
   const experiments = (experimentsResult.data ?? []) as Experiment[];
@@ -199,10 +201,18 @@ function validateSiteConfig(config: SiteConfig): void {
       'clean_dossier',
       'terminal_ops',
       'signal_studio',
+      'system_forge',
     ].includes(config.design_variant)
   ) {
     throw new Error('site_config.global has an invalid design_variant.');
   }
+}
+
+function normalizeSiteConfig(config: SiteConfig): SiteConfig {
+  return {
+    ...config,
+    theme_json: normalizeThemeConfig(config.theme_json),
+  };
 }
 
 function validateSkill(skill: Skill): void {
@@ -233,4 +243,8 @@ function validatePublishedPageSection(section: PageSection): void {
   if (!['content_grid', 'metric_strip', 'timeline', 'callout', 'cta'].includes(section.section_type)) {
     throw new Error(`Published page section "${section.title}" has invalid section_type.`);
   }
+  validateSectionBlocks(
+    section.title,
+    readSectionBlocks(section.content_json),
+  );
 }
