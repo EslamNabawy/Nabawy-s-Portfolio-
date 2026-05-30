@@ -1,136 +1,265 @@
 ---
-import ExperimentCard from '../components/ExperimentCard.astro';
-import CustomSection from '../components/CustomSection.astro';
-import HeroSection from '../components/HeroSection.astro';
-import ProjectProofSection from '../components/ProjectProofSection.astro';
-import SectionHeader from '../components/SectionHeader.astro';
-import SkillBadge from '../components/SkillBadge.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPortfolioData } from '../lib/portfolio-data';
-import { normalizeThemeConfig, themeClass, themeStyleAttribute } from '../lib/theme';
+import { getPortfolioData, getProjectHeroImage } from '../lib/portfolio-data';
+import type { Project } from '../lib/types';
+import '../styles/portfolio-v2.css';
 
-const { config, projects, skills, experiments, sections } = await getPortfolioData();
-const featuredProject = projects.find((project) => project.featured) ?? projects[0];
-const featuredCount = projects.filter((project) => project.featured).length;
-const designClass = `design-${config.design_variant}`;
-const theme = normalizeThemeConfig(config.theme_json);
-const themeClasses = themeClass(theme);
-const themeStyle = themeStyleAttribute(theme);
+const { config, projects, skills, experiments } = await getPortfolioData();
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
 const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 const contactActions = [
-  { label: 'Email', href: config.email ? `mailto:${config.email}` : null, icon: 'email' },
-  { label: 'Resume', href: config.resume_url, icon: 'resume', download: true },
+  { label: 'Email', href: config.email ? `mailto:${config.email}` : null, icon: 'mail' },
+  { label: 'Resume', href: config.resume_url, icon: 'file', download: true },
   { label: 'Phone', href: phoneHref, icon: 'phone' },
   { label: 'GitHub', href: config.github_url, icon: 'github' },
   { label: 'LinkedIn', href: config.linkedin_url, icon: 'linkedin' },
-  { label: 'Instagram', href: config.instagram_url, icon: 'instagram' },
 ].filter((item) => item.href) as {
   label: string;
   href: string;
   icon: string;
   download?: boolean;
 }[];
+
+const preferredProjectOrder = [
+  'brox',
+  'rain-p2p-messenger',
+  'campus-suit',
+  'silvator',
+  'ai-workflow-automation',
+  'so-she-picks-ecommerce',
+];
+
+const orderedProjects = [...projects].sort((left, right) => {
+  const leftIndex = preferredProjectOrder.indexOf(left.slug);
+  const rightIndex = preferredProjectOrder.indexOf(right.slug);
+  const normalizedLeft = leftIndex === -1 ? Number.MAX_SAFE_INTEGER : leftIndex;
+  const normalizedRight = rightIndex === -1 ? Number.MAX_SAFE_INTEGER : rightIndex;
+  if (normalizedLeft !== normalizedRight) {
+    return normalizedLeft - normalizedRight;
+  }
+  return left.display_order - right.display_order;
+});
+
 const skillGroups =
   skills.length > 0
     ? skills
     : [
         {
-          category: 'Frontend Systems',
-          items: ['Flutter Web', 'Astro SSG', 'Responsive UI', 'Design Systems'],
+          category: 'Product Engineering',
+          items: ['Flutter', 'Dart', 'Responsive UI', 'State Management'],
         },
         {
-          category: 'Realtime Networks',
-          items: ['WebRTC', 'P2P Signaling', 'Supabase', 'Operational Debugging'],
+          category: 'Data And Integrations',
+          items: ['REST APIs', 'Realtime Data', 'Local Storage', 'Auth Flows'],
         },
         {
-          category: 'Agentic Workflows',
-          items: ['AI Orchestration', 'Prompt Systems', 'Tooling', 'Automation'],
+          category: 'Automation',
+          items: ['n8n', 'LLM APIs', 'Webhooks', 'Workflow Design'],
         },
       ];
-const queuedLab: [string, string][] = [
-  ['AI Workflow Automation', 'Built n8n workflows that connect LLM APIs, webhooks, external services, and smart notifications.'],
-  ['Flutter Workshops', 'Led Flutter learning sessions and mentored student developers.'],
-  ['Programming Instruction', 'Designed lessons to simplify programming and software fundamentals.'],
-  ['ICPC Volunteering', 'Organized problem-solving contests and supported new members.'],
-];
-const hiddenSectionKeys = new Set(['ai-builder-summary']);
-const sectionsFor = (placement: string) =>
-  sections.filter((section) => section.placement === placement && !hiddenSectionKeys.has(section.section_key));
+
+const highlightedSkills = new Set([
+  'Flutter',
+  'Dart',
+  'BLoC',
+  'Cubit',
+  'Riverpod',
+  'n8n Workflow Automation',
+  'OpenAI API Integration',
+  'Claude API Integration',
+  'REST API Integration',
+  'Git / GitHub',
+]);
+
+const projectTone = (project: Project) =>
+  ({
+    brox: 'brox',
+    'rain-p2p-messenger': 'rain',
+    'campus-suit': 'campus',
+    silvator: 'silvator',
+    'ai-workflow-automation': 'ai',
+    'so-she-picks-ecommerce': 'shop',
+  })[project.slug] ?? 'default';
+
+const projectMeta = (project: Project) =>
+  ({
+    brox: 'Desktop Operations',
+    'rain-p2p-messenger': 'Android / Windows',
+    'campus-suit': 'Campus Product',
+    silvator: 'Mood Companion',
+    'ai-workflow-automation': 'AI Automation',
+    'so-she-picks-ecommerce': 'Mobile Commerce',
+  })[project.slug] ?? 'Software Product';
+
+const projectHighlights: Record<string, string[]> = {
+  brox: [
+    'Offline-first operations console for desks, rooms, inventory, finance, staff, and memberships.',
+    'Role-gated workflows, audit logs, backup / restore, local diagnostics, and release packaging.',
+    'Built for repeated front-desk use rather than a one-screen demo.',
+  ],
+  'rain-p2p-messenger': [
+    'Private peer chat across Android and Windows with explicit friend, call, and file states.',
+    'Separates UI, persistence, realtime signaling, and WebRTC data / media transport.',
+  ],
+  'campus-suit': [
+    'Graduation project covering onboarding, courses, grades, profile flows, and live campus data.',
+    'Structured mobile screens built around clear student workflows.',
+  ],
+  silvator: [
+    'Mood-aware quote, journal, saved insight, and heatmap flows across mobile and desktop screens.',
+    'Local-first product surface focused on calm capture and reflection.',
+  ],
+  'ai-workflow-automation': [
+    'Webhook-driven n8n workflows connecting LLM APIs, conditions, retries, and notifications.',
+    'Built to keep automation inspectable instead of hidden behind opaque scripts.',
+  ],
+  'so-she-picks-ecommerce': [
+    'Mobile ordering flow with backend order handling and loyalty points.',
+    'Designed around straightforward browsing, checkout, and repeat-customer behavior.',
+  ],
+};
+
+const skillCode = (category: string) => {
+  const normalized = category.toLowerCase();
+  if (normalized.includes('mobile')) return 'UI';
+  if (normalized.includes('backend')) return 'DB';
+  if (normalized.includes('automation') || normalized.includes('ai')) return 'AI';
+  if (normalized.includes('engineering')) return 'CS';
+  return category.slice(0, 2).toUpperCase();
+};
+
+const displayDate = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  year: 'numeric',
+});
+
+const icon = (name: string) => name;
 ---
 
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
-  <main class={`${designClass} ${themeClasses}`} style={themeStyle}>
-    <HeroSection
-      config={config}
-      theme={theme}
-      projects={projects}
-      featuredProject={featuredProject}
-    />
+  <main class="v2-portfolio">
+    <canvas id="v2-bg-canvas" aria-hidden="true"></canvas>
+    <div class="v2-progress" id="v2-progress" aria-hidden="true"></div>
 
-    {sectionsFor('after_hero').map((section) => <CustomSection section={section} />)}
+    <nav class="v2-nav" aria-label="Primary navigation">
+      <a class="v2-nav-logo" href={base}>eslam<em>.dev</em></a>
+      <div class="v2-nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+      </div>
+      {config.email && (
+        <a class="v2-nav-hire" href={`mailto:${config.email}`}>Hire Me</a>
+      )}
+    </nav>
 
-    {sectionsFor('before_projects').map((section) => <CustomSection section={section} />)}
-    <ProjectProofSection
-      projects={projects}
-      featuredCount={featuredCount}
-      cardStyle={theme.projectCardStyle}
-    />
-
-    {sectionsFor('before_lab').map((section) => <CustomSection section={section} />)}
-
-    <section class="portfolio-experience" id="experience">
-      <div class="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
-        <div class="flex flex-col justify-between gap-6 border-b border-white/10 pb-8 lg:flex-row lg:items-end">
-          <SectionHeader
-            eyebrow="Experience And Leadership"
-            title="Teaching, Community Work, And Technical Leadership"
-            copy="Relevant proof beyond projects: Flutter workshops, ICPC volunteering, mentoring, and programming instruction."
-            inverse
-          />
-          <a class="portfolio-button" href="#contact">
-            Contact
-          </a>
+    <section class="v2-hero" id="hero">
+      <div class="v2-hero-inner">
+        <div class="v2-hero-copy v2-reveal-l">
+          <p class="v2-eyebrow"><span></span> Software Engineer</p>
+          <h1 class="v2-hero-title">
+            Eslam Tarek
+            <span>Nabawy</span>
+          </h1>
+          <p class="v2-hero-role">Software products · automation · reliable delivery</p>
+          <p class="v2-hero-description">
+            I build useful software from rough product ideas: clean interfaces, reliable integrations,
+            and automation that turns repeated work into systems people can actually use.
+          </p>
+          <div class="v2-hero-actions">
+            {config.resume_url && (
+              <a class="v2-btn v2-btn-fill" href={config.resume_url} download>
+                Resume
+              </a>
+            )}
+            <a class="v2-btn v2-btn-line" href="#projects">View Projects</a>
+            {config.email && (
+              <a class="v2-btn v2-btn-line" href={`mailto:${config.email}`}>Email Me</a>
+            )}
+          </div>
+          <div class="v2-hero-stats" aria-label="Portfolio summary">
+            <div>
+              <strong>{orderedProjects.length}</strong>
+              <span>Projects</span>
+            </div>
+            <div>
+              <strong>{skillGroups.length}</strong>
+              <span>Skill Groups</span>
+            </div>
+            <div>
+              <strong>{experiments.length}</strong>
+              <span>Experience Items</span>
+            </div>
+          </div>
         </div>
 
-        <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {experiments.map((experiment) => (
-            <ExperimentCard experiment={experiment} href={`lab/${experiment.slug}/`} />
-          ))}
-          {experiments.length === 0 &&
-            queuedLab.map(([title, copy]) => (
-              <article class="portfolio-fallback-card">
-                <p>
-                  Experience
-                </p>
-                <h3>{title}</h3>
-                <span>{copy}</span>
-              </article>
-            ))}
+        <div class="v2-code-widget v2-reveal-r" aria-label="Profile summary card">
+          <div class="v2-code-bar">
+            <span></span>
+            <span></span>
+            <span></span>
+            <small>profile.ts</small>
+          </div>
+          <pre><code><span class="v2-kw">const</span> engineer = {'{'}
+  name: <span class="v2-str">'Eslam Nabawy'</span>,
+  focus: [<span class="v2-str">'apps'</span>, <span class="v2-str">'automation'</span>],
+  builds: <span class="v2-str">'interfaces that stay usable'</span>,
+  location: <span class="v2-str">'6th October City, Egypt'</span>,
+  availableFor: <span class="v2-str">'software roles'</span>
+{'}'};</code></pre>
+          <div class="v2-float-tag v2-float-a">cross-platform</div>
+          <div class="v2-float-tag v2-float-b">automation</div>
+          <div class="v2-float-tag v2-float-c">product UI</div>
         </div>
       </div>
     </section>
 
-    {sectionsFor('before_skills').map((section) => <CustomSection section={section} />)}
+    <div class="v2-marquee" aria-hidden="true">
+      <div class="v2-marquee-track">
+        {['Flutter', 'Dart', 'BLoC', 'Riverpod', 'WebRTC', 'n8n', 'REST APIs', 'Local-first', 'AI-assisted delivery', 'GitHub Actions', 'Product UI', 'Automation'].map((item) => (
+          <span><b>/</b>{item}</span>
+        ))}
+        {['Flutter', 'Dart', 'BLoC', 'Riverpod', 'WebRTC', 'n8n', 'REST APIs', 'Local-first', 'AI-assisted delivery', 'GitHub Actions', 'Product UI', 'Automation'].map((item) => (
+          <span><b>/</b>{item}</span>
+        ))}
+      </div>
+    </div>
 
-    <section class="portfolio-skills" id="skills">
-      <div class="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
-        <SectionHeader
-          eyebrow="Skills"
-          title="Core Skills"
-          copy="Grouped for fast screening."
-          inverse
-        />
-        <div class="grid gap-5 lg:grid-cols-3">
-          {skillGroups.map((skill) => (
-            <article class="portfolio-skill-card">
-              <div>
-                <h3>{skill.category}</h3>
-                <span>
-                  {skill.items.length} skills
-                </span>
+    <section class="v2-section v2-skills" id="skills">
+      <div class="v2-section-head">
+        <p class="v2-section-tag">Skills</p>
+        <h2>Tools I use to ship</h2>
+        <span>Grouped for quick scanning. The point is not a keyword wall; it is the stack I use to build and debug real software.</span>
+      </div>
+
+      <div class="v2-skills-layout">
+        <div class="v2-orbit" aria-hidden="true">
+          <div></div>
+          <div></div>
+          <div></div>
+          <i style="left:50%;top:0"></i>
+          <i style="left:93%;top:70%"></i>
+          <i style="left:12%;top:78%"></i>
+          <strong>{skillGroups.reduce((total, group) => total + group.items.length, 0)}<small>skills</small></strong>
+        </div>
+
+        <div class="v2-skill-groups">
+          {skillGroups.map((group) => (
+            <article class="v2-skill-group">
+              <div class="v2-skill-top">
+                <span>{skillCode(group.category)}</span>
+                <h3>{group.category}</h3>
               </div>
-              <div class="portfolio-skill-card__badges">
-                {skill.items.map((item) => <SkillBadge label={item} />)}
+              <div class="v2-skill-tags">
+                {group.items.map((item) => (
+                  <span class:list={['v2-skill-tag', highlightedSkills.has(item) && 'v2-skill-tag-hot']}>
+                    {item}
+                  </span>
+                ))}
               </div>
             </article>
           ))}
@@ -138,71 +267,178 @@ const sectionsFor = (placement: string) =>
       </div>
     </section>
 
-    {sectionsFor('before_contact').map((section) => <CustomSection section={section} />)}
+    <section class="v2-section" id="projects">
+      <div class="v2-section-head">
+        <p class="v2-section-tag">Projects</p>
+        <h2>Built with real screens, not placeholders</h2>
+        <span>Every card below uses the actual project data and available screenshots. Silvator is included with the same visual treatment as the rest of the work.</span>
+      </div>
 
-    <section class="portfolio-contact" id="contact">
-      <div class="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:px-6 lg:grid-cols-[1fr_0.72fr] lg:items-end lg:px-8">
-        <div>
-          <p>
-            Contact
-          </p>
-          <h2>
-            Want the resume or a quick conversation?
-          </h2>
-          <p class="portfolio-contact__copy">
-            Use whichever channel is fastest for you.
-          </p>
-        </div>
-        <div class="portfolio-contact__links">
-          {contactActions.map((link) => (
-            <a href={link.href} download={link.download}>
-              <span class="portfolio-button__icon" aria-hidden="true" data-icon={link.icon}>
-                {link.icon === 'resume' && (
-                  <svg viewBox="0 0 24 24">
-                    <path d="M7 3h7l4 4v14H7z"></path>
-                    <path d="M14 3v5h4"></path>
-                    <path d="M9 13h6"></path>
-                    <path d="M9 17h4"></path>
-                  </svg>
-                )}
-                {link.icon === 'email' && (
-                  <svg viewBox="0 0 24 24">
-                    <path d="M4 6h16v12H4z"></path>
-                    <path d="m4 7 8 6 8-6"></path>
-                  </svg>
-                )}
-                {link.icon === 'phone' && (
-                  <svg viewBox="0 0 24 24">
-                    <path d="M8 4 6 6c0 7 5 12 12 12l2-2-4-4-2 2c-2-1-3-2-4-4l2-2z"></path>
-                  </svg>
-                )}
-                {link.icon === 'github' && (
-                  <svg viewBox="0 0 24 24">
-                    <path d="M9 19c-4 1-4-2-5-3"></path>
-                    <path d="M15 22v-3c0-1 .2-1.7-.5-2 2.7-.3 5.5-1.4 5.5-6A4.6 4.6 0 0 0 18.7 8c.1-.3.6-1.7-.1-3.4 0 0-1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.4 4.3 5.4 4.6 5.4 4.6 4.7 6.3 5.2 7.7 5.3 8A4.6 4.6 0 0 0 4 11c0 4.6 2.8 5.7 5.5 6-.7.3-.8 1-.8 2v3"></path>
-                  </svg>
-                )}
-                {link.icon === 'linkedin' && (
-                  <svg viewBox="0 0 24 24">
-                    <path d="M6 9v10"></path>
-                    <path d="M6 5v.01"></path>
-                    <path d="M11 19v-6a4 4 0 0 1 8 0v6"></path>
-                    <path d="M11 9v10"></path>
-                  </svg>
-                )}
-                {link.icon === 'instagram' && (
-                  <svg viewBox="0 0 24 24">
-                    <rect x="5" y="5" width="14" height="14" rx="4"></rect>
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M16.5 7.5h.01"></path>
-                  </svg>
-                )}
-              </span>
-              {link.label}
+      <div class="v2-project-grid">
+        {orderedProjects.map((project, index) => {
+          const image = getProjectHeroImage(project);
+          const href = `${base}projects/${project.slug}/`;
+          const isLarge = project.slug === 'brox';
+          const isWide = project.slug === 'so-she-picks-ecommerce';
+          const highlights = projectHighlights[project.slug] ?? [project.impact ?? project.role ?? 'Built as a focused product experience.'];
+
+          return (
+            <article class:list={['v2-project-card', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']}>
+              <a href={href}>
+                <div class:list={['v2-project-media', `v2-tone-${projectTone(project)}`]}>
+                  {image ? (
+                    <img src={image} alt={`${project.title} screenshot mockup`} loading={index < 2 ? 'eager' : 'lazy'} />
+                  ) : (
+                    <div class="v2-project-empty">Preview pending</div>
+                  )}
+                </div>
+                <div class="v2-project-body">
+                  <div class="v2-project-meta">
+                    <span>{projectMeta(project)}</span>
+                    <small>{project.updated_at ? displayDate.format(new Date(project.updated_at)) : 'Current'}</small>
+                  </div>
+                  <h3>{project.title}</h3>
+                  <p class="v2-project-role">{project.role ?? 'Software Engineer'}</p>
+                  <p class="v2-project-description">{project.short_description ?? project.description}</p>
+                  <div class="v2-project-highlights">
+                    {highlights.slice(0, isLarge ? 3 : 2).map((highlight) => (
+                      <span>{highlight}</span>
+                    ))}
+                  </div>
+                  <div class="v2-project-stack">
+                    {project.tech_stack.slice(0, 7).map((item) => (
+                      <span>{item}</span>
+                    ))}
+                  </div>
+                </div>
+              </a>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="v2-section v2-experience" id="experience">
+      <div class="v2-section-head">
+        <p class="v2-section-tag">Experience</p>
+        <h2>Where the work happened</h2>
+        <span>Teaching, freelance delivery, mentoring, and community work that support the engineering.</span>
+      </div>
+
+      <div class="v2-timeline">
+        {experiments.map((experiment) => (
+          <article class="v2-timeline-item">
+            <div>
+              <small>{experiment.category}</small>
+              <h3>{experiment.title}</h3>
+              <span>{experiment.status}</span>
+            </div>
+            <p>{experiment.summary}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="v2-section" id="more">
+      <div class="v2-section-head">
+        <p class="v2-section-tag">Education & Community</p>
+        <h2>Beyond the code</h2>
+      </div>
+      <div class="v2-more-grid">
+        <article>
+          <p>Education</p>
+          <h3>Bachelor of Computer Science</h3>
+          <span>AEA Academy · July 2024</span>
+        </article>
+        <article>
+          <p>Community</p>
+          <h3>GDSC Flutter Head</h3>
+          <span>Led sessions, mentored beginners, and supported student events.</span>
+        </article>
+        <article>
+          <p>Problem Solving</p>
+          <h3>ICPC Core Team</h3>
+          <span>Organized contests and mentored participants in algorithmic thinking.</span>
+        </article>
+        <article>
+          <p>Automation</p>
+          <h3>n8n + LLM Workflows</h3>
+          <span>Built practical workflows around webhooks, routing, notifications, and LLM APIs.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="v2-contact" id="contact">
+      <div class="v2-contact-glow"></div>
+      <div class="v2-contact-inner">
+        <p class="v2-section-tag">Get In Touch</p>
+        <h2>Let's build <em>something useful</em></h2>
+        <span>Open to software engineering roles, freelance builds, and practical product collaborations.</span>
+        <div class="v2-contact-links">
+          {contactActions.map((item) => (
+            <a href={item.href} download={item.download}>
+              <span>{icon(item.icon)}</span>
+              {item.label}
             </a>
           ))}
         </div>
       </div>
     </section>
+
+    <footer class="v2-footer">
+      <p>© 2026 <em>Eslam Tarek Nabawy</em></p>
+      <p>Software Engineer · Egypt · <em>Built with intent</em></p>
+    </footer>
   </main>
 </BaseLayout>
+
+<script>
+  const progress = document.getElementById('v2-progress');
+  const updateProgress = () => {
+    if (!progress) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
+  };
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  const canvas = document.getElementById('v2-bg-canvas') as HTMLCanvasElement | null;
+  if (canvas) {
+    const context = canvas.getContext('2d');
+    const particles = Array.from({ length: 58 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.2,
+      r: Math.random() * 1.4 + 0.5,
+    }));
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    const draw = () => {
+      if (!context) return;
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((particle) => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        if (particle.x < 0) particle.x = canvas.width;
+        if (particle.x > canvas.width) particle.x = 0;
+        if (particle.y < 0) particle.y = canvas.height;
+        if (particle.y > canvas.height) particle.y = 0;
+
+        context.beginPath();
+        context.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
+        context.fillStyle = 'rgba(0, 255, 200, 0.62)';
+        context.fill();
+      });
+      requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+    draw();
+  }
+</script>
