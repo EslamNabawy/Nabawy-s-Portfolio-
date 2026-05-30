@@ -9,10 +9,12 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 
+const resumeFileName = "Eslam's Resume.pdf";
+const resumeHref = `${base}${encodeURIComponent(resumeFileName)}`;
 const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 const contactActions = [
   { label: 'Email', href: config.email ? `mailto:${config.email}` : null, icon: 'mail' },
-  { label: 'Resume', href: config.resume_url, icon: 'file', download: true },
+  { label: 'Resume', href: resumeHref, icon: 'file', download: resumeFileName },
   { label: 'Phone', href: phoneHref, icon: 'phone' },
   { label: 'GitHub', href: config.github_url, icon: 'github' },
   { label: 'LinkedIn', href: config.linkedin_url, icon: 'linkedin' },
@@ -20,7 +22,7 @@ const contactActions = [
   label: string;
   href: string;
   icon: string;
-  download?: boolean;
+  download?: string;
 }[];
 
 const preferredProjectOrder = [
@@ -152,9 +154,7 @@ const icon = (name: string) => name;
         <a href="#experience">Experience</a>
         <a href="#contact">Contact</a>
       </div>
-      {config.email && (
-        <a class="v2-nav-hire" href={`mailto:${config.email}`}>Hire Me</a>
-      )}
+      <a class="v2-nav-hire" href="#contact">Hire Me</a>
     </nav>
 
     <section class="v2-hero" id="hero">
@@ -171,11 +171,9 @@ const icon = (name: string) => name;
             and automation that turns repeated work into systems people can actually use.
           </p>
           <div class="v2-hero-actions">
-            {config.resume_url && (
-              <a class="v2-btn v2-btn-fill" href={config.resume_url} download>
-                Resume
-              </a>
-            )}
+            <a class="v2-btn v2-btn-fill" href={resumeHref} download={resumeFileName}>
+              Resume
+            </a>
             <a class="v2-btn v2-btn-line" href="#projects">View Projects</a>
             {config.email && (
               <a class="v2-btn v2-btn-line" href={`mailto:${config.email}`}>Email Me</a>
@@ -331,7 +329,6 @@ const icon = (name: string) => name;
             <div>
               <small>{experiment.category}</small>
               <h3>{experiment.title}</h3>
-              <span>{experiment.status}</span>
             </div>
             <p>{experiment.summary}</p>
           </article>

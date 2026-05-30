@@ -149,7 +149,7 @@ export const staticPortfolioData: StaticPortfolioData = {
     headline: 'Software Engineer building reliable apps and practical automation.',
     bio:
       'Computer Science graduate who turns product ideas into usable software with clean interfaces, solid integrations, and fast AI-assisted delivery.',
-    resume_url: 'resume.pdf',
+    resume_url: "Eslam's Resume.pdf",
     github_url: 'https://github.com/EslamNabawy',
     linkedin_url: 'https://www.linkedin.com/in/eslam-tarek-nabawy/',
     instagram_url: 'https://www.instagram.com/eslamtareknabawy/',
