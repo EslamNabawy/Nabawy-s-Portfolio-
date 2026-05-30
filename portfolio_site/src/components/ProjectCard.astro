@@ -11,88 +11,54 @@ interface Props {
   index?: number;
 }
 
-const { project, prominent = false, styleVariant = 'proof', index = 0 } = Astro.props;
+const { project, index = 0 } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const heroImage = getProjectHeroImage(project);
 const summary = project.short_description ?? project.description;
 const caseNumber = String(index + 1).padStart(2, '0');
-const stackLabel = project.tech_stack[0] ?? 'Project';
-const showImage = styleVariant !== 'compact';
-const baseArticleClass = `project-card project-card--${styleVariant} group h-full overflow-hidden rounded-lg border border-line bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-signal hover:shadow-xl hover:shadow-slate-900/10`;
-const articleClass = prominent
-  ? `${baseArticleClass} md:col-span-2 xl:col-span-2`
-  : baseArticleClass;
+const stackLabel = project.tech_stack.slice(0, 3).join(' / ') || 'Project';
 ---
 
-<article class={articleClass}>
-  <a
-    href={`${base}projects/${project.slug}/`}
-    class={prominent ? 'grid h-full min-w-0 lg:grid-cols-[1.12fr_0.88fr]' : 'block h-full min-w-0'}
-  >
-    {showImage && (
-      <div class={prominent ? 'relative min-h-[320px] overflow-hidden border-b border-line bg-panel lg:border-b-0 lg:border-r' : 'relative overflow-hidden border-b border-line bg-panel'}>
-        <img
-          src={heroImage}
-          alt={`${project.title} preview`}
-          loading="lazy"
-          class={prominent
-            ? 'h-full min-h-[320px] w-full object-cover transition duration-300 group-hover:scale-[1.02]'
-            : 'aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-[1.02]'}
-        />
-        <div class="absolute left-3 top-3 rounded-full bg-ink px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.14em] text-white shadow-lg shadow-ink/20">
-          Project {caseNumber}
-        </div>
-      </div>
-    )}
+<article class="portfolio-project-card">
+  <a href={`${base}projects/${project.slug}/`} class="portfolio-project-card__link">
+    <div class="portfolio-project-card__media">
+      <img src={heroImage} alt={`${project.title} preview`} loading="lazy" />
+      <span>Case {caseNumber}</span>
+    </div>
 
-    <div class="flex h-full min-w-0 flex-col p-5">
-      <div class="flex items-start justify-between gap-4">
-        <div class="min-w-0">
-          <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-signal">
-            {project.featured ? 'Featured Project' : 'Project'}
-          </p>
-          <h3 class={prominent ? 'mt-3 text-4xl font-black leading-tight text-ink' : 'mt-3 text-2xl font-black leading-tight text-ink'}>
-            {project.title}
-          </h3>
-        </div>
-        <span class="whitespace-nowrap rounded-full border border-line bg-field px-3 py-1 font-mono text-xs font-bold text-quiet">
-          {stackLabel}
-        </span>
+    <div class="portfolio-project-card__body">
+      <div class="portfolio-project-card__meta">
+        <span>{project.featured ? 'Featured' : 'Project'}</span>
+        <span>{stackLabel}</span>
       </div>
 
-      <p class="mt-4 line-clamp-4 text-sm leading-6 text-quiet">
-        {summary}
-      </p>
+      <h3>{project.title}</h3>
+      <p>{summary}</p>
 
       {(project.role || project.impact) && (
-        <dl class="mt-5 grid gap-3 border-t border-line pt-4 text-xs">
+        <dl class="portfolio-project-card__proof">
           {project.role && (
             <div>
-              <dt class="font-mono font-black uppercase tracking-[0.12em] text-quiet">Role</dt>
-              <dd class="mt-1 font-semibold text-ink">{project.role}</dd>
+              <dt>Role</dt>
+              <dd>{project.role}</dd>
             </div>
           )}
           {project.impact && (
             <div>
-              <dt class="font-mono font-black uppercase tracking-[0.12em] text-quiet">Impact</dt>
-              <dd class="mt-1 font-semibold text-ink">{project.impact}</dd>
+              <dt>Impact</dt>
+              <dd>{project.impact}</dd>
             </div>
           )}
         </dl>
       )}
 
-      <div class="mt-auto flex flex-wrap gap-2 pt-6">
-        {project.tech_stack.slice(0, prominent ? 8 : 5).map((item) => (
-          <span class="rounded-full border border-line bg-field px-3 py-1 text-xs font-bold text-ink">
-            {item}
-          </span>
+      <div class="portfolio-project-card__stack">
+        {project.tech_stack.slice(0, 6).map((item) => (
+          <span>{item}</span>
         ))}
       </div>
-      <span class="mt-5 font-mono text-xs font-black uppercase tracking-[0.14em] text-signal">
-        Open project
-      </span>
     </div>
   </a>
 </article>

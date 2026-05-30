@@ -74,16 +74,16 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('before_lab').map((section) => <CustomSection section={section} />)}
 
-    <section class="border-b border-line bg-ink px-6 py-12 text-white lg:px-8" id="experience">
-      <div class="mx-auto max-w-7xl">
-        <div class="flex flex-col justify-between gap-6 border-b border-white/15 pb-8 lg:flex-row lg:items-end">
+    <section class="portfolio-experience" id="experience">
+      <div class="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
+        <div class="flex flex-col justify-between gap-6 border-b border-white/10 pb-8 lg:flex-row lg:items-end">
           <SectionHeader
             eyebrow="Experience And Leadership"
             title="Teaching, Community Work, And Technical Leadership"
             copy="Relevant proof beyond projects: Flutter workshops, ICPC volunteering, mentoring, and programming instruction."
             inverse
           />
-          <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href="#contact">
+          <a class="portfolio-button" href="#contact">
             Contact
           </a>
         </div>
@@ -94,12 +94,12 @@ const sectionsFor = (placement: string) =>
           ))}
           {experiments.length === 0 &&
             queuedLab.map(([title, copy]) => (
-              <article class="border border-white/15 bg-white/5 p-5">
-                <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
+              <article class="portfolio-fallback-card">
+                <p>
                   Experience
                 </p>
-                <h3 class="mt-4 text-2xl font-black text-white">{title}</h3>
-                <p class="mt-3 text-sm leading-7 text-slate-300">{copy}</p>
+                <h3>{title}</h3>
+                <span>{copy}</span>
               </article>
             ))}
         </div>
@@ -108,23 +108,24 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('before_skills').map((section) => <CustomSection section={section} />)}
 
-    <section class="border-b border-line bg-panel px-6 py-12 lg:px-8" id="skills">
-      <div class="mx-auto max-w-7xl">
+    <section class="portfolio-skills" id="skills">
+      <div class="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Skills"
           title="Core Skills"
           copy="Grouped for fast screening."
+          inverse
         />
         <div class="grid gap-5 lg:grid-cols-3">
           {skillGroups.map((skill) => (
-            <article class="border border-line bg-white p-5">
-              <div class="mb-5 flex items-center justify-between gap-4 border-b border-line pb-4">
-                <h3 class="text-xl font-black text-ink">{skill.category}</h3>
-                <span class="font-mono text-xs font-black uppercase tracking-[0.14em] text-alert">
+            <article class="portfolio-skill-card">
+              <div>
+                <h3>{skill.category}</h3>
+                <span>
                   {skill.items.length} skills
                 </span>
               </div>
-              <div class="flex flex-wrap gap-2">
+              <div class="portfolio-skill-card__badges">
                 {skill.items.map((item) => <SkillBadge label={item} />)}
               </div>
             </article>
@@ -135,47 +136,50 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('before_contact').map((section) => <CustomSection section={section} />)}
 
-    <section class="bg-ink px-6 py-12 text-white lg:px-8" id="contact">
-      <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_0.72fr] lg:items-end">
+    <section class="portfolio-contact" id="contact">
+      <div class="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:px-6 lg:grid-cols-[1fr_0.72fr] lg:items-end lg:px-8">
         <div>
-          <p class="font-mono text-xs font-black uppercase tracking-[0.18em] text-signal">
+          <p>
             Contact
           </p>
-          <h2 class="mt-4 max-w-3xl text-4xl font-black leading-tight sm:text-6xl">
+          <h2>
             Want the resume or a quick conversation?
           </h2>
-          <p class="mt-5 max-w-2xl text-base leading-8 text-slate-300">
-            The fastest path is email, phone, resume, LinkedIn, GitHub, or Instagram.
+          <p class="portfolio-contact__copy">
+            The fastest path is email, phone, resume, LinkedIn, GitHub, portfolio, or Instagram.
           </p>
         </div>
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+        <div class="portfolio-contact__links">
           {config.email && (
-            <a class="bg-white px-5 py-3 text-sm font-black text-ink" href={`mailto:${config.email}`}>
+            <a href={`mailto:${config.email}`}>
               Email
             </a>
           )}
           {config.resume_url && (
-            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.resume_url}>
+            <a href={config.resume_url}>
               Resume
             </a>
           )}
           {config.phone && (
-            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={`tel:${config.phone}`}>
+            <a href={`tel:${config.phone}`}>
               Phone
             </a>
           )}
+          <a href="https://eslamnabawy.github.io/Nabawy-s-Portfolio-/">
+            Portfolio
+          </a>
           {config.github_url && (
-            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.github_url}>
+            <a href={config.github_url}>
               GitHub
             </a>
           )}
           {config.linkedin_url && (
-            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.linkedin_url}>
+            <a href={config.linkedin_url}>
               LinkedIn
             </a>
           )}
           {config.instagram_url && (
-            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.instagram_url}>
+            <a href={config.instagram_url}>
               Instagram
             </a>
           )}

@@ -17,9 +17,9 @@ const { config, projectCount, skillCount, experimentCount, theme, featuredProjec
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+const livePortfolioUrl = 'https://eslamnabawy.github.io/Nabawy-s-Portfolio-/';
 const featuredImage = featuredProject ? getProjectHeroImage(featuredProject) : '';
 const featuredHref = featuredProject ? `${base}projects/${featuredProject.slug}/` : `${base}#projects`;
-const status = projectCount > 0 ? 'Available for software engineering roles' : 'Portfolio loading';
 const showFeaturedPanel =
   theme.showFeaturedProjectPanel && theme.heroLayout !== 'statement';
 const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
@@ -28,135 +28,97 @@ const shortUrl = (url?: string | null) =>
 const contactLinks = [
   { label: 'Email', value: config.email, href: config.email ? `mailto:${config.email}` : null },
   { label: 'Phone', value: config.phone, href: phoneHref },
-  { label: 'LinkedIn', value: shortUrl(config.linkedin_url), href: config.linkedin_url },
+  { label: 'Portfolio', value: shortUrl(livePortfolioUrl), href: livePortfolioUrl },
   { label: 'GitHub', value: shortUrl(config.github_url), href: config.github_url },
+  { label: 'LinkedIn', value: shortUrl(config.linkedin_url), href: config.linkedin_url },
   { label: 'Instagram', value: shortUrl(config.instagram_url), href: config.instagram_url },
 ].filter((item) => item.value && item.href) as { label: string; value: string; href: string }[];
-const heroClass = 'os-hero relative overflow-hidden border-b border-line bg-white text-ink';
 ---
 
-<section class={heroClass}>
-  <div class="os-hero-grid absolute inset-0 opacity-70"></div>
-  <div class="absolute inset-x-0 top-0 h-1 bg-signal"></div>
-
-  <div class="relative mx-auto max-w-7xl px-6 py-5 lg:px-8">
-    <nav class="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
-      <a class="shrink-0 font-mono text-sm font-black uppercase tracking-[0.14em] text-ink" href={base}>
-        Eslam Tarek Nabawy
-      </a>
-      <div class="flex w-full max-w-full flex-wrap gap-2 font-mono text-xs font-black uppercase tracking-[0.12em] text-quiet sm:w-auto">
-        <a class="rounded-full px-3 py-2 hover:bg-panel hover:text-signal" href="#projects">Projects</a>
-        <a class="rounded-full px-3 py-2 hover:bg-panel hover:text-signal" href="#skills">Skills</a>
-        <a class="rounded-full px-3 py-2 hover:bg-panel hover:text-signal" href="#experience">Experience</a>
-        {config.email && <a class="rounded-full px-3 py-2 hover:bg-panel hover:text-signal" href={`mailto:${config.email}`}>Contact</a>}
+<section class="portfolio-hero">
+  <div class="portfolio-hero__grid" aria-hidden="true"></div>
+  <div class="mx-auto max-w-7xl px-5 py-5 sm:px-6 lg:px-8">
+    <nav class="portfolio-nav">
+      <a class="portfolio-nav__brand" href={base}>Eslam Tarek Nabawy</a>
+      <div class="portfolio-nav__links">
+        <a href="#summary">Brief</a>
+        <a href="#projects">Work</a>
+        <a href="#experience">Experience</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
       </div>
     </nav>
 
-    <div class="grid gap-8 py-10 lg:grid-cols-[minmax(0,0.96fr)_minmax(360px,0.74fr)] lg:items-center lg:py-14">
+    <div class="portfolio-contact-strip" aria-label="Contact information">
+      {contactLinks.map((link) => (
+        <a href={link.href} class="portfolio-contact-strip__item">
+          <span>{link.label}</span>
+          <strong>{link.value}</strong>
+        </a>
+      ))}
+    </div>
+
+    <div class="portfolio-hero__layout">
       <div class="min-w-0">
-        <div class="mb-5 flex max-w-full flex-wrap gap-3 font-mono text-xs font-black uppercase tracking-[0.14em]">
-          <span class="max-w-full rounded-full border border-signal/40 bg-signal/10 px-3 py-2 leading-5 text-signal">
-            {status}
-          </span>
-          <span class="w-full max-w-full rounded-full border border-line bg-white px-3 py-2 leading-5 text-quiet shadow-sm sm:w-auto">
-            Flutter / Firebase / AI Automation / n8n
-          </span>
-          <span class="w-full max-w-full rounded-full border border-line bg-white px-3 py-2 leading-5 text-quiet shadow-sm sm:w-auto">
-            6th October City, Egypt
-          </span>
+        <div class="portfolio-status-row">
+          <span>Software Engineer</span>
+          <span>Flutter / Firebase / AI Automation</span>
+          <span>6th October City, Egypt</span>
         </div>
 
-        <h1 class="max-w-4xl break-words text-5xl font-black leading-[0.95] text-ink sm:text-6xl lg:text-7xl">
-          {config.name}
-        </h1>
-        <p class="mt-5 max-w-3xl text-xl font-black leading-8 text-ink sm:text-2xl">
-          {config.headline}
-        </p>
-        <p class="mt-5 max-w-3xl text-base leading-8 text-quiet">
-          {config.bio}
-        </p>
+        <h1 class="portfolio-hero__title">{config.name}</h1>
+        <p class="portfolio-hero__headline">{config.headline}</p>
+        <p class="portfolio-hero__bio">{config.bio}</p>
 
-        <div class="mt-7 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2" aria-label="Contact information">
-          {contactLinks.map((link) => (
-            <a
-              class="min-w-0 rounded-lg border border-line bg-white px-4 py-3 shadow-sm hover:border-signal hover:bg-panel"
-              href={link.href}
-            >
-              <span class="block font-mono text-[0.68rem] font-black uppercase tracking-[0.14em] text-quiet">
-                {link.label}
-              </span>
-              <span class="mt-1 block break-all text-sm font-black text-ink">{link.value}</span>
-            </a>
-          ))}
-        </div>
-
-        <div class="mt-7 flex flex-wrap gap-3">
-          <a class="rounded-full border border-ink bg-ink px-5 py-3 text-sm font-black text-white" href="#projects">
-            View Projects
-          </a>
+        <div class="portfolio-hero__actions">
+          <a class="portfolio-button portfolio-button--primary" href="#projects">View Selected Work</a>
           {config.resume_url && (
-            <a class="rounded-full border border-line bg-white px-5 py-3 text-sm font-black text-ink shadow-sm" href={config.resume_url}>
-              Download Resume
-            </a>
+            <a class="portfolio-button" href={config.resume_url}>Download Resume</a>
           )}
-          {config.linkedin_url && (
-            <a class="rounded-full border border-line bg-white px-5 py-3 text-sm font-black text-ink shadow-sm" href={config.linkedin_url}>
-              LinkedIn
-            </a>
+          {config.email && (
+            <a class="portfolio-button" href={`mailto:${config.email}`}>Email Me</a>
           )}
         </div>
+
       </div>
 
       {showFeaturedPanel && (
-        <aside class="min-w-0 rounded-lg border border-line bg-white p-4 shadow-xl shadow-slate-900/10">
-          <div class="flex items-start justify-between gap-4">
-            <div class="min-w-0">
-              <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-                Featured Build
-              </p>
-              <h2 class="mt-3 break-words text-3xl font-black leading-tight text-ink">
-                {featuredProject?.title ?? 'Project pending'}
-              </h2>
+        <aside class="portfolio-featured">
+          <div class="portfolio-featured__header">
+            <div>
+              <p>Featured Case Study</p>
+              <h2>{featuredProject?.title ?? 'Project pending'}</h2>
             </div>
-            <span class="rounded-full border border-line bg-panel px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.12em] text-quiet">
-              #{projectCount}
-            </span>
+            <a href={featuredHref}>Open</a>
           </div>
 
-          <p class="mt-4 line-clamp-3 text-sm leading-6 text-quiet">
+          <p class="portfolio-featured__copy">
             {featuredProject?.short_description ?? featuredProject?.description ?? 'Featured project will appear here.'}
           </p>
 
-          <a href={featuredHref} class="mt-5 block overflow-hidden rounded-lg border border-line bg-panel">
+          <a href={featuredHref} class="portfolio-featured__media">
             {featuredImage ? (
               <img
                 src={featuredImage}
                 alt={featuredProject ? `${featuredProject.title} preview` : 'Featured project preview'}
-                class="aspect-[16/10] w-full object-cover transition duration-300 hover:scale-[1.02]"
               />
             ) : (
-              <div class="os-radar aspect-[16/10] w-full"></div>
+              <div class="os-radar h-full w-full"></div>
             )}
           </a>
 
-          <dl class="mt-5 grid grid-cols-3 gap-3">
-            <div class="border-r border-line pr-3">
-              <dt class="font-mono text-[0.68rem] font-black uppercase tracking-[0.12em] text-quiet">
-                Projects
-              </dt>
-              <dd class="mt-1 text-3xl font-black text-ink">{projectCount}</dd>
-            </div>
-            <div class="border-r border-line pr-3">
-              <dt class="font-mono text-[0.68rem] font-black uppercase tracking-[0.12em] text-quiet">
-                Roles
-              </dt>
-              <dd class="mt-1 text-3xl font-black text-ink">{experimentCount}</dd>
+          <dl class="portfolio-proof-metrics">
+            <div>
+              <dt>Projects</dt>
+              <dd>{projectCount}</dd>
             </div>
             <div>
-              <dt class="font-mono text-[0.68rem] font-black uppercase tracking-[0.12em] text-quiet">
-                Skills
-              </dt>
-              <dd class="mt-1 text-3xl font-black text-ink">{skillCount}</dd>
+              <dt>Experience</dt>
+              <dd>{experimentCount}</dd>
+            </div>
+            <div>
+              <dt>Skill Groups</dt>
+              <dd>{skillCount}</dd>
             </div>
           </dl>
         </aside>

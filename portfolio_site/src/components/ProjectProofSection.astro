@@ -1,7 +1,6 @@
 ---
 import type { Project, SiteThemeConfig } from '../lib/types';
 import ProjectCard from './ProjectCard.astro';
-import SectionHeader from './SectionHeader.astro';
 
 type ProjectCardStyle = NonNullable<SiteThemeConfig['projectCardStyle']>;
 
@@ -14,64 +13,32 @@ interface Props {
 const { projects, featuredCount, cardStyle } = Astro.props;
 ---
 
-<section class="border-b border-line bg-white px-6 py-14 lg:px-8" id="projects">
-  <div class="mx-auto max-w-7xl">
-    <div class="flex flex-col justify-between gap-6 border-b border-line pb-8 lg:flex-row lg:items-end">
-      <SectionHeader
-        eyebrow="Selected Projects"
-        title="Project Carousel"
-        copy="Screenshot-backed proof for CampusSuit, Rain, Brox, AI automation, e-commerce, and Silvator."
-      />
-      <div class="grid w-full max-w-md grid-cols-2 rounded-lg border border-line bg-panel">
-        <div class="border-r border-line p-4">
-          <p class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">
-            Projects
-          </p>
-          <p class="mt-1 text-4xl font-black text-ink">{projects.length}</p>
-        </div>
-        <div class="p-4">
-          <p class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">
-            Featured
-          </p>
-          <p class="mt-1 text-4xl font-black text-ink">{featuredCount}</p>
-        </div>
+<section class="portfolio-work" id="projects">
+  <div class="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
+    <div class="portfolio-section-heading portfolio-section-heading--split">
+      <div>
+        <p>Selected Work</p>
+        <h2>Case studies that show the engineering.</h2>
+      </div>
+      <div class="portfolio-work__stats">
+        <span><strong>{projects.length}</strong> projects</span>
+        <span><strong>{featuredCount}</strong> featured</span>
       </div>
     </div>
 
     {projects.length > 0 ? (
-      <div class="mt-8" data-project-carousel>
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-quiet">
-            Swipe or use controls
-          </p>
-          <div class="flex gap-2">
-            <button
-              type="button"
-              class="rounded-full border border-line bg-white px-4 py-2 text-sm font-black text-ink shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
-              data-project-carousel-prev
-            >
-              Prev
-            </button>
-            <button
-              type="button"
-              class="rounded-full border border-ink bg-ink px-4 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40"
-              data-project-carousel-next
-            >
-              Next
-            </button>
+      <div class="portfolio-work__carousel" data-project-carousel>
+        <div class="portfolio-work__controls">
+          <p>Screenshot-backed apps, automation, and product systems.</p>
+          <div>
+            <button type="button" data-project-carousel-prev>Prev</button>
+            <button type="button" data-project-carousel-next>Next</button>
           </div>
         </div>
 
-        <div
-          class="project-carousel-track mt-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4"
-          data-project-carousel-track
-          tabindex="0"
-        >
+        <div class="project-carousel-track portfolio-work__track" data-project-carousel-track tabindex="0">
           {projects.map((project, index) => (
-            <div
-              class="min-w-0 shrink-0 basis-[min(88vw,26rem)] snap-start md:basis-[27rem] lg:basis-[29rem]"
-              data-project-card-slide
-            >
+            <div class="portfolio-work__slide" data-project-card-slide>
               <ProjectCard
                 project={project}
                 prominent={false}
@@ -83,13 +50,9 @@ const { projects, featuredCount, cardStyle } = Astro.props;
         </div>
       </div>
     ) : (
-      <div class="mt-8 rounded-lg border border-line bg-panel p-6">
-        <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-          Awaiting Project
-        </p>
-        <p class="mt-4 text-sm leading-7 text-quiet">
-          Publish the first project from the dashboard.
-        </p>
+      <div class="portfolio-empty-state">
+        <p>Awaiting Project</p>
+        <span>Publish the first project from the dashboard.</span>
       </div>
     )}
   </div>
@@ -102,7 +65,7 @@ const { projects, featuredCount, cardStyle } = Astro.props;
       const prev = root.querySelector<HTMLButtonElement>('[data-project-carousel-prev]');
       const next = root.querySelector<HTMLButtonElement>('[data-project-carousel-next]');
 
-      if (!track || !prev || !next) {
+      if (!track || !prev || !next || track.dataset.ready === 'true') {
         return;
       }
 
@@ -127,6 +90,7 @@ const { projects, featuredCount, cardStyle } = Astro.props;
 
       track.addEventListener('scroll', updateControls, { passive: true });
       window.addEventListener('resize', updateControls);
+      track.dataset.ready = 'true';
       updateControls();
     });
   };
