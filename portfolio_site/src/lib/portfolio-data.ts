@@ -1,9 +1,10 @@
-import { supabase } from './supabase';
 import type { Experiment, PageSection, Project, SiteConfig, Skill } from './types';
 import { readSectionBlocks, validateSectionBlocks } from './section-blocks';
+import { staticPortfolioData } from './static-portfolio-data';
 import { normalizeThemeConfig } from './theme';
 
 const projectSelect = '*, project_images(*)';
+const placeholderSupabaseKey = 'replace-with-your-publishable-or-anon-key';
 
 export type PortfolioData = {
   config: SiteConfig;
@@ -14,75 +15,81 @@ export type PortfolioData = {
 };
 
 export async function getPortfolioData(): Promise<PortfolioData> {
-  const [configResult, skillsResult, projectsResult, experimentsResult, sectionsResult] = await Promise.all([
-    supabase.from('site_config').select('*').eq('id', 'global').single(),
-    supabase
-      .from('skills')
-      .select('*')
-      .eq('is_published', true)
-      .order('display_order', { ascending: true }),
-    supabase
-      .from('projects')
-      .select(projectSelect)
-      .eq('is_published', true)
-      .order('featured', { ascending: false })
-      .order('display_order', { ascending: true })
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('experiments')
-      .select('*')
-      .eq('is_published', true)
-      .order('display_order', { ascending: true })
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('page_sections')
-      .select('*')
-      .eq('is_published', true)
-      .order('placement', { ascending: true })
-      .order('display_order', { ascending: true })
-      .order('created_at', { ascending: false }),
-  ]);
-
-  if (configResult.error) {
-    throw new Error(`Failed to load site_config.global: ${configResult.error.message}`);
-  }
-  if (skillsResult.error) {
-    throw new Error(`Failed to load published skills: ${skillsResult.error.message}`);
-  }
-  if (projectsResult.error) {
-    throw new Error(`Failed to load published projects: ${projectsResult.error.message}`);
-  }
-  if (experimentsResult.error) {
-    throw new Error(`Failed to load published experiments: ${experimentsResult.error.message}`);
-  }
-  if (sectionsResult.error) {
-    throw new Error(`Failed to load published page sections: ${sectionsResult.error.message}`);
+  if (!hasSupabaseConfig()) {
+    return normalizePortfolioData(staticPortfolioData);
   }
 
-  const config = normalizeSiteConfig(configResult.data as SiteConfig);
-  const skills = (skillsResult.data ?? []) as Skill[];
-  const projects = ((projectsResult.data ?? []) as Project[]).map(normalizeProject);
-  const experiments = (experimentsResult.data ?? []) as Experiment[];
-  const sections = (sectionsResult.data ?? []) as PageSection[];
-
-  validateSiteConfig(config);
-  for (const skill of skills) {
-    validateSkill(skill);
-  }
-  for (const project of projects) {
-    validatePublishedProject(project);
-  }
-  for (const experiment of experiments) {
-    validatePublishedExperiment(experiment);
-  }
-  for (const section of sections) {
-    validatePublishedPageSection(section);
+  const { supabase } = await import('./supabase');
+  if (!supabase) {
+    return normalizePortfolioData(staticPortfolioData);
   }
 
-  return { config, projects, skills, experiments, sections };
+  const [configResult, skillsResult, projectsResult, experimentsResult, sectionsResult] =
+    await Promise.all([
+      supabase.from('site_config').select('*').eq('id', 'global').single(),
+      supabase
+        .from('skills')
+        .select('*')
+        .eq('is_published', true)
+        .order('display_order', { ascending: true }),
+      supabase
+        .from('projects')
+        .select(projectSelect)
+        .eq('is_published', true)
+        .order('featured', { ascending: false })
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('experiments')
+        .select('*')
+        .eq('is_published', true)
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('page_sections')
+        .select('*')
+        .eq('is_published', true)
+        .order('placement', { ascending: true })
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false }),
+    ]);
+
+  const errors = [
+    ['site_config.global', configResult.error],
+    ['published skills', skillsResult.error],
+    ['published projects', projectsResult.error],
+    ['published experiments', experimentsResult.error],
+    ['published page sections', sectionsResult.error],
+  ].filter(([, error]) => error);
+
+  if (errors.length > 0) {
+    console.warn(
+      `Supabase portfolio data unavailable; using static portfolio data. ${errors
+        .map(([label, error]) => `${label}: ${(error as { message: string }).message}`)
+        .join(' | ')}`,
+    );
+    return normalizePortfolioData(staticPortfolioData);
+  }
+
+  return normalizePortfolioData({
+    config: configResult.data as SiteConfig,
+    skills: (skillsResult.data ?? []) as Skill[],
+    projects: (projectsResult.data ?? []) as Project[],
+    experiments: (experimentsResult.data ?? []) as Experiment[],
+    sections: (sectionsResult.data ?? []) as PageSection[],
+  });
 }
 
 export async function getPublishedProjects(): Promise<Project[]> {
+  if (!hasSupabaseConfig()) {
+    return normalizePortfolioData(staticPortfolioData).projects;
+  }
+
+  const { supabase } = await import('./supabase');
+  if (!supabase) {
+    return normalizePortfolioData(staticPortfolioData).projects;
+  }
+
   const { data, error } = await supabase
     .from('projects')
     .select(projectSelect)
@@ -91,17 +98,28 @@ export async function getPublishedProjects(): Promise<Project[]> {
     .order('display_order', { ascending: true });
 
   if (error) {
-    throw new Error(`Failed to load project static paths: ${error.message}`);
+    console.warn(
+      `Supabase project paths unavailable; using static portfolio data. ${error.message}`,
+    );
+    return normalizePortfolioData(staticPortfolioData).projects;
   }
 
-  const projects = ((data ?? []) as Project[]).map(normalizeProject);
-  for (const project of projects) {
-    validatePublishedProject(project);
-  }
-  return projects;
+  return normalizePortfolioData({
+    ...staticPortfolioData,
+    projects: (data ?? []) as Project[],
+  }).projects;
 }
 
 export async function getPublishedExperiments(): Promise<Experiment[]> {
+  if (!hasSupabaseConfig()) {
+    return normalizePortfolioData(staticPortfolioData).experiments;
+  }
+
+  const { supabase } = await import('./supabase');
+  if (!supabase) {
+    return normalizePortfolioData(staticPortfolioData).experiments;
+  }
+
   const { data, error } = await supabase
     .from('experiments')
     .select('*')
@@ -110,14 +128,16 @@ export async function getPublishedExperiments(): Promise<Experiment[]> {
     .order('created_at', { ascending: false });
 
   if (error) {
-    throw new Error(`Failed to load experiment static paths: ${error.message}`);
+    console.warn(
+      `Supabase experiment paths unavailable; using static portfolio data. ${error.message}`,
+    );
+    return normalizePortfolioData(staticPortfolioData).experiments;
   }
 
-  const experiments = (data ?? []) as Experiment[];
-  for (const experiment of experiments) {
-    validatePublishedExperiment(experiment);
-  }
-  return experiments;
+  return normalizePortfolioData({
+    ...staticPortfolioData,
+    experiments: (data ?? []) as Experiment[],
+  }).experiments;
 }
 
 export function validatePublishedProject(project: Project): void {
@@ -182,11 +202,15 @@ export function validatePublishedExperiment(experiment: Experiment): void {
 }
 
 function normalizeProject(project: Project): Project {
-  const projectImages = [...(project.project_images ?? [])].sort(
-    (left, right) => left.display_order - right.display_order,
-  );
+  const projectImages = [...(project.project_images ?? [])]
+    .sort((left, right) => left.display_order - right.display_order)
+    .map((image) => ({
+      ...image,
+      image_url: resolveAssetUrl(image.image_url),
+    }));
   return {
     ...project,
+    image_url: project.image_url ? resolveAssetUrl(project.image_url) : project.image_url,
     project_images: projectImages,
   };
 }
@@ -211,8 +235,53 @@ function validateSiteConfig(config: SiteConfig): void {
 function normalizeSiteConfig(config: SiteConfig): SiteConfig {
   return {
     ...config,
+    resume_url: config.resume_url ? resolveAssetUrl(config.resume_url) : config.resume_url,
     theme_json: normalizeThemeConfig(config.theme_json),
   };
+}
+
+function normalizePortfolioData(data: PortfolioData): PortfolioData {
+  const config = normalizeSiteConfig(data.config);
+  const skills = [...data.skills].sort((left, right) => left.display_order - right.display_order);
+  const projects = [...data.projects]
+    .map(normalizeProject)
+    .sort((left, right) => {
+      if (left.featured !== right.featured) {
+        return left.featured ? -1 : 1;
+      }
+      if (left.display_order !== right.display_order) {
+        return left.display_order - right.display_order;
+      }
+      return new Date(right.created_at ?? 0).getTime() - new Date(left.created_at ?? 0).getTime();
+    });
+  const experiments = [...data.experiments].sort(
+    (left, right) => left.display_order - right.display_order,
+  );
+  const sections = [...data.sections].sort((left, right) => {
+    if (left.placement !== right.placement) {
+      return left.placement.localeCompare(right.placement);
+    }
+    if (left.display_order !== right.display_order) {
+      return left.display_order - right.display_order;
+    }
+    return new Date(right.created_at ?? 0).getTime() - new Date(left.created_at ?? 0).getTime();
+  });
+
+  validateSiteConfig(config);
+  for (const item of skills) {
+    validateSkill(item);
+  }
+  for (const item of projects) {
+    validatePublishedProject(item);
+  }
+  for (const item of experiments) {
+    validatePublishedExperiment(item);
+  }
+  for (const item of sections) {
+    validatePublishedPageSection(item);
+  }
+
+  return { config, projects, skills, experiments, sections };
 }
 
 function validateSkill(skill: Skill): void {
@@ -247,4 +316,29 @@ function validatePublishedPageSection(section: PageSection): void {
     section.title,
     readSectionBlocks(section.content_json),
   );
+}
+
+function hasSupabaseConfig(): boolean {
+  const dataSource = import.meta.env.PORTFOLIO_DATA_SOURCE?.trim().toLowerCase();
+  const url = import.meta.env.SUPABASE_URL?.trim();
+  const anonKey = import.meta.env.SUPABASE_ANON_KEY?.trim();
+  return Boolean(dataSource === 'supabase' && url && anonKey && anonKey !== placeholderSupabaseKey);
+}
+
+function resolveAssetUrl(value: string): string {
+  const url = value.trim();
+  if (
+    !url ||
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('mailto:') ||
+    url.startsWith('#') ||
+    url.startsWith('/')
+  ) {
+    return url;
+  }
+
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const base = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+  return `${base}${url.replace(/^\.\//, '')}`;
 }

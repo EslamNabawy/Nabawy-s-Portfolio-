@@ -1,0 +1,30 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Brox project thumbnail</title>
+  <desc id="desc">Offline-first Flutter desktop workspace operations app mockup with front desk, rooms, inventory, memberships, and analytics.</desc>
+  <rect width="1600" height="1000" fill="#0c1117"/>
+  <rect x="124" y="110" width="1352" height="780" rx="34" fill="#fbfcf7" stroke="#21d3be" stroke-width="4"/>
+  <text x="182" y="194" fill="#0c1117" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="900">Brox</text>
+  <text x="1022" y="192" fill="#0f766e" font-family="Consolas, monospace" font-size="22" font-weight="900">OFFLINE WORKSPACE OPS</text>
+  <rect x="220" y="282" width="1040" height="84" rx="22" fill="#0c1117"/>
+  <text x="262" y="336" fill="#21d3be" font-family="Consolas, monospace" font-size="20" font-weight="900">OWNER COMMAND HUB / FRONT DESK</text>
+  <rect x="220" y="426" width="294" height="310" rx="30" fill="#e8f7f4"/>
+  <rect x="562" y="426" width="294" height="310" rx="30" fill="#f2f2e7"/>
+  <rect x="904" y="426" width="294" height="310" rx="30" fill="#e8f7f4"/>
+  <text x="266" y="512" fill="#0c1117" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Daily</text>
+  <text x="608" y="512" fill="#0c1117" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Rooms</text>
+  <text x="950" y="512" fill="#0c1117" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Members</text>
+  <rect x="266" y="570" width="178" height="14" rx="7" fill="#21d3be"/>
+  <rect x="266" y="608" width="206" height="14" rx="7" fill="#bddbd4"/>
+  <rect x="608" y="570" width="178" height="14" rx="7" fill="#b86105"/>
+  <rect x="608" y="608" width="206" height="14" rx="7" fill="#ded2bd"/>
+  <rect x="950" y="570" width="178" height="14" rx="7" fill="#21d3be"/>
+  <rect x="950" y="608" width="206" height="14" rx="7" fill="#bddbd4"/>
+  <rect x="1284" y="292" width="70" height="432" rx="35" fill="#0c1117"/>
+  <circle cx="1319" cy="342" r="13" fill="#21d3be"/>
+  <circle cx="1319" cy="410" r="13" fill="#fbfcf7"/>
+  <circle cx="1319" cy="478" r="13" fill="#fbfcf7"/>
+  <circle cx="1319" cy="546" r="13" fill="#fbfcf7"/>
+  <rect x="220" y="788" width="472" height="34" rx="17" fill="#0c1117"/>
+  <rect x="722" y="788" width="236" height="34" rx="17" fill="#21d3be"/>
+  <text x="996" y="812" fill="#0c1117" font-family="Consolas, monospace" font-size="18" font-weight="900">HIVE / BLOC / LOCAL DATA</text>
+</svg>

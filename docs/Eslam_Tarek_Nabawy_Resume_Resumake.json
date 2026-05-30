@@ -1,0 +1,310 @@
+{
+  "basics": {
+    "name": "Eslam Tarek Nabawy",
+    "label": "Flutter Software Engineer | Mobile & Desktop Apps | Firebase | WebRTC | AI Automation",
+    "email": "eslamtarek.dev@gmail.com",
+    "phone": "+201015683693",
+    "url": "https://github.com/EslamNabawy",
+    "summary": "Flutter Software Engineer and Computer Science graduate with 3+ years of hands-on freelance and project experience building cross-platform mobile and desktop applications. Strong in Dart, Flutter, Firebase, REST APIs, WebRTC, Riverpod, BLoC/Cubit, Drift, Hive, Git, and n8n/LLM automation. Built real products across Android, Windows, Firebase-backed workflows, local-first desktop systems, and private peer-to-peer communication.",
+    "location": {
+      "city": "6th October City",
+      "region": "Giza",
+      "countryCode": "EG"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "EslamNabawy",
+        "url": "https://github.com/EslamNabawy"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "eslam-tarek-nabawy",
+        "url": "https://www.linkedin.com/in/eslam-tarek-nabawy/"
+      },
+      {
+        "network": "Instagram",
+        "username": "eslamtareknabawy",
+        "url": "https://www.instagram.com/eslamtareknabawy/"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Self-Employed",
+      "position": "Freelance Software Developer",
+      "location": "6th October City, Egypt",
+      "startDate": "2022-11",
+      "summary": "Built Flutter mobile and desktop applications using Dart, Firebase, REST APIs, responsive UI, local persistence, and feature-based architecture across client and personal products.",
+      "highlights": [
+        "Integrated Firebase Auth, Firestore, Realtime Database, Firebase Storage, REST APIs, routing, and state management with BLoC/Cubit and Riverpod-style patterns.",
+        "Delivered product workflows from requirements to release artifacts using Git/GitHub, documentation, debugging, and AI-assisted development while keeping implementation decisions explicit and reviewable.",
+        "Created n8n and LLM API workflows using OpenAI, Claude, webhooks, conditional routing, and notifications to automate repetitive product and content operations."
+      ]
+    },
+    {
+      "name": "Local School & Private Sessions",
+      "position": "Programming Instructor",
+      "location": "6th October City, Egypt",
+      "startDate": "2023-08",
+      "summary": "Taught programming fundamentals, OOP, algorithms, data structures, debugging, and practical software development through structured exercises.",
+      "highlights": [
+        "Mentored students through problem decomposition, implementation habits, and code-review thinking."
+      ]
+    }
+  ],
+  "volunteer": [
+    {
+      "organization": "Google Developer Student Club",
+      "position": "Flutter Head",
+      "startDate": "2022-10",
+      "endDate": "2023-10",
+      "summary": "Led Flutter learning sessions, mentored beginner developers, and helped organize community technical events.",
+      "highlights": [
+        "Coordinated NextGen and Google I/O extended events with the GDSC AEA team."
+      ]
+    },
+    {
+      "organization": "ICPC",
+      "position": "Core Team Member",
+      "startDate": "2020-06",
+      "endDate": "2023-10",
+      "summary": "Organized problem-solving contests and supported new members in algorithmic thinking and contest preparation.",
+      "highlights": [
+        "Built a three-year habit of solving difficult problems under time pressure and explaining solutions clearly."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "AEA Academy",
+      "area": "Computer Science",
+      "studyType": "Bachelor of Science",
+      "startDate": "2020-10",
+      "endDate": "2024-07",
+      "courses": [
+        "Data Structures and Algorithms",
+        "Object-Oriented Programming",
+        "Software Engineering",
+        "Database Systems",
+        "Operating Systems"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "Programming Languages",
+      "keywords": [
+        "Dart",
+        "JavaScript",
+        "Python",
+        "C++",
+        "Java",
+        "HTML",
+        "CSS"
+      ]
+    },
+    {
+      "name": "Mobile & Frontend",
+      "keywords": [
+        "Flutter",
+        "Flutter Desktop",
+        "Android",
+        "Windows desktop",
+        "Responsive UI",
+        "Figma",
+        "React.js familiarity"
+      ]
+    },
+    {
+      "name": "State Management & Architecture",
+      "keywords": [
+        "Riverpod",
+        "BLoC",
+        "Cubit",
+        "MVC",
+        "GoRouter",
+        "Repository pattern",
+        "Feature-based architecture"
+      ]
+    },
+    {
+      "name": "Backend, APIs & Data",
+      "keywords": [
+        "Firebase Auth",
+        "Firebase Realtime Database",
+        "Cloud Firestore",
+        "Firebase Storage",
+        "REST API integration",
+        "Drift",
+        "Hive",
+        "SQL",
+        "NoSQL"
+      ]
+    },
+    {
+      "name": "Realtime & Platform",
+      "keywords": [
+        "WebRTC data channels",
+        "Voice calls",
+        "Video calls",
+        "File transfer flows",
+        "Local persistence",
+        "Release artifacts"
+      ]
+    },
+    {
+      "name": "AI & Automation",
+      "keywords": [
+        "n8n workflow automation",
+        "OpenAI API",
+        "Claude API",
+        "LLM API integration",
+        "Webhooks",
+        "AI-assisted app creation"
+      ]
+    },
+    {
+      "name": "Tools & Engineering",
+      "keywords": [
+        "Git",
+        "GitHub",
+        "GitHub Actions",
+        "CI/CD concepts",
+        "Unit testing",
+        "Debugging",
+        "OOP",
+        "Design patterns",
+        "Data structures",
+        "Algorithms",
+        "Docker familiarity",
+        "AWS familiarity"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Brox",
+      "description": "Offline-first Flutter desktop workspace operations app for coworking and front-desk workflows.",
+      "highlights": [
+        "Built a local-first Flutter desktop operations system for check-in, checkout, live sessions, customers, rooms, desks, reservations, kitchen inventory, finance, staff, memberships, analytics, roles, audit logs, export, restore, and app health.",
+        "Designed the app around GoRouter shell routing, Cubit/Bloc state management, Hive CE local persistence, JSON-backed repositories, EasyLocalization, shared UI primitives, Windows release scripts, and GitHub Actions.",
+        "Maintained production-style project structure with 531 Dart files under lib/src, 98 Dart test files, 520 widgets, local schema version 3, backup/restore flows, permissions, diagnostics, and release documentation."
+      ],
+      "keywords": [
+        "Flutter Desktop",
+        "Dart",
+        "Hive",
+        "Cubit",
+        "Bloc",
+        "GoRouter",
+        "EasyLocalization",
+        "Windows"
+      ],
+      "roles": [
+        "Flutter Desktop Engineer"
+      ],
+      "type": "application"
+    },
+    {
+      "name": "Rain",
+      "description": "Private peer-to-peer messenger for Android and Windows using Flutter, WebRTC, Firebase, and Drift.",
+      "highlights": [
+        "Built accepted friendships, WebRTC data-channel messaging, connection diagnostics, one-to-one file transfer, voice calls, and video calls.",
+        "Separated Flutter UI, Riverpod state, Drift local persistence, Firebase Auth/Realtime Database signaling, Remote Config, session policy, and WebRTC media/data primitives across app, core, protocol, and peer packages.",
+        "Implemented username sign-in, friend search, friend requests, blocking, call/file conflict guards, direct/relay route visibility, recovery states, and Android/Windows release artifacts."
+      ],
+      "keywords": [
+        "Flutter",
+        "Dart",
+        "WebRTC",
+        "Firebase",
+        "Drift",
+        "Riverpod",
+        "Android",
+        "Windows"
+      ],
+      "roles": [
+        "Flutter / WebRTC Engineer"
+      ],
+      "type": "application"
+    },
+    {
+      "name": "CampusSuit",
+      "description": "Campus life management app built with Flutter and Firebase as a graduation project.",
+      "highlights": [
+        "Built onboarding, campus activities, events, profile management, live data, Firebase-backed workflows, and REST API integrations.",
+        "Structured feature screens, state management, and data-backed UI flows so graduation-project requirements could grow without turning the UI layer into backend glue."
+      ],
+      "keywords": [
+        "Flutter",
+        "Firebase",
+        "REST APIs",
+        "BLoC",
+        "Cross-platform UI"
+      ],
+      "startDate": "2023-12",
+      "endDate": "2024-07",
+      "roles": [
+        "Flutter Developer"
+      ],
+      "type": "application"
+    },
+    {
+      "name": "AI Workflow Automation",
+      "description": "n8n automation pipelines connecting LLM APIs, webhooks, notifications, and external services.",
+      "highlights": [
+        "Built n8n workflows that connect OpenAI/Claude APIs, webhooks, notifications, and external services into repeatable AI automation pipelines.",
+        "Automated data processing, AI-generated content flows, smart notifications, conditional routing, and error-aware workflow paths."
+      ],
+      "keywords": [
+        "n8n",
+        "OpenAI API",
+        "Claude API",
+        "Webhooks",
+        "Automation",
+        "LLM"
+      ],
+      "startDate": "2024",
+      "roles": [
+        "AI Automation Builder"
+      ],
+      "type": "automation"
+    },
+    {
+      "name": "So She Picks",
+      "description": "Flutter e-commerce ordering app with Firebase-backed order management and loyalty points.",
+      "highlights": [
+        "Delivered responsive ordering UI, Firebase-backed order management, checkout flow, and loyalty points behavior for a mobile commerce experience."
+      ],
+      "keywords": [
+        "Flutter",
+        "Firebase",
+        "Responsive UI",
+        "E-Commerce",
+        "Order Management"
+      ],
+      "startDate": "2023-07",
+      "endDate": "2023-09",
+      "roles": [
+        "Flutter Developer"
+      ],
+      "type": "application"
+    }
+  ],
+  "languages": [
+    {
+      "language": "Arabic",
+      "fluency": "Native"
+    },
+    {
+      "language": "English",
+      "fluency": "Upper-Intermediate / Professional proficiency"
+    }
+  ],
+  "meta": {
+    "canonical": "https://raw.githubusercontent.com/jsonresume/resume-schema/master/schema.json",
+    "version": "v1.0.0",
+    "lastModified": "2026-05-30"
+  }
+}

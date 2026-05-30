@@ -88,6 +88,8 @@ export type SiteConfig = {
   resume_url: string | null;
   github_url: string | null;
   linkedin_url: string | null;
+  instagram_url?: string | null;
+  phone?: string | null;
   email: string | null;
   design_variant: PublicDesignVariant;
   theme_json: SiteThemeConfig;

@@ -1,0 +1,33 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">AI workflow automation project thumbnail</title>
+  <desc id="desc">Mockup of n8n style automation nodes connected to LLM services and webhook outputs.</desc>
+  <rect width="1600" height="1000" fill="#07110f"/>
+  <path d="M0 170H1600M0 330H1600M0 490H1600M0 650H1600M0 810H1600M180 0V1000M380 0V1000M580 0V1000M780 0V1000M980 0V1000M1180 0V1000M1380 0V1000" stroke="#12352f" stroke-width="2"/>
+  <rect x="116" y="102" width="1368" height="796" rx="34" fill="#0d1b18" stroke="#2cd4bb" stroke-width="4"/>
+  <text x="168" y="185" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900">AI Workflow Automation</text>
+  <text x="1090" y="184" fill="#d9ff55" font-family="Consolas, monospace" font-size="22" font-weight="900">n8n / LLM / WEBHOOKS</text>
+  <rect x="190" y="278" width="254" height="158" rx="22" fill="#f6f3e8"/>
+  <text x="228" y="336" fill="#07110f" font-family="Consolas, monospace" font-size="20" font-weight="900">TRIGGER</text>
+  <text x="228" y="382" fill="#35423f" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">Webhook Input</text>
+  <circle cx="418" cy="357" r="14" fill="#2cd4bb"/>
+  <path d="M444 357H590" stroke="#d9ff55" stroke-width="8" stroke-linecap="round"/>
+  <rect x="590" y="232" width="300" height="250" rx="28" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+  <text x="630" y="300" fill="#2cd4bb" font-family="Consolas, monospace" font-size="20" font-weight="900">AI NODE</text>
+  <text x="630" y="353" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="900">LLM Router</text>
+  <text x="630" y="403" fill="#b6c8c3" font-family="Inter, Arial, sans-serif" font-size="22">OpenAI / Claude</text>
+  <rect x="642" y="435" width="196" height="16" rx="8" fill="#d9ff55"/>
+  <path d="M890 357H1016" stroke="#d9ff55" stroke-width="8" stroke-linecap="round"/>
+  <rect x="1016" y="276" width="330" height="170" rx="24" fill="#f6f3e8"/>
+  <text x="1054" y="337" fill="#07110f" font-family="Consolas, monospace" font-size="20" font-weight="900">OUTPUT</text>
+  <text x="1054" y="385" fill="#35423f" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Smart Notification</text>
+  <path d="M740 482V594" stroke="#2cd4bb" stroke-width="8" stroke-linecap="round"/>
+  <rect x="554" y="594" width="372" height="196" rx="28" fill="#16211d" stroke="#d9ff55" stroke-width="3"/>
+  <text x="600" y="658" fill="#d9ff55" font-family="Consolas, monospace" font-size="20" font-weight="900">CONDITION</text>
+  <text x="600" y="708" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="900">Validation + Retry</text>
+  <text x="600" y="754" fill="#b6c8c3" font-family="Inter, Arial, sans-serif" font-size="22">Branching and error checks</text>
+  <rect x="1016" y="584" width="330" height="206" rx="24" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+  <text x="1060" y="650" fill="#2cd4bb" font-family="Consolas, monospace" font-size="20" font-weight="900">SERVICE</text>
+  <text x="1060" y="701" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="900">External APIs</text>
+  <text x="1060" y="748" fill="#b6c8c3" font-family="Inter, Arial, sans-serif" font-size="22">Data sync / content ops</text>
+  <path d="M926 692H1016" stroke="#2cd4bb" stroke-width="8" stroke-linecap="round"/>
+</svg>

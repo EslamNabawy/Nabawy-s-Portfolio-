@@ -35,12 +35,13 @@ const skillGroups =
         },
       ];
 const quickFacts: [string, string, string][] = [
-  ['Role', 'Flutter Software Engineer', 'Cross-platform app delivery with clean UI and Firebase-backed workflows.'],
-  ['Focus', 'Mobile + Product UI', 'Flutter, responsive interfaces, API handling, and practical state management.'],
+  ['Role', 'Software Engineer', 'Cross-platform app delivery with Flutter, Firebase, APIs, and AI-assisted workflows.'],
+  ['Focus', 'Mobile + AI Automation', 'Flutter product UI, n8n workflows, LLM API integration, and practical state management.'],
   ['Leadership', 'Mentor + Community Lead', 'GDSC Flutter Head, ICPC core team member, and programming instructor.'],
   ['Education', 'Computer Science Graduate', 'Bachelor of Computer Science, AEA Academy, July 2024.'],
 ];
 const queuedLab: [string, string][] = [
+  ['AI Workflow Automation', 'Built n8n workflows that connect LLM APIs, webhooks, external services, and smart notifications.'],
   ['Flutter Workshops', 'Led Flutter learning sessions and mentored student developers.'],
   ['Programming Instruction', 'Designed lessons to simplify programming and software fundamentals.'],
   ['ICPC Volunteering', 'Organized problem-solving contests and supported new members.'],
@@ -144,7 +145,7 @@ const sectionsFor = (placement: string) =>
             Want the resume or a quick conversation?
           </h2>
           <p class="mt-5 max-w-2xl text-base leading-8 text-slate-300">
-            The fastest path is email, resume, LinkedIn, or GitHub.
+            The fastest path is email, phone, resume, LinkedIn, GitHub, or Instagram.
           </p>
         </div>
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
@@ -158,6 +159,11 @@ const sectionsFor = (placement: string) =>
               Resume
             </a>
           )}
+          {config.phone && (
+            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={`tel:${config.phone}`}>
+              Phone
+            </a>
+          )}
           {config.github_url && (
             <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.github_url}>
               GitHub
@@ -166,6 +172,11 @@ const sectionsFor = (placement: string) =>
           {config.linkedin_url && (
             <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.linkedin_url}>
               LinkedIn
+            </a>
+          )}
+          {config.instagram_url && (
+            <a class="border border-white/25 px-5 py-3 text-sm font-black text-white" href={config.instagram_url}>
+              Instagram
             </a>
           )}
         </div>

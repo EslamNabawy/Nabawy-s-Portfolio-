@@ -18,6 +18,9 @@ interface Props {
 
 const { project } = Astro.props;
 const heroImage = getProjectHeroImage(project);
+const heroAlt =
+  project.project_images?.find((image) => image.image_url === heroImage)?.alt_text ??
+  `${project.title} project preview`;
 const galleryImages = (project.project_images ?? []).filter(
   (image) => image.image_url !== heroImage,
 );
@@ -68,7 +71,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
           <aside class="min-w-0 border border-line bg-panel p-4">
             <img
               src={heroImage}
-              alt={`${project.title} interface preview`}
+              alt={heroAlt}
               class="aspect-[16/10] w-full border border-line bg-white object-cover"
             />
             <div class="mt-4 flex flex-wrap gap-2">
@@ -157,7 +160,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
                 src={image.image_url}
                 alt={image.alt_text ?? `${project.title} supporting screenshot`}
                 loading="lazy"
-                class="aspect-[16/10] w-full border border-line bg-panel object-cover"
+                class="aspect-[16/10] w-full border border-line bg-panel object-contain"
               />
             ))}
           </div>
