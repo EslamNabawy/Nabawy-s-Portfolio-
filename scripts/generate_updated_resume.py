@@ -30,7 +30,7 @@ RESUME = {
         "+201015683693",
         "eslamtarek.dev@gmail.com",
         "linkedin.com/in/eslam-tarek-nabawy",
-        "instagram.com/eslamtareknabawy",
+        "eslamnabawy.github.io/Nabawy-s-Portfolio-/",
         "github.com/EslamNabawy",
     ],
     "summary": (
@@ -294,6 +294,30 @@ def draw_wrapped(
     return y
 
 
+def draw_contact_lines(pdf: canvas.Canvas, items: Iterable[str], x: float, y: float, width: float) -> float:
+    font_name = "Helvetica"
+    font_size = 8.3
+    separator = " | "
+    lines: list[str] = []
+    current = ""
+    for item in items:
+        candidate = item if not current else f"{current}{separator}{item}"
+        if pdf.stringWidth(candidate, font_name, font_size) <= width:
+            current = candidate
+        else:
+            if current:
+                lines.append(current)
+            current = item
+    if current:
+        lines.append(current)
+
+    pdf.setFont(font_name, font_size)
+    for line in lines:
+        pdf.drawCentredString(x + width / 2, y, line)
+        y -= 10.5
+    return y
+
+
 def ensure_pdf_space(pdf: canvas.Canvas, y: float, needed: float, margin: float) -> float:
     if y - needed >= margin:
         return y
@@ -344,9 +368,8 @@ def build_pdf() -> None:
     pdf.drawCentredString(page_width / 2, y, RESUME["title"])
     pdf.setFillColor(colors.black)
     y -= 15
-    pdf.setFont("Helvetica", 8.5)
-    pdf.drawCentredString(page_width / 2, y, " | ".join(RESUME["contact"]))
-    y -= 21
+    y = draw_contact_lines(pdf, RESUME["contact"], x, y, width)
+    y -= 10
 
     y = section_title(pdf, "Professional Summary", x, y, width)
     y = draw_wrapped(pdf, RESUME["summary"], x, y, width, font_size=9.2, leading=11.8)
