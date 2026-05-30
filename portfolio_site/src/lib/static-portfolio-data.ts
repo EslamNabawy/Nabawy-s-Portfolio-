@@ -146,9 +146,9 @@ export const staticPortfolioData: StaticPortfolioData = {
   config: {
     id: 'global',
     name: 'Eslam Tarek Nabawy',
-    headline: 'Software Engineer building Flutter apps, API-backed products, and AI automation workflows.',
+    headline: 'Software Engineer building reliable apps and practical automation.',
     bio:
-      'Computer Science graduate based in 6th October City, Egypt. I build cross-platform mobile apps, integrate REST APIs and backend services, and use AI tools plus n8n workflows to turn product ideas into working software faster.',
+      'Computer Science graduate who turns product ideas into usable software with clean interfaces, solid integrations, and fast AI-assisted delivery.',
     resume_url: 'resume.pdf',
     github_url: 'https://github.com/EslamNabawy',
     linkedin_url: 'https://www.linkedin.com/in/eslam-tarek-nabawy/',
@@ -463,43 +463,5 @@ export const staticPortfolioData: StaticPortfolioData = {
       40,
     ),
   ],
-  sections: [
-    {
-      id: 'ai-builder-summary',
-      section_key: 'ai-builder-summary',
-      title: 'AI Builder Profile',
-      eyebrow: 'Automation + App Creation',
-      body: 'The portfolio now reflects both mobile engineering and AI-assisted product delivery.',
-      placement: 'after_hero',
-      section_type: 'content_grid',
-      layout: 'grid',
-      tone: 'studio',
-      density: 'compact',
-      alignment: 'left',
-      content_json: {
-        items: [
-          {
-            label: 'n8n',
-            title: 'Workflow Automation',
-            copy: 'Builds webhook-driven workflows that connect LLM APIs, external services, notifications, and conditional routing.',
-          },
-          {
-            label: 'AI Apps',
-            title: 'AI-Assisted App Creation',
-            copy: 'Uses AI tools to ideate, scaffold, debug, and iterate product interfaces without hiding the engineering decisions.',
-          },
-          {
-            label: 'Mobile',
-            title: 'Flutter Delivery',
-            copy: 'Ships cross-platform apps with APIs, backend services, BLoC-style state management, and responsive product UI.',
-          },
-        ],
-      },
-      design_json: {},
-      display_order: 10,
-      is_published: true,
-      created_at: updatedAt,
-      updated_at: updatedAt,
-    },
-  ],
+  sections: [],
 };

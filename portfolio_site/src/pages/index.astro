@@ -3,7 +3,6 @@ import ExperimentCard from '../components/ExperimentCard.astro';
 import CustomSection from '../components/CustomSection.astro';
 import HeroSection from '../components/HeroSection.astro';
 import ProjectProofSection from '../components/ProjectProofSection.astro';
-import RecruiterBriefSection from '../components/RecruiterBriefSection.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import SkillBadge from '../components/SkillBadge.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -17,6 +16,20 @@ const designClass = `design-${config.design_variant}`;
 const theme = normalizeThemeConfig(config.theme_json);
 const themeClasses = themeClass(theme);
 const themeStyle = themeStyleAttribute(theme);
+const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
+const contactActions = [
+  { label: 'Email', href: config.email ? `mailto:${config.email}` : null, icon: 'email' },
+  { label: 'Resume', href: config.resume_url, icon: 'resume', download: true },
+  { label: 'Phone', href: phoneHref, icon: 'phone' },
+  { label: 'GitHub', href: config.github_url, icon: 'github' },
+  { label: 'LinkedIn', href: config.linkedin_url, icon: 'linkedin' },
+  { label: 'Instagram', href: config.instagram_url, icon: 'instagram' },
+].filter((item) => item.href) as {
+  label: string;
+  href: string;
+  icon: string;
+  download?: boolean;
+}[];
 const skillGroups =
   skills.length > 0
     ? skills
@@ -34,29 +47,21 @@ const skillGroups =
           items: ['AI Orchestration', 'Prompt Systems', 'Tooling', 'Automation'],
         },
       ];
-const quickFacts: [string, string, string][] = [
-  ['Role', 'Software Engineer', 'Cross-platform app delivery with Flutter, APIs, backend services, and AI-assisted workflows.'],
-  ['Focus', 'Mobile + AI Automation', 'Flutter product UI, n8n workflows, LLM API integration, and practical state management.'],
-  ['Leadership', 'Mentor + Community Lead', 'GDSC Flutter Head, ICPC core team member, and programming instructor.'],
-  ['Education', 'Computer Science Graduate', 'Bachelor of Computer Science, AEA Academy, July 2024.'],
-];
 const queuedLab: [string, string][] = [
   ['AI Workflow Automation', 'Built n8n workflows that connect LLM APIs, webhooks, external services, and smart notifications.'],
   ['Flutter Workshops', 'Led Flutter learning sessions and mentored student developers.'],
   ['Programming Instruction', 'Designed lessons to simplify programming and software fundamentals.'],
   ['ICPC Volunteering', 'Organized problem-solving contests and supported new members.'],
 ];
+const hiddenSectionKeys = new Set(['ai-builder-summary']);
 const sectionsFor = (placement: string) =>
-  sections.filter((section) => section.placement === placement);
+  sections.filter((section) => section.placement === placement && !hiddenSectionKeys.has(section.section_key));
 ---
 
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
   <main class={`${designClass} ${themeClasses}`} style={themeStyle}>
     <HeroSection
       config={config}
-      projectCount={projects.length}
-      skillCount={skillGroups.length}
-      experimentCount={experiments.length}
       theme={theme}
       projects={projects}
       featuredProject={featuredProject}
@@ -64,14 +69,12 @@ const sectionsFor = (placement: string) =>
 
     {sectionsFor('after_hero').map((section) => <CustomSection section={section} />)}
 
-    {theme.sectionOrder === 'recruiter_first' && <RecruiterBriefSection facts={quickFacts} />}
     {sectionsFor('before_projects').map((section) => <CustomSection section={section} />)}
     <ProjectProofSection
       projects={projects}
       featuredCount={featuredCount}
       cardStyle={theme.projectCardStyle}
     />
-    {theme.sectionOrder === 'projects_first' && <RecruiterBriefSection facts={quickFacts} />}
 
     {sectionsFor('before_lab').map((section) => <CustomSection section={section} />)}
 
@@ -147,43 +150,57 @@ const sectionsFor = (placement: string) =>
             Want the resume or a quick conversation?
           </h2>
           <p class="portfolio-contact__copy">
-            The fastest path is email, phone, resume, LinkedIn, GitHub, portfolio, or Instagram.
+            Use whichever channel is fastest for you.
           </p>
         </div>
         <div class="portfolio-contact__links">
-          {config.email && (
-            <a href={`mailto:${config.email}`}>
-              Email
+          {contactActions.map((link) => (
+            <a href={link.href} download={link.download}>
+              <span class="portfolio-button__icon" aria-hidden="true" data-icon={link.icon}>
+                {link.icon === 'resume' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M7 3h7l4 4v14H7z"></path>
+                    <path d="M14 3v5h4"></path>
+                    <path d="M9 13h6"></path>
+                    <path d="M9 17h4"></path>
+                  </svg>
+                )}
+                {link.icon === 'email' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 6h16v12H4z"></path>
+                    <path d="m4 7 8 6 8-6"></path>
+                  </svg>
+                )}
+                {link.icon === 'phone' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M8 4 6 6c0 7 5 12 12 12l2-2-4-4-2 2c-2-1-3-2-4-4l2-2z"></path>
+                  </svg>
+                )}
+                {link.icon === 'github' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M9 19c-4 1-4-2-5-3"></path>
+                    <path d="M15 22v-3c0-1 .2-1.7-.5-2 2.7-.3 5.5-1.4 5.5-6A4.6 4.6 0 0 0 18.7 8c.1-.3.6-1.7-.1-3.4 0 0-1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.4 4.3 5.4 4.6 5.4 4.6 4.7 6.3 5.2 7.7 5.3 8A4.6 4.6 0 0 0 4 11c0 4.6 2.8 5.7 5.5 6-.7.3-.8 1-.8 2v3"></path>
+                  </svg>
+                )}
+                {link.icon === 'linkedin' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 9v10"></path>
+                    <path d="M6 5v.01"></path>
+                    <path d="M11 19v-6a4 4 0 0 1 8 0v6"></path>
+                    <path d="M11 9v10"></path>
+                  </svg>
+                )}
+                {link.icon === 'instagram' && (
+                  <svg viewBox="0 0 24 24">
+                    <rect x="5" y="5" width="14" height="14" rx="4"></rect>
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M16.5 7.5h.01"></path>
+                  </svg>
+                )}
+              </span>
+              {link.label}
             </a>
-          )}
-          {config.resume_url && (
-            <a href={config.resume_url}>
-              Resume
-            </a>
-          )}
-          {config.phone && (
-            <a href={`tel:${config.phone}`}>
-              Phone
-            </a>
-          )}
-          <a href="https://eslamnabawy.github.io/Nabawy-s-Portfolio-/">
-            Portfolio
-          </a>
-          {config.github_url && (
-            <a href={config.github_url}>
-              GitHub
-            </a>
-          )}
-          {config.linkedin_url && (
-            <a href={config.linkedin_url}>
-              LinkedIn
-            </a>
-          )}
-          {config.instagram_url && (
-            <a href={config.instagram_url}>
-              Instagram
-            </a>
-          )}
+          ))}
         </div>
       </div>
     </section>

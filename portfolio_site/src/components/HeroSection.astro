@@ -6,42 +6,41 @@ type NormalizedThemeConfig = Required<SiteThemeConfig>;
 
 interface Props {
   config: SiteConfig;
-  projectCount: number;
-  skillCount: number;
-  experimentCount: number;
   theme: NormalizedThemeConfig;
   projects: Project[];
   featuredProject?: Project;
 }
 
-const { config, projectCount, skillCount, experimentCount, theme, projects, featuredProject } = Astro.props;
+const { config, theme, projects, featuredProject } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
-const livePortfolioUrl = 'https://eslamnabawy.github.io/Nabawy-s-Portfolio-/';
 const heroProjects = projects.length > 0 ? projects : featuredProject ? [featuredProject] : [];
 const showFeaturedPanel =
   theme.showFeaturedProjectPanel && theme.heroLayout !== 'statement' && heroProjects.length > 0;
 const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
-const shortUrl = (url?: string | null) =>
-  url?.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '') ?? null;
-const contactLinks = [
-  { label: 'Email', value: config.email, href: config.email ? `mailto:${config.email}` : null },
-  { label: 'Phone', value: config.phone, href: phoneHref },
-  { label: 'Portfolio', value: shortUrl(livePortfolioUrl), href: livePortfolioUrl },
-  { label: 'GitHub', value: shortUrl(config.github_url), href: config.github_url },
-  { label: 'LinkedIn', value: shortUrl(config.linkedin_url), href: config.linkedin_url },
-  { label: 'Instagram', value: shortUrl(config.instagram_url), href: config.instagram_url },
-].filter((item) => item.value && item.href) as { label: string; value: string; href: string }[];
+const heroActionLinks = [
+  { label: 'Resume', href: config.resume_url, icon: 'resume', primary: true, download: true },
+  { label: 'Work', href: '#projects', icon: 'work' },
+  { label: 'Email', href: config.email ? `mailto:${config.email}` : null, icon: 'email' },
+  { label: 'Phone', href: phoneHref, icon: 'phone' },
+  { label: 'GitHub', href: config.github_url, icon: 'github' },
+  { label: 'LinkedIn', href: config.linkedin_url, icon: 'linkedin' },
+].filter((item) => item.href) as {
+  label: string;
+  href: string;
+  icon: string;
+  primary?: boolean;
+  download?: boolean;
+}[];
 ---
 
 <section class="portfolio-hero">
   <div class="portfolio-hero__grid" aria-hidden="true"></div>
   <div class="mx-auto max-w-7xl px-5 py-5 sm:px-6 lg:px-8">
     <nav class="portfolio-nav">
-      <a class="portfolio-nav__brand" href={base}>Eslam Tarek Nabawy</a>
+      <a class="portfolio-nav__brand" href={base} aria-label="Home">EN</a>
       <div class="portfolio-nav__links">
-        <a href="#summary">Brief</a>
         <a href="#projects">Work</a>
         <a href="#experience">Experience</a>
         <a href="#skills">Skills</a>
@@ -49,37 +48,66 @@ const contactLinks = [
       </div>
     </nav>
 
-    <div class="portfolio-contact-strip" aria-label="Contact information">
-      {contactLinks.map((link) => (
-        <a href={link.href} class="portfolio-contact-strip__item">
-          <span>{link.label}</span>
-          <strong>{link.value}</strong>
-        </a>
-      ))}
-    </div>
-
     <div class="portfolio-hero__layout">
       <div class="min-w-0">
-        <div class="portfolio-status-row">
-          <span>Software Engineer</span>
-          <span>Flutter / APIs / AI Automation</span>
-          <span>6th October City, Egypt</span>
-        </div>
+        <p class="portfolio-hero__role">Software Engineer</p>
 
         <h1 class="portfolio-hero__title">{config.name}</h1>
-        <p class="portfolio-hero__headline">{config.headline}</p>
-        <p class="portfolio-hero__bio">{config.bio}</p>
+        <p class="portfolio-hero__location">6th October City, Egypt</p>
 
         <div class="portfolio-hero__actions">
-          <a class="portfolio-button portfolio-button--primary" href="#projects">View Selected Work</a>
-          {config.resume_url && (
-            <a class="portfolio-button" href={config.resume_url}>Download Resume</a>
-          )}
-          {config.email && (
-            <a class="portfolio-button" href={`mailto:${config.email}`}>Email Me</a>
-          )}
+          {heroActionLinks.map((link) => (
+            <a
+              class:list={['portfolio-button', link.primary && 'portfolio-button--primary']}
+              href={link.href}
+              download={link.download}
+            >
+              <span class="portfolio-button__icon" aria-hidden="true" data-icon={link.icon}>
+                {link.icon === 'resume' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M7 3h7l4 4v14H7z"></path>
+                    <path d="M14 3v5h4"></path>
+                    <path d="M9 13h6"></path>
+                    <path d="M9 17h4"></path>
+                  </svg>
+                )}
+                {link.icon === 'work' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 7h16v13H4z"></path>
+                    <path d="M9 7V5h6v2"></path>
+                    <path d="M4 12h16"></path>
+                  </svg>
+                )}
+                {link.icon === 'email' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 6h16v12H4z"></path>
+                    <path d="m4 7 8 6 8-6"></path>
+                  </svg>
+                )}
+                {link.icon === 'phone' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M8 4 6 6c0 7 5 12 12 12l2-2-4-4-2 2c-2-1-3-2-4-4l2-2z"></path>
+                  </svg>
+                )}
+                {link.icon === 'github' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M9 19c-4 1-4-2-5-3"></path>
+                    <path d="M15 22v-3c0-1 .2-1.7-.5-2 2.7-.3 5.5-1.4 5.5-6A4.6 4.6 0 0 0 18.7 8c.1-.3.6-1.7-.1-3.4 0 0-1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.4 4.3 5.4 4.6 5.4 4.6 4.7 6.3 5.2 7.7 5.3 8A4.6 4.6 0 0 0 4 11c0 4.6 2.8 5.7 5.5 6-.7.3-.8 1-.8 2v3"></path>
+                  </svg>
+                )}
+                {link.icon === 'linkedin' && (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 9v10"></path>
+                    <path d="M6 5v.01"></path>
+                    <path d="M11 19v-6a4 4 0 0 1 8 0v6"></path>
+                    <path d="M11 9v10"></path>
+                  </svg>
+                )}
+              </span>
+              {link.label}
+            </a>
+          ))}
         </div>
-
       </div>
 
       {showFeaturedPanel && (
@@ -91,7 +119,7 @@ const contactLinks = [
         >
           <div class="portfolio-featured__header">
             <div>
-              <p>Project Carousel</p>
+              <p>Featured Work</p>
               <span data-hero-project-counter>1 / {heroProjects.length}</span>
             </div>
             <div class="portfolio-featured__controls" aria-label="Project carousel controls">
@@ -115,7 +143,6 @@ const contactLinks = [
                   >
                     <div class="portfolio-featured__slide-heading">
                       <div>
-                        <span>Case Study {String(index + 1).padStart(2, '0')}</span>
                         <h2>{project.title}</h2>
                       </div>
                       <a href={projectHref}>Open</a>
@@ -133,11 +160,9 @@ const contactLinks = [
                       )}
                     </a>
 
-                    {projectStack.length > 0 && (
-                      <div class="portfolio-featured__stack" aria-label={`${project.title} stack`}>
-                        {projectStack.map((item) => <span>{item}</span>)}
-                      </div>
-                    )}
+                    <div class="sr-only" aria-label={`${project.title} stack`}>
+                      {projectStack.join(', ')}
+                    </div>
                   </article>
                 );
               })}
@@ -154,21 +179,6 @@ const contactLinks = [
               ></button>
             ))}
           </div>
-
-          <dl class="portfolio-proof-metrics">
-            <div>
-              <dt>Projects</dt>
-              <dd>{projectCount}</dd>
-            </div>
-            <div>
-              <dt>Experience</dt>
-              <dd>{experimentCount}</dd>
-            </div>
-            <div>
-              <dt>Skill Groups</dt>
-              <dd>{skillCount}</dd>
-            </div>
-          </dl>
         </aside>
       )}
     </div>
