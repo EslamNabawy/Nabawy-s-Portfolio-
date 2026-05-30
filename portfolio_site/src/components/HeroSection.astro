@@ -190,6 +190,10 @@ const contactLinks = [
       }
 
       let activeIndex = 0;
+      let autoRotationId: number | null = null;
+      let isPaused = false;
+      const autoRotationDelay = 4500;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       const setActiveSlide = (nextIndex: number) => {
         activeIndex = (nextIndex + slides.length) % slides.length;
@@ -212,23 +216,82 @@ const contactLinks = [
         next.disabled = !hasMultipleSlides;
       };
 
-      prev.addEventListener('click', () => setActiveSlide(activeIndex - 1));
-      next.addEventListener('click', () => setActiveSlide(activeIndex + 1));
+      const stopAutoRotation = () => {
+        if (autoRotationId !== null) {
+          window.clearInterval(autoRotationId);
+          autoRotationId = null;
+        }
+      };
+
+      const startAutoRotation = () => {
+        if (prefersReducedMotion || isPaused || slides.length < 2 || autoRotationId !== null) {
+          return;
+        }
+
+        autoRotationId = window.setInterval(() => {
+          setActiveSlide(activeIndex + 1);
+        }, autoRotationDelay);
+      };
+
+      const restartAutoRotation = () => {
+        stopAutoRotation();
+        startAutoRotation();
+      };
+
+      const goToSlide = (nextIndex: number) => {
+        setActiveSlide(nextIndex);
+        restartAutoRotation();
+      };
+
+      prev.addEventListener('click', () => goToSlide(activeIndex - 1));
+      next.addEventListener('click', () => goToSlide(activeIndex + 1));
       dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => setActiveSlide(index));
+        dot.addEventListener('click', () => goToSlide(index));
       });
 
       root.addEventListener('keydown', (event) => {
         if (event instanceof KeyboardEvent && event.key === 'ArrowLeft') {
-          setActiveSlide(activeIndex - 1);
+          goToSlide(activeIndex - 1);
         }
         if (event instanceof KeyboardEvent && event.key === 'ArrowRight') {
-          setActiveSlide(activeIndex + 1);
+          goToSlide(activeIndex + 1);
+        }
+      });
+
+      root.addEventListener('pointerenter', () => {
+        isPaused = true;
+        stopAutoRotation();
+      });
+
+      root.addEventListener('pointerleave', () => {
+        isPaused = false;
+        startAutoRotation();
+      });
+
+      root.addEventListener('focusin', () => {
+        isPaused = true;
+        stopAutoRotation();
+      });
+
+      root.addEventListener('focusout', (event) => {
+        const focusEvent = event as FocusEvent;
+        if (!root.contains(focusEvent.relatedTarget as Node | null)) {
+          isPaused = false;
+          startAutoRotation();
+        }
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stopAutoRotation();
+        } else {
+          startAutoRotation();
         }
       });
 
       track.dataset.ready = 'true';
       setActiveSlide(0);
+      startAutoRotation();
     });
   };
 
