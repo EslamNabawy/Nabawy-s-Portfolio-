@@ -20,9 +20,10 @@ const summary = project.short_description ?? project.description;
 const caseNumber = String(index + 1).padStart(2, '0');
 const stackLabel = project.tech_stack[0] ?? 'Project';
 const showImage = styleVariant !== 'compact';
+const baseArticleClass = `project-card project-card--${styleVariant} group h-full overflow-hidden rounded-lg border border-line bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-signal hover:shadow-xl hover:shadow-slate-900/10`;
 const articleClass = prominent
-  ? `project-card project-card--${styleVariant} group border border-line bg-white transition hover:border-ink md:col-span-2 xl:col-span-2`
-  : `project-card project-card--${styleVariant} group border border-line bg-white transition hover:border-ink`;
+  ? `${baseArticleClass} md:col-span-2 xl:col-span-2`
+  : baseArticleClass;
 ---
 
 <article class={articleClass}>
@@ -31,7 +32,7 @@ const articleClass = prominent
     class={prominent ? 'grid h-full min-w-0 lg:grid-cols-[1.12fr_0.88fr]' : 'block h-full min-w-0'}
   >
     {showImage && (
-      <div class={prominent ? 'relative min-h-[320px] overflow-hidden border-b border-line lg:border-b-0 lg:border-r' : 'relative overflow-hidden border-b border-line'}>
+      <div class={prominent ? 'relative min-h-[320px] overflow-hidden border-b border-line bg-panel lg:border-b-0 lg:border-r' : 'relative overflow-hidden border-b border-line bg-panel'}>
         <img
           src={heroImage}
           alt={`${project.title} preview`}
@@ -40,7 +41,7 @@ const articleClass = prominent
             ? 'h-full min-h-[320px] w-full object-cover transition duration-300 group-hover:scale-[1.02]'
             : 'aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-[1.02]'}
         />
-        <div class="absolute left-3 top-3 bg-ink px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.14em] text-white">
+        <div class="absolute left-3 top-3 rounded-full bg-ink px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.14em] text-white shadow-lg shadow-ink/20">
           Project {caseNumber}
         </div>
       </div>
@@ -56,7 +57,7 @@ const articleClass = prominent
             {project.title}
           </h3>
         </div>
-        <span class="whitespace-nowrap border border-line bg-field px-2 py-1 font-mono text-xs font-bold text-quiet">
+        <span class="whitespace-nowrap rounded-full border border-line bg-field px-3 py-1 font-mono text-xs font-bold text-quiet">
           {stackLabel}
         </span>
       </div>
@@ -84,7 +85,7 @@ const articleClass = prominent
 
       <div class="mt-auto flex flex-wrap gap-2 pt-6">
         {project.tech_stack.slice(0, prominent ? 8 : 5).map((item) => (
-          <span class="border border-line bg-field px-2 py-1 text-xs font-bold text-ink">
+          <span class="rounded-full border border-line bg-field px-3 py-1 text-xs font-bold text-ink">
             {item}
           </span>
         ))}

@@ -69,6 +69,40 @@ const broxMobileScreenAlts = [
   'Brox mobile settings screen',
 ];
 
+const rainMobileScreenAlts = [
+  'Rain mobile splash screen',
+  'Rain mobile friends list screen',
+  'Rain mobile peer notification request dialog',
+  'Rain mobile accepted connection request state',
+  'Rain Android notification shade for peer connection request',
+  'Rain mobile direct chat with completed file transfer',
+  'Rain mobile voice call ended dialog over chat',
+  'Rain mobile video call ringing screen',
+  'Rain mobile video call ended dialog',
+  'Rain mobile peer search screen',
+  'Rain mobile settings and audio controls screen',
+];
+
+const rainDesktopScreenAlts = [
+  'Rain Windows desktop splash screen',
+  'Rain Windows desktop friends and connection state screen',
+  'Rain Windows desktop settings screen',
+];
+
+const silvatorMobileScreenAlts = [
+  'Silvator mobile sanctuary home with mood chips and quote recommendations',
+  'Silvator mobile quote feed filtered by mood state',
+  'Silvator mobile safe-space journal entry screen',
+  'Silvator mobile saved insights and mood heatmap screen',
+  'Silvator mobile profile and appearance settings screen',
+];
+
+const silvatorDesktopScreenAlts = [
+  'Silvator Windows desktop calm quote feed screen',
+  'Silvator Windows desktop love quote feed screen',
+  'Silvator Windows desktop saved quotes and insights screen',
+];
+
 const project = (input: Omit<Project, 'is_published' | 'created_at' | 'updated_at'>): Project => ({
   ...input,
   is_published: true,
@@ -121,16 +155,16 @@ export const staticPortfolioData: StaticPortfolioData = {
     instagram_url: 'https://www.instagram.com/eslamtareknabawy/',
     phone: '+201015683693',
     email: 'eslamtarek.dev@gmail.com',
-    design_variant: 'terminal_ops',
+    design_variant: 'signal_studio',
     theme_json: {
-      accentColor: 'cyan',
-      backgroundMode: 'terminal',
-      surfaceStyle: 'flat',
-      radius: 'compact',
+      accentColor: 'signal',
+      backgroundMode: 'clean',
+      surfaceStyle: 'elevated',
+      radius: 'standard',
       borderWeight: 'thin',
-      density: 'compact',
+      density: 'standard',
       motionIntensity: 'reduced',
-      heroTreatment: 'terminal',
+      heroTreatment: 'studio',
       heroLayout: 'split',
       sectionOrder: 'recruiter_first',
       projectCardStyle: 'visual',
@@ -229,11 +263,29 @@ export const staticPortfolioData: StaticPortfolioData = {
         'Current maintained targets are Android phones and Windows desktop. Working feature areas include username sign-in, friend search/requests/blocking, peer chat over WebRTC data channels, connection diagnostics, one-to-one file transfer, and one-to-one voice/video calls. Push call wakeups, group calls, and app-store packaging are not claimed.',
       tech_stack: ['Flutter', 'Riverpod', 'WebRTC', 'Firebase RTDB', 'Drift', 'Melos'],
       project_images: [
-        projectImage('rain-primary', 'rain-p2p-messenger', 'project-assets/rain-p2p-messenger.svg', 'Rain P2P Messenger mockup'),
+        projectImage('rain-primary', 'rain-p2p-messenger', 'project-assets/rain/showcase.jpg', 'Rain screenshot-based Android and Windows mockup'),
+        ...rainMobileScreenAlts.map((altText, index) =>
+          projectImage(
+            `rain-mobile-screen-${String(index + 1).padStart(2, '0')}`,
+            'rain-p2p-messenger',
+            `project-assets/rain/mobile/${String(index + 1).padStart(2, '0')}.jpg`,
+            altText,
+            (index + 1) * 10,
+          ),
+        ),
+        ...rainDesktopScreenAlts.map((altText, index) =>
+          projectImage(
+            `rain-desktop-screen-${String(index + 1).padStart(2, '0')}`,
+            'rain-p2p-messenger',
+            `project-assets/rain/desktop/${String(index + 1).padStart(2, '0')}.jpg`,
+            altText,
+            200 + (index + 1) * 10,
+          ),
+        ),
       ],
       github_url: null,
       live_url: null,
-      image_url: 'project-assets/rain-p2p-messenger.svg',
+      image_url: 'project-assets/rain/showcase.jpg',
       featured: true,
       display_order: 20,
     }),
@@ -332,33 +384,51 @@ export const staticPortfolioData: StaticPortfolioData = {
       title: 'Silvator',
       slug: 'silvator',
       description:
-        'Character mood prompt and asset-direction pack. The verified local project contains a moods.md spec and WebP mood references for love, stress, sadness, happiness, loneliness, confidence, anxiety, anger, fear, and boredom. Each mood is mapped to a symbolic object, expression notes, and body-language guidance for generating consistent character variants.',
+        'Mood companion app interface for Android and Windows. Silvator focuses on a sanctuary-style home screen, mood-tagged quote recommendations, safe-space journaling prompts, saved insights, a 30-day mood heatmap, appearance controls, and a local-only mood-aware product experience.',
       short_description:
-        'Prompt-and-asset pack for one character system with 10 emotional states, symbolic props, pose notes, and WebP references.',
-      role: 'Prompt Designer / Character Asset Direction',
-      impact: 'Turned abstract emotions into a reusable visual spec with mood symbols, pose language, and reference assets.',
+        'Mood companion app with quote recommendations, safe-space journaling, saved insights, mood heatmap, and Android/Windows responsive screens.',
+      role: 'Flutter Product UI Engineer / AI-Assisted App Builder',
+      impact: 'Turned mood states into a usable product surface with clear capture, reflection, saved-content, and personalization flows.',
       architecture_notes:
-        'Verified scope is content and art direction: C:/Users/eslam/OneDrive/Desktop/GoodStuff/silvator contains moods.md plus mood-pics WebP files. There is no app source, backend, database, or shipped release target in this local folder.',
+        'Screenshot-backed scope shows responsive mobile and desktop UI, mood chips, quote filtering, journal prompts, saved-state views, local app settings, and mascot-driven mood assets. The product is presented as offline-first and local-only in the app settings screen.',
       case_study_markdown:
-        'Mood map from the source spec: Love uses a ruby-red heart necklace, Stress uses a lit cigarette, Sadness uses a crumpled tissue, Happiness uses a solar milkshake, Loneliness uses a fuzzy brown bear, Confidence uses black sunglasses, Anxiety uses metallic handcuffs, Anger uses a distorted stress ball, Fear uses a ticking silver watch, and Boredom uses a glowing smartphone. The evidence gallery uses original.webp plus the 10 mood WebP references copied from the local mood-pics folder, with file paths kept unchanged for build accuracy.',
-      tech_stack: ['Prompt Design', 'Character Direction', 'AI Image Prompts', 'WebP Assets'],
+        'Visible feature set includes sanctuary mood selection, quote cards with actions, safe-space journal capture, saved moments, 30-day mood heatmap, text-size controls, theme controls, and mood-engine weights for author and tag matching.',
+      tech_stack: ['Flutter', 'Dart', 'Responsive UI', 'Local Storage', 'Mood Tagging', 'AI-Assisted UI'],
       project_images: [
-        projectImage('silvator-primary', 'silvator', 'project-assets/silvator.svg', 'Silvator mood asset system mockup'),
-        projectImage('silvator-original', 'silvator', 'project-assets/silvator/original.webp', 'Silvator base character reference', 10),
-        projectImage('silvator-love', 'silvator', 'project-assets/silvator/LOVE.webp', 'Silvator love mood reference with ruby-red heart necklace', 20),
-        projectImage('silvator-stress', 'silvator', 'project-assets/silvator/STRESS.webp', 'Silvator stress mood reference with lit cigarette', 30),
-        projectImage('silvator-sadness', 'silvator', 'project-assets/silvator/SAD.webp', 'Silvator sadness mood reference with crumpled tissue', 40),
-        projectImage('silvator-happiness', 'silvator', 'project-assets/silvator/happy.webp', 'Silvator happiness mood reference with solar milkshake', 50),
-        projectImage('silvator-loneliness', 'silvator', 'project-assets/silvator/LONLEY.webp', 'Silvator loneliness mood reference with fuzzy brown bear', 60),
-        projectImage('silvator-confidence', 'silvator', 'project-assets/silvator/CONFEDINCE.webp', 'Silvator confidence mood reference with black sunglasses', 70),
-        projectImage('silvator-anxiety', 'silvator', 'project-assets/silvator/anxiety.webp', 'Silvator anxiety mood reference with metallic handcuffs', 80),
-        projectImage('silvator-anger', 'silvator', 'project-assets/silvator/ANGRY.webp', 'Silvator anger mood reference with distorted stress ball', 90),
-        projectImage('silvator-fear', 'silvator', 'project-assets/silvator/FEAR.webp', 'Silvator fear mood reference with ticking silver watch', 100),
-        projectImage('silvator-boredom', 'silvator', 'project-assets/silvator/BORED.webp', 'Silvator boredom mood reference with glowing smartphone', 110),
+        projectImage('silvator-primary', 'silvator', 'project-assets/silvator/showcase.jpg', 'Silvator screenshot-based Android and Windows mood app mockup'),
+        ...silvatorMobileScreenAlts.map((altText, index) =>
+          projectImage(
+            `silvator-mobile-screen-${String(index + 1).padStart(2, '0')}`,
+            'silvator',
+            `project-assets/silvator/mobile/${String(index + 1).padStart(2, '0')}.jpg`,
+            altText,
+            (index + 1) * 10,
+          ),
+        ),
+        ...silvatorDesktopScreenAlts.map((altText, index) =>
+          projectImage(
+            `silvator-desktop-screen-${String(index + 1).padStart(2, '0')}`,
+            'silvator',
+            `project-assets/silvator/desktop/${String(index + 1).padStart(2, '0')}.jpg`,
+            altText,
+            120 + (index + 1) * 10,
+          ),
+        ),
+        projectImage('silvator-mood-original', 'silvator', 'project-assets/silvator/original.webp', 'Silvator base mascot mood reference', 210),
+        projectImage('silvator-mood-love', 'silvator', 'project-assets/silvator/LOVE.webp', 'Silvator love mood mascot reference', 220),
+        projectImage('silvator-mood-stress', 'silvator', 'project-assets/silvator/STRESS.webp', 'Silvator stress mood mascot reference', 230),
+        projectImage('silvator-mood-sadness', 'silvator', 'project-assets/silvator/SAD.webp', 'Silvator sadness mood mascot reference', 240),
+        projectImage('silvator-mood-happiness', 'silvator', 'project-assets/silvator/happy.webp', 'Silvator happiness mood mascot reference', 250),
+        projectImage('silvator-mood-loneliness', 'silvator', 'project-assets/silvator/LONLEY.webp', 'Silvator loneliness mood mascot reference', 260),
+        projectImage('silvator-mood-confidence', 'silvator', 'project-assets/silvator/CONFEDINCE.webp', 'Silvator confidence mood mascot reference', 270),
+        projectImage('silvator-mood-anxiety', 'silvator', 'project-assets/silvator/anxiety.webp', 'Silvator anxiety mood mascot reference', 280),
+        projectImage('silvator-mood-anger', 'silvator', 'project-assets/silvator/ANGRY.webp', 'Silvator anger mood mascot reference', 290),
+        projectImage('silvator-mood-fear', 'silvator', 'project-assets/silvator/FEAR.webp', 'Silvator fear mood mascot reference', 300),
+        projectImage('silvator-mood-boredom', 'silvator', 'project-assets/silvator/BORED.webp', 'Silvator boredom mood mascot reference', 310),
       ],
       github_url: null,
       live_url: null,
-      image_url: 'project-assets/silvator.svg',
+      image_url: 'project-assets/silvator/showcase.jpg',
       featured: false,
       display_order: 60,
     }),

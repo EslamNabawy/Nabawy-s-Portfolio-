@@ -622,8 +622,8 @@ body {
 
 .design-signal_studio .os-hero {
   background:
-    radial-gradient(circle at 14% 20%, rgba(15, 118, 110, 0.16), transparent 28%),
-    linear-gradient(135deg, #ffffff 0 54%, #ecfdf5 54% 100%);
+    linear-gradient(90deg, rgba(15, 118, 110, 0.1) 0 38%, transparent 38%),
+    linear-gradient(135deg, #ffffff 0%, #f7f9fb 52%, #ecfdf5 100%);
   border-bottom: 1px solid #d9e5df;
   color: #0f172a;
   min-height: auto;
@@ -693,9 +693,8 @@ body {
 }
 
 .design-signal_studio .os-hero .bg-white {
-  background: #111827;
-  border-color: #111827;
-  color: #ffffff;
+  background: #ffffff;
+  color: #0f172a;
 }
 
 .design-signal_studio .hero-copy-frame a {
@@ -730,7 +729,7 @@ body {
 .design-signal_studio .os-hero dl {
   border-color: #d9e5df;
   background: rgba(255, 255, 255, 0.94);
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 24px 70px rgba(15, 23, 42, 0.11);
   color: #0f172a;
   overflow: hidden;
@@ -766,7 +765,7 @@ body {
 }
 
 .design-signal_studio article.bg-white {
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
 }
 
@@ -830,6 +829,14 @@ a {
 
 img {
   max-width: 100%;
+}
+
+.project-carousel-track {
+  scrollbar-width: none;
+}
+
+.project-carousel-track::-webkit-scrollbar {
+  display: none;
 }
 
 button,

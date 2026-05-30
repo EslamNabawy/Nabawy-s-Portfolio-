@@ -12,22 +12,17 @@ interface Props {
 }
 
 const { projects, featuredCount, cardStyle } = Astro.props;
-const prominentFirst = cardStyle === 'visual';
-const gridClass =
-  cardStyle === 'compact'
-    ? 'mt-8 grid gap-4'
-    : 'mt-8 grid gap-5 md:grid-cols-2';
 ---
 
-<section class="border-b border-line bg-white px-6 py-12 lg:px-8" id="projects">
+<section class="border-b border-line bg-white px-6 py-14 lg:px-8" id="projects">
   <div class="mx-auto max-w-7xl">
     <div class="flex flex-col justify-between gap-6 border-b border-line pb-8 lg:flex-row lg:items-end">
       <SectionHeader
         eyebrow="Selected Projects"
-        title="Proof Of Work"
-        copy="Flutter apps, AI automations, and requested project mockups from the updated portfolio set."
+        title="Project Carousel"
+        copy="Screenshot-backed proof for CampusSuit, Rain, Brox, AI automation, e-commerce, and Silvator."
       />
-      <div class="grid w-full max-w-md grid-cols-2 border border-line bg-panel">
+      <div class="grid w-full max-w-md grid-cols-2 rounded-lg border border-line bg-panel">
         <div class="border-r border-line p-4">
           <p class="font-mono text-xs font-black uppercase tracking-[0.14em] text-quiet">
             Projects
@@ -43,25 +38,99 @@ const gridClass =
       </div>
     </div>
 
-    <div class={gridClass}>
-      {projects.map((project, index) => (
-        <ProjectCard
-          project={project}
-          prominent={prominentFirst && index === 0}
-          styleVariant={cardStyle}
-          index={index}
-        />
-      ))}
-      {projects.length === 0 && (
-        <div class="border border-line bg-panel p-6">
-          <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
-            Awaiting Project
+    {projects.length > 0 ? (
+      <div class="mt-8" data-project-carousel>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-quiet">
+            Swipe or use controls
           </p>
-          <p class="mt-4 text-sm leading-7 text-quiet">
-            Publish the first project from the dashboard.
-          </p>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="rounded-full border border-line bg-white px-4 py-2 text-sm font-black text-ink shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+              data-project-carousel-prev
+            >
+              Prev
+            </button>
+            <button
+              type="button"
+              class="rounded-full border border-ink bg-ink px-4 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40"
+              data-project-carousel-next
+            >
+              Next
+            </button>
+          </div>
         </div>
-      )}
-    </div>
+
+        <div
+          class="project-carousel-track mt-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4"
+          data-project-carousel-track
+          tabindex="0"
+        >
+          {projects.map((project, index) => (
+            <div
+              class="min-w-0 shrink-0 basis-[min(88vw,26rem)] snap-start md:basis-[27rem] lg:basis-[29rem]"
+              data-project-card-slide
+            >
+              <ProjectCard
+                project={project}
+                prominent={false}
+                styleVariant={cardStyle}
+                index={index}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <div class="mt-8 rounded-lg border border-line bg-panel p-6">
+        <p class="font-mono text-xs font-black uppercase tracking-[0.16em] text-alert">
+          Awaiting Project
+        </p>
+        <p class="mt-4 text-sm leading-7 text-quiet">
+          Publish the first project from the dashboard.
+        </p>
+      </div>
+    )}
   </div>
 </section>
+
+<script>
+  const setupProjectCarousels = () => {
+    document.querySelectorAll('[data-project-carousel]').forEach((root) => {
+      const track = root.querySelector<HTMLElement>('[data-project-carousel-track]');
+      const prev = root.querySelector<HTMLButtonElement>('[data-project-carousel-prev]');
+      const next = root.querySelector<HTMLButtonElement>('[data-project-carousel-next]');
+
+      if (!track || !prev || !next) {
+        return;
+      }
+
+      const slideStep = () => {
+        const firstSlide = track.querySelector<HTMLElement>('[data-project-card-slide]');
+        return firstSlide ? firstSlide.getBoundingClientRect().width + 20 : track.clientWidth * 0.85;
+      };
+
+      const updateControls = () => {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        prev.disabled = track.scrollLeft <= 4;
+        next.disabled = track.scrollLeft >= maxScroll - 4;
+      };
+
+      prev.addEventListener('click', () => {
+        track.scrollBy({ left: -slideStep(), behavior: 'smooth' });
+      });
+
+      next.addEventListener('click', () => {
+        track.scrollBy({ left: slideStep(), behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', updateControls, { passive: true });
+      window.addEventListener('resize', updateControls);
+      updateControls();
+    });
+  };
+
+  setupProjectCarousels();
+  document.addEventListener('astro:page-load', setupProjectCarousels);
+</script>
