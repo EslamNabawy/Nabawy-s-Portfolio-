@@ -146,9 +146,9 @@ export const staticPortfolioData: StaticPortfolioData = {
   config: {
     id: 'global',
     name: 'Eslam Tarek Nabawy',
-    headline: 'Software Engineer building Flutter apps, Firebase-backed products, and AI automation workflows.',
+    headline: 'Software Engineer building Flutter apps, API-backed products, and AI automation workflows.',
     bio:
-      'Computer Science graduate based in 6th October City, Egypt. I build cross-platform mobile apps, integrate REST APIs and Firebase services, and use AI tools plus n8n workflows to turn product ideas into working software faster.',
+      'Computer Science graduate based in 6th October City, Egypt. I build cross-platform mobile apps, integrate REST APIs and backend services, and use AI tools plus n8n workflows to turn product ideas into working software faster.',
     resume_url: 'resume.pdf',
     github_url: 'https://github.com/EslamNabawy',
     linkedin_url: 'https://www.linkedin.com/in/eslam-tarek-nabawy/',
@@ -185,9 +185,9 @@ export const staticPortfolioData: StaticPortfolioData = {
       'Figma',
     ], 10),
     skill('backend-apis', 'Backend, APIs, And Data', [
-      'Firebase Auth',
-      'Cloud Firestore',
-      'Firebase Storage',
+      'Auth Flows',
+      'Realtime Data Modeling',
+      'File Upload Flows',
       'REST API Integration',
       'SDK Usage',
       'Supabase basics',
@@ -219,16 +219,16 @@ export const staticPortfolioData: StaticPortfolioData = {
       title: 'CampusSuit',
       slug: 'campus-suit',
       description:
-        'Graduation project built as a cross-platform campus life app. The app covers onboarding, campus events, profile management, live data, Firebase-backed workflows, and API integrations.',
+        'Graduation project built as a cross-platform campus life app. The app covers onboarding, campus events, profile management, live data, backend workflows, and API integrations.',
       short_description:
-        'Flutter and Firebase campus activity app focused on onboarding, events, profile workflows, and live data.',
+        'Flutter campus activity app focused on onboarding, events, profile workflows, and live data.',
       role: 'Flutter Developer / Graduation Project Engineer',
       impact: 'Turned campus activity workflows into a usable cross-platform product experience.',
       architecture_notes:
-        'Built with Flutter, Firebase services, REST API integration, and maintainable state management patterns so features could grow without turning the UI layer into backend glue.',
+        'Built with Flutter, backend services, REST API integration, and maintainable state management patterns so features could grow without turning the UI layer into backend glue.',
       case_study_markdown:
         'Implemented core mobile flows, real-time data handling, and structured feature screens for campus users.',
-      tech_stack: ['Flutter', 'Firebase', 'REST APIs', 'BLoC', 'Cross-Platform UI'],
+      tech_stack: ['Flutter', 'Backend Services', 'REST APIs', 'BLoC', 'Cross-Platform UI'],
       project_images: [
         projectImage('campus-suit-primary', 'campus-suit', 'project-assets/campus-suit/showcase.jpg', 'CampusSuit screenshot-based mobile app mockup'),
         ...campusSuitScreenAlts.map((altText, index) =>
@@ -252,16 +252,16 @@ export const staticPortfolioData: StaticPortfolioData = {
       title: 'Rain P2P Messenger',
       slug: 'rain-p2p-messenger',
       description:
-        'Private peer-to-peer chat app for Android and Windows. Rain focuses on accepted friends, direct chat, visible connection state, one-to-one file transfer, voice calls, and video calls. The system separates Flutter UI, Riverpod state, runtime controllers, local Drift persistence, Firebase signaling, and WebRTC data/media transport.',
+        'Private peer-to-peer chat app for Android and Windows. Rain focuses on accepted friends, direct chat, visible connection state, one-to-one file transfer, voice calls, and video calls. The system separates Flutter UI, Riverpod state, runtime controllers, local Drift persistence, realtime signaling, and WebRTC data/media transport.',
       short_description:
-        'Private Android/Windows peer chat app with WebRTC messaging, file transfer, voice/video calls, Firebase signaling, and local persistence.',
+        'Private Android/Windows peer chat app with WebRTC messaging, file transfer, voice/video calls, realtime signaling, and local persistence.',
       role: 'Flutter / WebRTC Engineer',
       impact: 'Built a focused private-communication product surface with explicit friend, route, call, file, and recovery states.',
       architecture_notes:
-        'Monorepo split: apps/rain for the Flutter app, rain_core for Drift identity/friends/messages/files, protocol_brain for Firebase signaling and session policy, peer_core for WebRTC data/media primitives, and backend/firebase for Realtime Database rules and cleanup functions.',
+        'Monorepo split: apps/rain for the Flutter app, rain_core for Drift identity/friends/messages/files, protocol_brain for realtime signaling and session policy, peer_core for WebRTC data/media primitives, and backend rules plus cleanup functions.',
       case_study_markdown:
         'Current maintained targets are Android phones and Windows desktop. Working feature areas include username sign-in, friend search/requests/blocking, peer chat over WebRTC data channels, connection diagnostics, one-to-one file transfer, and one-to-one voice/video calls. Push call wakeups, group calls, and app-store packaging are not claimed.',
-      tech_stack: ['Flutter', 'Riverpod', 'WebRTC', 'Firebase RTDB', 'Drift', 'Melos'],
+      tech_stack: ['Flutter', 'Riverpod', 'WebRTC', 'Realtime Signaling', 'Drift', 'Melos'],
       project_images: [
         projectImage('rain-primary', 'rain-p2p-messenger', 'project-assets/rain/showcase.jpg', 'Rain screenshot-based Android and Windows mockup'),
         ...rainMobileScreenAlts.map((altText, index) =>
@@ -360,16 +360,16 @@ export const staticPortfolioData: StaticPortfolioData = {
       title: 'So She Picks: E-Commerce',
       slug: 'so-she-picks-ecommerce',
       description:
-        'Flutter e-commerce ordering app with responsive UI, Firebase-backed order management, and a loyalty points system for repeat customers.',
+        'Flutter e-commerce ordering app with responsive UI, backend order management, and a loyalty points system for repeat customers.',
       short_description:
-        'Responsive Flutter e-commerce interface with Firebase-backed order handling and loyalty points.',
+        'Responsive Flutter e-commerce interface with backend order handling and loyalty points.',
       role: 'Flutter Developer',
       impact: 'Delivered ordering and loyalty flows for a mobile commerce experience in under three months.',
       architecture_notes:
-        'Used Firebase-backed order data and focused UI state to keep browsing, checkout, and loyalty behavior understandable.',
+        'Used backend order data and focused UI state to keep browsing, checkout, and loyalty behavior understandable.',
       case_study_markdown:
         'Built the customer-facing ordering flow, order state, and rewards behavior around simple mobile interactions.',
-      tech_stack: ['Flutter', 'Firebase', 'Responsive UI', 'E-Commerce', 'Order Management'],
+      tech_stack: ['Flutter', 'Backend Services', 'Responsive UI', 'E-Commerce', 'Order Management'],
       project_images: [
         projectImage('so-she-picks-primary', 'so-she-picks-ecommerce', 'project-assets/so-she-picks.svg', 'So She Picks ordering app mockup'),
       ],
@@ -438,7 +438,7 @@ export const staticPortfolioData: StaticPortfolioData = {
       'freelance-software-developer',
       'Freelance Software Developer',
       'Experience',
-      'Built cross-platform Flutter apps, integrated REST APIs and Firebase services, and shipped client feedback cycles with Git from November 2022 to present.',
+      'Built cross-platform Flutter apps, integrated REST APIs and backend services, and shipped client feedback cycles with Git from November 2022 to present.',
       10,
     ),
     experience(
@@ -491,7 +491,7 @@ export const staticPortfolioData: StaticPortfolioData = {
           {
             label: 'Mobile',
             title: 'Flutter Delivery',
-            copy: 'Ships cross-platform apps with Firebase, APIs, BLoC-style state management, and responsive product UI.',
+            copy: 'Ships cross-platform apps with APIs, backend services, BLoC-style state management, and responsive product UI.',
           },
         ],
       },
