@@ -7,6 +7,9 @@ Projects, skills, and site config now support two deployment paths:
 - `Save + Deploy`: saves the CMS row, then triggers the public GitHub Pages rebuild.
 - `Deploy after save`: keeps the next normal save on the same path.
 
+The current admin dashboard triggers a Supabase Edge Function at `supabase/functions/publish-portfolio`
+which dispatches the GitHub Actions rebuild for the portfolio site.
+
 Draft-only project and skill edits do not enable deployment because the static public site only reads published rows. Editing a previously published row still enables deployment, including when it is changed back to draft.
 
 ## Deployment Log
@@ -14,7 +17,7 @@ Draft-only project and skill edits do not enable deployment because the static p
 Every automated deploy uses the same deployment coordinator as the manual Deploy screen:
 
 - create a pending `publish_log` row
-- trigger the GitHub Actions workflow through GitHub CLI
+- trigger the GitHub Actions workflow through the publish edge function
 - poll the workflow run
 - update `publish_log` as success or failed
 
