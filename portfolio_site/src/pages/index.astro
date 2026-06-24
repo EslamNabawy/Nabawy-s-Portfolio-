@@ -8,13 +8,20 @@ const { config, projects, skills, experiments } = await getPortfolioData();
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
-
-const resumeFileName = "Eslam's Resume.pdf";
-const resumeHref = `${base}${encodeURIComponent(resumeFileName)}`;
+const sceneHref = `${base}scene-assets/arcane_library_scene.png`;
+const resumeHref = config.resume_url ?? `${base}Eslam's%20Resume.pdf`;
+const isExternalResumeHref = /^https?:\/\//i.test(resumeHref);
 const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 const contactActions = [
   { label: 'Email', href: config.email ? `mailto:${config.email}` : null, icon: 'mail' },
-  { label: 'Resume', href: resumeHref, icon: 'file', download: resumeFileName },
+  {
+    label: 'Resume',
+    href: resumeHref,
+    icon: 'file',
+    download: isExternalResumeHref ? undefined : 'Eslam Tarek Nabawy Resume.pdf',
+    target: isExternalResumeHref ? '_blank' : undefined,
+    rel: isExternalResumeHref ? 'noopener noreferrer' : undefined,
+  },
   { label: 'Phone', href: phoneHref, icon: 'phone' },
   { label: 'GitHub', href: config.github_url, icon: 'github' },
   { label: 'LinkedIn', href: config.linkedin_url, icon: 'linkedin' },
@@ -23,6 +30,8 @@ const contactActions = [
   href: string;
   icon: string;
   download?: string;
+  target?: string;
+  rel?: string;
 }[];
 
 const preferredProjectOrder = [
@@ -143,7 +152,8 @@ const icon = (name: string) => name;
 
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
   <main class="v2-portfolio">
-    <canvas id="v2-bg-canvas" aria-hidden="true"></canvas>
+    <img class="v2-bg-image" src={sceneHref} alt="" aria-hidden="true" />
+    <div class="v2-bg-overlay" aria-hidden="true"></div>
     <div class="v2-progress" id="v2-progress" aria-hidden="true"></div>
 
     <nav class="v2-nav" aria-label="Primary navigation">
@@ -160,18 +170,25 @@ const icon = (name: string) => name;
     <section class="v2-hero" id="hero">
       <div class="v2-hero-inner">
         <div class="v2-hero-copy v2-reveal-l">
-          <p class="v2-eyebrow"><span></span> Software Engineer</p>
+          <p class="v2-eyebrow"><span></span> Arcane Library</p>
           <h1 class="v2-hero-title">
             Eslam Tarek
             <span>Nabawy</span>
           </h1>
           <p class="v2-hero-role">Software products · automation · reliable delivery</p>
           <p class="v2-hero-description">
-            I build useful software from rough product ideas: clean interfaces, reliable integrations,
-            and automation that turns repeated work into systems people can actually use.
+            A full-screen portfolio home framed as a pixel-art library: dark wood, shelves, torches,
+            and a disciplined interface layered over the scene. The work beneath it is still the same:
+            clean products, reliable integrations, and automation that reduces repeated work.
           </p>
           <div class="v2-hero-actions">
-            <a class="v2-btn v2-btn-fill" href={resumeHref} download={resumeFileName}>
+            <a
+              class="v2-btn v2-btn-fill"
+              href={resumeHref}
+              download={isExternalResumeHref ? undefined : 'Eslam Tarek Nabawy Resume.pdf'}
+              target={isExternalResumeHref ? '_blank' : undefined}
+              rel={isExternalResumeHref ? 'noopener noreferrer' : undefined}
+            >
               Resume
             </a>
             <a class="v2-btn v2-btn-line" href="#projects">View Projects</a>
@@ -181,23 +198,29 @@ const icon = (name: string) => name;
           </div>
         </div>
 
-        <div class="v2-code-widget v2-reveal-r" aria-label="Profile summary card">
+        <div class="v2-code-widget v2-library-panel v2-reveal-r" aria-label="Arcane Library scene map">
           <div class="v2-code-bar">
             <span></span>
             <span></span>
             <span></span>
-            <small>profile.ts</small>
+            <small>scene-map.txt</small>
           </div>
-          <pre><code><span class="v2-kw">const</span> engineer = {'{'}
-  name: <span class="v2-str">'Eslam Nabawy'</span>,
-  focus: [<span class="v2-str">'apps'</span>, <span class="v2-str">'automation'</span>],
-  builds: <span class="v2-str">'interfaces that stay usable'</span>,
-  location: <span class="v2-str">'6th October City, Egypt'</span>,
-  availableFor: <span class="v2-str">'software roles'</span>
-{'}'};</code></pre>
-          <div class="v2-float-tag v2-float-a">cross-platform</div>
-          <div class="v2-float-tag v2-float-b">automation</div>
-          <div class="v2-float-tag v2-float-c">product UI</div>
+          <div class="v2-library-panel-body">
+            <p class="v2-library-kicker">Interactive zones</p>
+            <ul class="v2-library-list">
+              <li><span>A</span> center bookshelf opens the main collection</li>
+              <li><span>B</span> chest unlocks rewards and achievements</li>
+              <li><span>C</span> reading stand opens the active book</li>
+              <li><span>D</span> desk opens notes and annotations</li>
+              <li><span>E</span> window opens settings or search</li>
+              <li><span>F</span> hourglass opens a reading timer</li>
+            </ul>
+            <div class="v2-library-tags">
+              <span>pixel art</span>
+              <span>nearest-neighbor</span>
+              <span>library scene</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -359,7 +382,7 @@ const icon = (name: string) => name;
         <span>Open to software engineering roles, freelance builds, and practical product collaborations.</span>
         <div class="v2-contact-links">
           {contactActions.map((item) => (
-            <a href={item.href} download={item.download}>
+            <a href={item.href} download={item.download} target={item.target} rel={item.rel}>
               <span>{icon(item.icon)}</span>
               {item.label}
             </a>
@@ -385,43 +408,13 @@ const icon = (name: string) => name;
   window.addEventListener('scroll', updateProgress, { passive: true });
   updateProgress();
 
-  const canvas = document.getElementById('v2-bg-canvas') as HTMLCanvasElement | null;
-  if (canvas) {
-    const context = canvas.getContext('2d');
-    const particles = Array.from({ length: 58 }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: (Math.random() - 0.5) * 0.2,
-      r: Math.random() * 1.4 + 0.5,
-    }));
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+  const bg = document.querySelector('.v2-bg-image') as HTMLImageElement | null;
+  if (bg) {
+    const syncPosition = () => {
+      const viewportRatio = window.innerWidth / window.innerHeight;
+      bg.style.objectPosition = viewportRatio > 1 ? 'center 56%' : 'center 58%';
     };
-
-    const draw = () => {
-      if (!context) return;
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((particle) => {
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        if (particle.x < 0) particle.x = canvas.width;
-        if (particle.x > canvas.width) particle.x = 0;
-        if (particle.y < 0) particle.y = canvas.height;
-        if (particle.y > canvas.height) particle.y = 0;
-
-        context.beginPath();
-        context.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
-        context.fillStyle = 'rgba(0, 255, 200, 0.62)';
-        context.fill();
-      });
-      requestAnimationFrame(draw);
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-    draw();
+    syncPosition();
+    window.addEventListener('resize', syncPosition);
   }
 </script>
