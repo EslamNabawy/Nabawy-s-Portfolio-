@@ -305,6 +305,40 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
         </div>
       </div>
     </div>
+    <div class="admin-modal admin-hidden" id="project-image-modal" aria-hidden="true">
+      <div class="admin-modal__backdrop" data-close-project-image-modal></div>
+      <div class="admin-modal__dialog admin-modal__dialog--sm" role="dialog" aria-modal="true" aria-labelledby="project-image-modal-title">
+        <div class="admin-card__header">
+          <div>
+            <h3 id="project-image-modal-title">Project image editor</h3>
+            <p>Add or update a gallery image for the active project.</p>
+          </div>
+          <button class="admin-button admin-button--ghost" type="button" data-close-project-image-modal>Close</button>
+        </div>
+        <div class="admin-card__body">
+          <form class="admin-grid-form" id="project-image-form">
+            <input type="hidden" id="project-image-id" />
+            <div class="admin-field admin-field--full">
+              <label for="project-image-url-input">Image URL</label>
+              <input id="project-image-url-input" type="url" required />
+            </div>
+            <div class="admin-field admin-field--full">
+              <label for="project-image-alt-text">Alt text</label>
+              <input id="project-image-alt-text" type="text" />
+            </div>
+            <div class="admin-field">
+              <label for="project-image-display-order">Display order</label>
+              <input id="project-image-display-order" type="number" min="0" step="1" />
+            </div>
+            <div class="admin-actions admin-field--full">
+              <button class="admin-button admin-button--primary" type="submit">Save image</button>
+              <button class="admin-button admin-button--danger" type="button" id="project-image-delete-button">Delete image</button>
+            </div>
+            <p class="admin-status admin-field--full" id="project-image-form-status"></p>
+          </form>
+        </div>
+      </div>
+    </div>
     <div class="admin-modal admin-hidden" id="skill-modal" aria-hidden="true">
       <div class="admin-modal__backdrop" data-close-skill-modal></div>
       <div class="admin-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="skill-modal-title">
@@ -562,6 +596,15 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
   const projectImageAddButton = document.querySelector('#project-image-add-button');
   const projectImagesList = document.querySelector('#project-images-list');
   const projectImagesEmpty = document.querySelector('#project-images-empty');
+  const projectImageModal = document.querySelector('#project-image-modal');
+  const projectImageForm = document.querySelector('#project-image-form');
+  const projectImageFormStatus = document.querySelector('#project-image-form-status');
+  const projectImageDeleteButton = document.querySelector('#project-image-delete-button');
+  const closeProjectImageModalButtons = Array.from(document.querySelectorAll('[data-close-project-image-modal]'));
+  const projectImageIdInput = document.querySelector('#project-image-id');
+  const projectImageUrlInputField = document.querySelector('#project-image-url-input');
+  const projectImageAltTextInput = document.querySelector('#project-image-alt-text');
+  const projectImageDisplayOrderInput = document.querySelector('#project-image-display-order');
   const siteConfigStatus = document.querySelector('#site-config-status');
   const skillsList = document.querySelector('#skills-list');
   const skillsEmpty = document.querySelector('#skills-empty');
@@ -647,6 +690,13 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
     projectModal?.classList.toggle('admin-hidden', !show);
     if (projectModal) {
       projectModal.setAttribute('aria-hidden', String(!show));
+    }
+  };
+
+  const showProjectImageModal = (show) => {
+    projectImageModal?.classList.toggle('admin-hidden', !show);
+    if (projectImageModal) {
+      projectImageModal.setAttribute('aria-hidden', String(!show));
     }
   };
 
@@ -808,8 +858,30 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
   };
 
   const closeProjectForm = () => {
+    closeProjectImageForm();
     showProjectModal(false);
   };
+
+  const resetProjectImageForm = () => {
+    if (projectImageIdInput) projectImageIdInput.value = '';
+    if (projectImageUrlInputField) projectImageUrlInputField.value = '';
+    if (projectImageAltTextInput) projectImageAltTextInput.value = '';
+    if (projectImageDisplayOrderInput) projectImageDisplayOrderInput.value = String((state.projectImages?.length ?? 0) + 1);
+  };
+
+  const openProjectImageForm = (image = null) => {
+    resetProjectImageForm();
+    if (image) {
+      if (projectImageIdInput) projectImageIdInput.value = image.id ?? '';
+      if (projectImageUrlInputField) projectImageUrlInputField.value = image.image_url ?? '';
+      if (projectImageAltTextInput) projectImageAltTextInput.value = image.alt_text ?? '';
+      if (projectImageDisplayOrderInput) projectImageDisplayOrderInput.value = String(image.display_order ?? 0);
+    }
+    showProjectImageModal(true);
+    setStatus(projectImageFormStatus, '');
+  };
+
+  const closeProjectImageForm = () => showProjectImageModal(false);
 
   const resetSkillForm = () => {
     if (skillIdInput) skillIdInput.value = '';
@@ -1014,6 +1086,41 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
       closeSectionForm();
     } catch (error) {
       setStatus(sectionFormStatus, error instanceof Error ? error.message : String(error), 'danger');
+    }
+  };
+
+  const saveProjectImage = async () => {
+    const projectId = projectIdInput?.value;
+    if (!projectId) {
+      setStatus(projectImageFormStatus, 'Save the project before managing images.', 'danger');
+      return;
+    }
+    const payload = {
+      project_id: projectId,
+      image_url: String(projectImageUrlInputField?.value ?? '').trim(),
+      alt_text: String(projectImageAltTextInput?.value ?? '').trim() || null,
+      display_order: Number(projectImageDisplayOrderInput?.value ?? 0),
+    };
+    try {
+      if (projectImageIdInput?.value) {
+        await api(`/rest/v1/project_images?id=eq.${projectImageIdInput.value}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify(payload),
+        }, state.session);
+        setStatus(projectImageFormStatus, 'Project image saved.', 'success');
+      } else {
+        await api('/rest/v1/project_images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify(payload),
+        }, state.session);
+        setStatus(projectImageFormStatus, 'Project image created.', 'success');
+      }
+      await loadProjectImages(projectId);
+      closeProjectImageForm();
+    } catch (error) {
+      setStatus(projectImageFormStatus, error instanceof Error ? error.message : String(error), 'danger');
     }
   };
 
@@ -1391,21 +1498,7 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
     if (editProjectImageId) {
       const image = state.projectImages.find((item) => item.id === editProjectImageId);
       if (!image) return;
-      try {
-        await api(`/rest/v1/project_images?id=eq.${editProjectImageId}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-          body: JSON.stringify({
-            image_url: window.prompt('Image URL', image.image_url ?? '') ?? image.image_url,
-            alt_text: window.prompt('Alt text', image.alt_text ?? '') || null,
-            display_order: Number(window.prompt('Display order', String(image.display_order ?? 0)) ?? image.display_order ?? 0),
-          }),
-        }, state.session);
-        await loadProjectImages(projectIdInput?.value ?? '');
-        setStatus(projectFormStatus, 'Project image saved.', 'success');
-      } catch (error) {
-        setStatus(projectFormStatus, error instanceof Error ? error.message : String(error), 'danger');
-      }
+      openProjectImageForm(image);
       return;
     }
     if (deleteProjectImageId) {
@@ -1420,6 +1513,7 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
       } catch (error) {
         setStatus(projectFormStatus, error instanceof Error ? error.message : String(error), 'danger');
       }
+      return;
     }
   });
 
@@ -1482,6 +1576,29 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
   });
 
   closeSectionModalButtons.forEach((button) => button.addEventListener('click', closeSectionForm));
+
+  projectImageForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    await saveProjectImage();
+  });
+
+  projectImageDeleteButton?.addEventListener('click', async () => {
+    if (!projectImageIdInput?.value) return;
+    if (!window.confirm('Delete this project image?')) return;
+    try {
+      await api(`/rest/v1/project_images?id=eq.${projectImageIdInput.value}`, {
+        method: 'DELETE',
+        headers: { Prefer: 'return=minimal' },
+      }, state.session);
+      await loadProjectImages(projectIdInput?.value ?? '');
+      closeProjectImageForm();
+      setStatus(projectFormStatus, 'Project image deleted.', 'success');
+    } catch (error) {
+      setStatus(projectImageFormStatus, error instanceof Error ? error.message : String(error), 'danger');
+    }
+  });
+
+  closeProjectImageModalButtons.forEach((button) => button.addEventListener('click', closeProjectImageForm));
 
   projectForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -1566,26 +1683,7 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
       setStatus(projectFormStatus, 'Save the project before adding images.', 'danger');
       return;
     }
-    const image_url = window.prompt('Image URL');
-    if (!image_url) return;
-    const alt_text = window.prompt('Alt text') ?? '';
-    const display_order = Number(window.prompt('Display order', String((state.projectImages?.length ?? 0) + 1)) ?? (state.projectImages?.length ?? 0) + 1);
-    try {
-      await api('/rest/v1/project_images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-        body: JSON.stringify({
-          project_id: projectId,
-          image_url,
-          alt_text: alt_text || null,
-          display_order,
-        }),
-      }, state.session);
-      await loadProjectImages(projectId);
-      setStatus(projectFormStatus, 'Project image added.', 'success');
-    } catch (error) {
-      setStatus(projectFormStatus, error instanceof Error ? error.message : String(error), 'danger');
-    }
+    openProjectImageForm();
   });
 
   closeProjectModalButtons.forEach((button) => button.addEventListener('click', closeProjectForm));

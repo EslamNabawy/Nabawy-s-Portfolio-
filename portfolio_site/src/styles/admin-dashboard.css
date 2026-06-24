@@ -354,3 +354,7 @@
   background: var(--admin-panel-strong);
   box-shadow: var(--admin-shadow);
 }
+
+.admin-modal__dialog--sm {
+  width: min(640px, calc(100vw - 32px));
+}
