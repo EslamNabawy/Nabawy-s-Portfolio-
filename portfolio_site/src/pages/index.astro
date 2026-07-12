@@ -9,7 +9,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const sceneHref = `${base}scene-assets/arcane_library_scene.png`;
-const resumeHref = config.resume_url ?? `${base}Eslam's%20Resume.pdf`;
+const resumeHref = config.resume_url ?? `${base}resume.pdf`;
 const isExternalResumeHref = /^https?:\/\//i.test(resumeHref);
 const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 const contactActions = [
