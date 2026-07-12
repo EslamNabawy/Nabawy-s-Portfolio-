@@ -28,7 +28,9 @@ const contactActions = [
   label: string;
   href: string;
   icon: string;
-  download?: boolean;
+  download?: string;
+  target?: string;
+  rel?: string;
 }[];
 
 const preferredProjectOrder = [
@@ -192,20 +194,6 @@ const icon = (name: string) => name;
             {config.email && (
               <a class="v2-btn v2-btn-line" href={`mailto:${config.email}`}>Email Me</a>
             )}
-          </div>
-          <div class="v2-hero-stats" aria-label="Portfolio summary">
-            <div>
-              <strong>{orderedProjects.length}</strong>
-              <span>Projects</span>
-            </div>
-            <div>
-              <strong>{skillGroups.length}</strong>
-              <span>Skill Groups</span>
-            </div>
-            <div>
-              <strong>{experiments.length}</strong>
-              <span>Experience Items</span>
-            </div>
           </div>
         </div>
 
