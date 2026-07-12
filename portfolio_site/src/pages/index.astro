@@ -8,13 +8,19 @@ const { config, projects, skills, experiments } = await getPortfolioData();
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
-const resumeFileName = "Eslam's Resume.pdf";
-const resumeHref = `${base}${encodeURIComponent(resumeFileName)}`;
+const resumeHref = config.resume_url ?? `${base}Eslam's%20Resume.pdf`;
 
 const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 const contactActions = [
   { label: 'Email', href: config.email ? `mailto:${config.email}` : null, icon: 'mail' },
-  { label: 'Resume', href: resumeHref, icon: 'file', download: resumeFileName },
+  {
+    label: 'Resume',
+    href: resumeHref,
+    icon: 'file',
+    download: /^https?:\/\//i.test(resumeHref) ? undefined : 'Eslam Tarek Nabawy Resume.pdf',
+    target: /^https?:\/\//i.test(resumeHref) ? '_blank' : undefined,
+    rel: /^https?:\/\//i.test(resumeHref) ? 'noopener noreferrer' : undefined,
+  },
   { label: 'Phone', href: phoneHref, icon: 'phone' },
   { label: 'GitHub', href: config.github_url, icon: 'github' },
   { label: 'LinkedIn', href: config.linkedin_url, icon: 'linkedin' },
@@ -173,11 +179,15 @@ const icon = (name: string) => name;
             and automation that turns repeated work into systems people can actually use.
           </p>
           <div class="v2-hero-actions">
-            {resumeHref && (
-              <a class="v2-btn v2-btn-fill" href={resumeHref} download={resumeFileName}>
+            <a
+              class="v2-btn v2-btn-fill"
+              href={resumeHref}
+              download={/^https?:\/\//i.test(resumeHref) ? undefined : 'Eslam Tarek Nabawy Resume.pdf'}
+              target={/^https?:\/\//i.test(resumeHref) ? '_blank' : undefined}
+              rel={/^https?:\/\//i.test(resumeHref) ? 'noopener noreferrer' : undefined}
+            >
                 Resume
-              </a>
-            )}
+            </a>
             <a class="v2-btn v2-btn-line" href="#projects">View Projects</a>
             {config.email && (
               <a class="v2-btn v2-btn-line" href={`mailto:${config.email}`}>Email Me</a>

@@ -19,16 +19,13 @@ const heroProjects = projects.length > 0 ? projects : featuredProject ? [feature
 const showFeaturedPanel =
   theme.showFeaturedProjectPanel && theme.heroLayout !== 'statement' && heroProjects.length > 0;
 const phoneHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
-const isExternalResumeHref = /^https?:\/\//i.test(config.resume_url ?? '');
 const heroActionLinks = [
   {
     label: 'Resume',
     href: config.resume_url,
     icon: 'resume',
     primary: true,
-    download: isExternalResumeHref ? undefined : true,
-    target: isExternalResumeHref ? '_blank' : undefined,
-    rel: isExternalResumeHref ? 'noopener noreferrer' : undefined,
+    download: true,
   },
   { label: 'Work', href: '#projects', icon: 'work' },
   { label: 'Email', href: config.email ? `mailto:${config.email}` : null, icon: 'email' },
@@ -41,8 +38,6 @@ const heroActionLinks = [
   icon: string;
   primary?: boolean;
   download?: boolean;
-  target?: string;
-  rel?: string;
 }[];
 ---
 
@@ -75,8 +70,6 @@ const heroActionLinks = [
               class:list={['portfolio-button', link.primary && 'portfolio-button--primary']}
               href={link.href}
               download={link.download}
-              target={link.target}
-              rel={link.rel}
             >
               <span class="portfolio-button__icon" aria-hidden="true" data-icon={link.icon}>
                 {link.icon === 'resume' && (
