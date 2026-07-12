@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">So She Picks project thumbnail</title>
+  <desc id="desc">A tactical interface thumbnail for a Flutter e-commerce ordering application.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#18090d"/>
+      <stop offset="0.46" stop-color="#2a1016"/>
+      <stop offset="1" stop-color="#f8efe4"/>
+    </linearGradient>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M 44 0 L 0 0 0 44" fill="none" stroke="#ffbc62" stroke-opacity=".13" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect width="1600" height="1000" fill="url(#grid)"/>
+  <rect x="96" y="86" width="1408" height="828" rx="28" fill="#17080c" stroke="#ffbc62" stroke-opacity=".46" stroke-width="3"/>
+  <rect x="132" y="126" width="1336" height="92" rx="18" fill="#241016" stroke="#ffffff" stroke-opacity=".16"/>
+  <text x="168" y="183" fill="#fff8ed" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">So She Picks</text>
+  <text x="1220" y="181" fill="#ffbc62" font-family="JetBrains Mono, Consolas, monospace" font-size="20" font-weight="900">ECOMMERCE OPS</text>
+  <rect x="150" y="270" width="410" height="566" rx="34" fill="#fff8ed" stroke="#ffffff" stroke-opacity=".18"/>
+  <rect x="190" y="326" width="330" height="108" rx="24" fill="#2a1016"/>
+  <text x="220" y="374" fill="#ffbc62" font-family="JetBrains Mono, Consolas, monospace" font-size="18" font-weight="900">ORDER SURFACE</text>
+  <text x="220" y="407" fill="#fff8ed" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="900">Responsive Flutter UI</text>
+  <rect x="190" y="476" width="146" height="146" rx="28" fill="#f0d0b5"/>
+  <rect x="374" y="476" width="146" height="146" rx="28" fill="#f5e5d4"/>
+  <rect x="190" y="662" width="330" height="64" rx="20" fill="#2a1016"/>
+  <text x="264" y="702" fill="#fff8ed" font-family="JetBrains Mono, Consolas, monospace" font-size="18" font-weight="900">LOYALTY POINTS</text>
+  <rect x="648" y="270" width="802" height="566" rx="22" fill="#fff8ed"/>
+  <text x="704" y="334" fill="#2a1016" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="900">Ordering workflow</text>
+  <text x="704" y="390" fill="#2a1016" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="900">with backend-backed state</text>
+  <rect x="704" y="454" width="304" height="214" rx="18" fill="#2a1016"/>
+  <rect x="1058" y="454" width="304" height="214" rx="18" fill="#f4d9bf" stroke="#2a1016" stroke-opacity=".14"/>
+  <text x="746" y="526" fill="#ffbc62" font-family="JetBrains Mono, Consolas, monospace" font-size="19" font-weight="900">ORDERS</text>
+  <text x="1100" y="526" fill="#2a1016" font-family="JetBrains Mono, Consolas, monospace" font-size="19" font-weight="900">CUSTOMER VALUE</text>
+  <path d="M748 612 h206 M748 570 h144 M748 654 h172" stroke="#fff8ed" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="1132" cy="612" r="54" fill="#2a1016"/>
+  <circle cx="1240" cy="612" r="54" fill="#bf2438"/>
+  <rect x="704" y="724" width="658" height="46" rx="23" fill="#2a1016"/>
+  <rect x="704" y="724" width="514" height="46" rx="23" fill="#ffbc62"/>
+</svg>

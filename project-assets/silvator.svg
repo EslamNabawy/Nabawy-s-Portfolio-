@@ -1,0 +1,30 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Silvator mood asset thumbnail</title>
+  <desc id="desc">Character mood prompt pack based on moods.md and WebP mood references.</desc>
+  <rect width="1600" height="1000" fill="#f4f0e8"/>
+  <rect x="112" y="96" width="1376" height="808" rx="34" fill="#18211f" stroke="#b86105" stroke-width="4"/>
+  <text x="170" y="182" fill="#fff8ed" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="900">Silvator</text>
+  <text x="976" y="181" fill="#f6b15f" font-family="Consolas, monospace" font-size="22" font-weight="900">MOODS.MD + WEBP REFERENCES</text>
+  <rect x="206" y="270" width="462" height="562" rx="24" fill="#fff8ed"/>
+  <text x="248" y="336" fill="#18211f" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="900">10 mood variants</text>
+  <text x="248" y="384" fill="#6b6256" font-family="Inter, Arial, sans-serif" font-size="21">symbol + expression + pose notes</text>
+  <text x="248" y="456" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">LOVE       heart necklace</text>
+  <text x="248" y="496" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">STRESS     lit cigarette</text>
+  <text x="248" y="536" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">SADNESS    crumpled tissue</text>
+  <text x="248" y="576" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">HAPPINESS  solar milkshake</text>
+  <text x="248" y="616" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">LONELY     fuzzy brown bear</text>
+  <text x="248" y="656" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">CONFIDENT  black sunglasses</text>
+  <text x="248" y="696" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">ANXIETY    metallic handcuffs</text>
+  <text x="248" y="736" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">ANGER      distorted stress ball</text>
+  <text x="248" y="776" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">FEAR       ticking silver watch</text>
+  <text x="248" y="816" fill="#18211f" font-family="Consolas, monospace" font-size="18" font-weight="900">BOREDOM    glowing smartphone</text>
+  <rect x="742" y="270" width="556" height="152" rx="22" fill="#fff8ed"/>
+  <text x="784" y="332" fill="#18211f" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Verified source</text>
+  <text x="784" y="378" fill="#6b6256" font-family="Consolas, monospace" font-size="22" font-weight="900">silvator/moods.md</text>
+  <rect x="742" y="470" width="556" height="152" rx="22" fill="#2b3a36" stroke="#f6b15f" stroke-width="3"/>
+  <text x="784" y="532" fill="#fff8ed" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Asset folder</text>
+  <text x="784" y="578" fill="#f6b15f" font-family="Consolas, monospace" font-size="22" font-weight="900">mood-pics/*.webp</text>
+  <rect x="742" y="670" width="556" height="118" rx="22" fill="#fff8ed"/>
+  <text x="784" y="724" fill="#18211f" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="900">Prompt and character direction</text>
+  <text x="784" y="766" fill="#6b6256" font-family="Inter, Arial, sans-serif" font-size="21">No app, backend, or release target claimed</text>
+</svg>
