@@ -117,7 +117,7 @@
 .v2-nav-hire {
   border-radius: 6px;
   background: var(--v2-green);
-  color: var(--v2-ink);
+  color: #000 !important;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.73rem;
   font-weight: 800;
@@ -250,7 +250,7 @@
 
 .v2-btn-fill {
   background: var(--v2-green);
-  color: var(--v2-ink);
+  color: #000 !important;
 }
 
 .v2-btn-fill:hover {
@@ -260,12 +260,12 @@
 
 .v2-btn-line {
   border: 1px solid var(--v2-border-strong);
-  color: var(--v2-ink);
+  color: #000 !important;
 }
 
 .v2-btn-line:hover {
   border-color: rgba(0, 255, 200, 0.48);
-  color: var(--v2-ink);
+  color: #000 !important;
   transform: translateY(-2px);
 }
 
