@@ -260,12 +260,12 @@
 
 .v2-btn-line {
   border: 1px solid var(--v2-border-strong);
-  color: #000 !important;
+  color: #fff !important;
 }
 
 .v2-btn-line:hover {
   border-color: rgba(0, 255, 200, 0.48);
-  color: #000 !important;
+  color: #fff !important;
   transform: translateY(-2px);
 }
 
