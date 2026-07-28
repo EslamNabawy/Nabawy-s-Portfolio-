@@ -1002,6 +1002,15 @@
   text-transform: uppercase;
 }
 
+body.pd-lightbox-open {
+  overflow: hidden;
+}
+
+.pd-lightbox-close:focus-visible {
+  outline: 3px solid var(--pd-green);
+  outline-offset: 3px;
+}
+
 .pd-reveal,
 .pd-reveal-r {
   opacity: 0;
