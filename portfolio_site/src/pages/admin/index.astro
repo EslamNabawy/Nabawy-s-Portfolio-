@@ -677,11 +677,6 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
 
   const readFormObject = (form) => Object.fromEntries(new FormData(form).entries());
 
-  const isTruthy = (value) => {
-    const normalized = String(value ?? '').trim().toLowerCase();
-    return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on';
-  };
-
   const api = async (path, options = {}, session = null) => {
     const headers = new Headers(options.headers || {});
     headers.set('apikey', supabaseAnonKey);
