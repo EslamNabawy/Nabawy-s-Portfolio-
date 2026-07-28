@@ -1,0 +1,9 @@
+{
+  "name": "Eslam Tarek Nabawy | Portfolio",
+  "short_name": "Eslam.dev",
+  "start_url": "/Nabawy-s-Portfolio-/",
+  "display": "browser",
+  "background_color": "#0a0b0f",
+  "theme_color": "#0a0b0f",
+  "icons": [{ "src": "/Nabawy-s-Portfolio-/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

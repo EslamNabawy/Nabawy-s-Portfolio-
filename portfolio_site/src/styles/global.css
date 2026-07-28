@@ -1738,6 +1738,24 @@ a:hover {
   outline-offset: 3px;
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 300;
+  top: 12px;
+  left: 12px;
+  border-radius: 8px;
+  background: #5cffc9;
+  color: #07110e;
+  font-weight: 800;
+  padding: 12px 16px;
+  transform: translateY(-180%);
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 @keyframes radar-sweep {
   to {
     transform: rotate(1turn);

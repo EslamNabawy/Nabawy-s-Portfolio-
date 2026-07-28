@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://eslamnabawy.github.io/Nabawy-s-Portfolio-/sitemap.xml

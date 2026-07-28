@@ -1,6 +1,7 @@
 import { defineConfig, envField } from 'astro/config';
 
 export default defineConfig({
+  site: 'https://eslamnabawy.github.io',
   base: '/Nabawy-s-Portfolio-/',
   output: 'static',
   env: {

@@ -132,6 +132,13 @@ const projectHighlights: Record<string, string[]> = {
   ],
 };
 
+const projectImageDimensions: Record<string, { width: number; height: number }> = {
+  brox: { width: 1600, height: 1000 },
+  'rain-p2p-messenger': { width: 1800, height: 1125 },
+  'campus-suit': { width: 1600, height: 1000 },
+  silvator: { width: 1800, height: 1125 },
+};
+
 const skillCode = (category: string) => {
   const normalized = category.toLowerCase();
   if (normalized.includes('mobile')) return 'UI';
@@ -150,13 +157,18 @@ const icon = (name: string) => name;
 ---
 
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
-  <main class="v2-portfolio">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <main id="main-content" class="v2-portfolio" tabindex="-1">
     <canvas id="v2-bg-canvas" aria-hidden="true"></canvas>
     <div class="v2-progress" id="v2-progress" aria-hidden="true"></div>
 
     <nav class="v2-nav" aria-label="Primary navigation">
       <a class="v2-nav-logo" href={base}>eslam<em>.dev</em></a>
-      <div class="v2-nav-links">
+      <button class="v2-nav-toggle" type="button" aria-expanded="false" aria-controls="primary-links">
+        <span aria-hidden="true">Menu</span>
+        <span class="sr-only">Toggle navigation</span>
+      </button>
+      <div class="v2-nav-links" id="primary-links">
         <a href="#projects">Projects</a>
         <a href="#skills">Skills</a>
         <a href="#experience">Experience</a>
@@ -280,6 +292,7 @@ const icon = (name: string) => name;
           const href = `${base}projects/${project.slug}/`;
           const isLarge = project.slug === 'brox';
           const isWide = project.slug === 'so-she-picks-ecommerce';
+          const imageDimensions = projectImageDimensions[project.slug];
           const highlights = projectHighlights[project.slug] ?? [project.impact ?? project.role ?? 'Built as a focused product experience.'];
 
           return (
@@ -287,7 +300,15 @@ const icon = (name: string) => name;
               <a href={href}>
                 <div class:list={['v2-project-media', `v2-tone-${projectTone(project)}`]}>
                   {image ? (
-                    <img src={image} alt={`${project.title} screenshot mockup`} loading={index < 2 ? 'eager' : 'lazy'} />
+                    <img
+                      src={image}
+                      alt={`${project.title} screenshot mockup`}
+                      width={imageDimensions?.width}
+                      height={imageDimensions?.height}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      fetchpriority={index === 0 ? 'high' : 'auto'}
+                      decoding="async"
+                    />
                   ) : (
                     <div class="v2-project-empty">Preview pending</div>
                   )}
@@ -402,10 +423,35 @@ const icon = (name: string) => name;
   window.addEventListener('scroll', updateProgress, { passive: true });
   updateProgress();
 
+  const nav = document.querySelector('.v2-nav') as HTMLElement | null;
+  const navToggle = document.querySelector('.v2-nav-toggle') as HTMLButtonElement | null;
+  const navLinks = document.querySelector('#primary-links') as HTMLElement | null;
+  if (nav && navToggle && navLinks) {
+    nav.dataset.ready = 'true';
+
+    const setNavOpen = (open: boolean) => {
+      nav.dataset.open = String(open);
+      navToggle.setAttribute('aria-expanded', String(open));
+    };
+
+    navToggle.addEventListener('click', () => setNavOpen(nav.dataset.open !== 'true'));
+    navLinks.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setNavOpen(false)));
+    document.addEventListener('click', (event) => {
+      if (!nav.contains(event.target as Node)) setNavOpen(false);
+    });
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && nav.dataset.open === 'true') {
+        setNavOpen(false);
+        navToggle.focus();
+      }
+    });
+  }
+
   const canvas = document.getElementById('v2-bg-canvas') as HTMLCanvasElement | null;
   if (canvas) {
     const context = canvas.getContext('2d');
-    const particles = Array.from({ length: 58 }, () => ({
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const particles = Array.from({ length: window.innerWidth < 760 ? 28 : 58 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
       vx: (Math.random() - 0.5) * 0.2,
@@ -413,32 +459,52 @@ const icon = (name: string) => name;
       r: Math.random() * 1.4 + 0.5,
     }));
 
+    let frameId: number | undefined;
+
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      context?.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     const draw = () => {
-      if (!context) return;
-      context.clearRect(0, 0, canvas.width, canvas.height);
+      if (!context || motionQuery.matches || document.hidden) return;
+      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
       particles.forEach((particle) => {
         particle.x += particle.vx;
         particle.y += particle.vy;
-        if (particle.x < 0) particle.x = canvas.width;
-        if (particle.x > canvas.width) particle.x = 0;
-        if (particle.y < 0) particle.y = canvas.height;
-        if (particle.y > canvas.height) particle.y = 0;
+        if (particle.x < 0) particle.x = window.innerWidth;
+        if (particle.x > window.innerWidth) particle.x = 0;
+        if (particle.y < 0) particle.y = window.innerHeight;
+        if (particle.y > window.innerHeight) particle.y = 0;
 
         context.beginPath();
         context.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
         context.fillStyle = 'rgba(0, 255, 200, 0.62)';
         context.fill();
       });
-      requestAnimationFrame(draw);
+      frameId = requestAnimationFrame(draw);
+    };
+
+    const stop = () => {
+      if (frameId !== undefined) cancelAnimationFrame(frameId);
+      frameId = undefined;
+    };
+
+    const start = () => {
+      if (frameId === undefined && !motionQuery.matches && !document.hidden) draw();
     };
 
     resize();
     window.addEventListener('resize', resize);
-    draw();
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    motionQuery.addEventListener('change', () => {
+      stop();
+      start();
+    });
+    start();
   }
 </script>

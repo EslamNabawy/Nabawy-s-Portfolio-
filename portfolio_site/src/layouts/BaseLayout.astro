@@ -5,9 +5,23 @@ import '../styles/custom-sections.css';
 interface Props {
   title: string;
   description: string;
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
+const canonicalUrl = Astro.url.href;
+const socialImageUrl = new URL(`${import.meta.env.BASE_URL}project-assets/brox/showcase.jpg`, Astro.url.origin).href;
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Eslam Tarek Nabawy',
+  url: new URL(import.meta.env.BASE_URL, Astro.url.origin).href,
+  jobTitle: 'Software Engineer',
+  sameAs: [
+    'https://github.com/EslamNabawy',
+    'https://www.linkedin.com/in/eslam-tarek-nabawy/',
+  ],
+};
 ---
 
 <!doctype html>
@@ -16,8 +30,23 @@ const { title, description } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0b0f" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+    <link rel="manifest" href={`${import.meta.env.BASE_URL}site.webmanifest`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   </head>
   <body class="min-h-screen font-sans antialiased">
     <slot />

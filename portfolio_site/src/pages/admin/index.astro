@@ -6,7 +6,7 @@ const supabaseUrl = import.meta.env.SUPABASE_URL?.trim() ?? '';
 const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY?.trim() ?? '';
 ---
 
-<BaseLayout title="Portfolio Admin" description="Secure dashboard for managing portfolio content.">
+<BaseLayout title="Portfolio Admin" description="Secure dashboard for managing portfolio content." noindex>
   <main class="admin-shell" data-supabase-url={supabaseUrl} data-supabase-anon-key={supabaseAnonKey}>
     <div class="admin-container">
       <header class="admin-hero">
