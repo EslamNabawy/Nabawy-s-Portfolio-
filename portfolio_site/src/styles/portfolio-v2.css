@@ -1292,6 +1292,21 @@
   }
 }
 
+/* Keep wide cards readable on laptop-sized desktop viewports. */
+@media (width > 900px) and (width <= 1200px) {
+  .v2-project-card-large > a,
+  .v2-project-card-wide > a {
+    grid-template-columns: 1fr;
+  }
+
+  .v2-project-card-large .v2-project-media,
+  .v2-project-card-wide .v2-project-media {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--v2-border);
+  }
+}
+
 @media (width <= 560px) {
   .v2-nav {
     gap: 12px;
