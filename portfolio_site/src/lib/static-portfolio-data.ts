@@ -300,10 +300,10 @@ export const staticPortfolioData: StaticPortfolioData = {
     }),
     project({
       id: 'ai-workflow-automation',
-      title: 'RebuyTech',
+      title: 'Omnichannel AI Support',
       slug: 'ai-workflow-automation',
       description:
-        'AI-powered customer service automation platform built with n8n. RebuyTech automates context-aware response delivery across WhatsApp and Telegram while routing requests across multiple AI providers.',
+        'AI-powered customer service automation platform built with n8n. It automates context-aware response delivery across WhatsApp and Telegram while routing requests across multiple AI providers.',
       short_description:
         'AI customer service automation for WhatsApp and Telegram with persistent context, multi-provider routing, and safety gates.',
       role: 'AI Automation Engineer',

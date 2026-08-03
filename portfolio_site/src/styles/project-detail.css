@@ -966,8 +966,8 @@
   z-index: 500;
   display: grid;
   place-items: center;
-  background: rgba(5, 6, 10, 0.9);
-  padding: 64px 24px 24px;
+  background: rgba(5, 6, 10, 0.98);
+  padding: clamp(72px, 10vh, 112px) clamp(16px, 4vw, 64px) clamp(24px, 5vh, 56px);
   backdrop-filter: blur(12px);
 }
 
@@ -976,12 +976,14 @@
 }
 
 .pd-lightbox img {
-  max-width: min(1160px, 100%);
-  max-height: calc(100vh - 110px);
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(1200px, 100%);
+  max-height: 100%;
   border: 1px solid var(--pd-border-strong);
   border-radius: 12px;
   background: #eef3f8;
-  object-fit: contain;
   box-shadow: 0 34px 100px rgba(0, 0, 0, 0.52);
 }
 
@@ -1000,6 +1002,23 @@
   letter-spacing: 0.06em;
   padding: 10px 14px;
   text-transform: uppercase;
+  z-index: 1;
+}
+
+@media (width <= 560px) {
+  .pd-lightbox {
+    padding: 76px 12px 20px;
+  }
+
+  .pd-lightbox img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  .pd-lightbox-close {
+    right: 12px;
+    top: 12px;
+  }
 }
 
 body.pd-lightbox-open {
