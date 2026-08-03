@@ -404,7 +404,6 @@ const contactLinks = [
   { label: 'LinkedIn', href: config.linkedin_url, text: 'LinkedIn' },
   { label: config.phone, href: phoneHref, text: 'Phone' },
 ].filter((item) => item.href && item.label) as { label: string; href: string; text: string }[];
-const hotStack = new Set(['Flutter', 'Dart', 'Flutter Desktop', 'Riverpod', 'WebRTC', 'n8n', 'OpenAI API', 'Claude API', 'Cubit/Bloc', 'BLoC']);
 ---
 
 <BaseLayout title={`${project.title} | Project`} description={summary}>
@@ -620,7 +619,7 @@ const hotStack = new Set(['Flutter', 'Dart', 'Flutter Desktop', 'Riverpod', 'Web
           <p class="pd-sidebar-label">Tech stack</p>
           <div class="pd-stack">
             {project.tech_stack.map((item) => (
-              <span class:list={['pd-stack-tag', hotStack.has(item) && 'is-hot']}>{item}</span>
+              <button class:list={['pd-stack-tag', 'is-hot']} type="button" aria-pressed="true">{item}</button>
             ))}
           </div>
         </div>
@@ -762,6 +761,13 @@ const hotStack = new Set(['Flutter', 'Dart', 'Flutter Desktop', 'Riverpod', 'Web
     { rootMargin: '-22% 0px -60% 0px', threshold: 0.01 },
   );
   observedSections.forEach((section) => sectionObserver.observe(section));
+
+  document.querySelectorAll<HTMLButtonElement>('.pd-stack-tag').forEach((tag) => {
+    tag.addEventListener('click', () => {
+      const highlighted = tag.classList.toggle('is-hot');
+      tag.setAttribute('aria-pressed', String(highlighted));
+    });
+  });
 
   const lightbox = document.getElementById('pd-lightbox') as HTMLDivElement | null;
   const lightboxImage = lightbox?.querySelector('img');

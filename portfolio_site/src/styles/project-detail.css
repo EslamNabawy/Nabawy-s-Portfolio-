@@ -764,20 +764,37 @@
 }
 
 .pd-stack-tag {
+  appearance: none;
   border: 1px solid var(--pd-border);
   border-radius: 5px;
   background: var(--pd-ink-3);
   color: var(--pd-muted);
+  cursor: pointer;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.66rem;
   font-weight: 700;
   padding: 5px 10px;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
 }
 
 .pd-stack-tag.is-hot {
   border-color: rgba(0, 255, 200, 0.2);
   background: rgba(0, 255, 200, 0.05);
   color: var(--pd-green);
+}
+
+.pd-stack-tag:hover {
+  border-color: rgba(0, 255, 200, 0.42);
+  transform: translateY(-1px);
+}
+
+.pd-stack-tag:focus-visible {
+  outline: 3px solid var(--pd-green);
+  outline-offset: 3px;
 }
 
 .pd-sidebar-cta {
