@@ -35,10 +35,10 @@ const contactActions = [
 
 const preferredProjectOrder = [
   'brox',
+  'ai-workflow-automation',
   'rain-p2p-messenger',
   'campus-suit',
   'silvator',
-  'ai-workflow-automation',
   'so-she-picks-ecommerce',
 ];
 
@@ -100,7 +100,7 @@ const projectMeta = (project: Project) =>
     'rain-p2p-messenger': 'Android / Windows',
     'campus-suit': 'Campus Product',
     silvator: 'Mood Companion',
-    'ai-workflow-automation': 'AI Automation',
+    'ai-workflow-automation': 'Customer Service AI',
     'so-she-picks-ecommerce': 'Mobile Commerce',
   })[project.slug] ?? 'Software Product';
 
@@ -123,8 +123,8 @@ const projectHighlights: Record<string, string[]> = {
     'Local-first product surface focused on calm capture and reflection.',
   ],
   'ai-workflow-automation': [
-    'Webhook-driven n8n workflows connecting LLM APIs, conditions, retries, and notifications.',
-    'Built to keep automation inspectable instead of hidden behind opaque scripts.',
+    'Automated customer-service response delivery across WhatsApp and Telegram.',
+    'Supabase memory, multi-provider AI routing, and safety gates keep conversations contextual and controlled.',
   ],
   'so-she-picks-ecommerce': [
     'Mobile ordering flow with backend order handling and loyalty points.',
@@ -187,10 +187,10 @@ const icon = (name: string) => name;
             Eslam Tarek
             <span>Nabawy</span>
           </h1>
-          <p class="v2-hero-role">Software products · automation · reliable delivery</p>
+          <p class="v2-hero-role">Cross-platform applications · AI-integrated systems · reliable delivery</p>
           <p class="v2-hero-description">
-            I build useful software from rough product ideas: clean interfaces, reliable integrations,
-            and automation that turns repeated work into systems people can actually use.
+            I design and ship production-grade software from requirements to deployment: maintainable architecture,
+            clean interfaces, reliable integrations, and AI systems with explicit control points.
           </p>
           <div class="v2-hero-actions">
             <a
@@ -218,8 +218,8 @@ const icon = (name: string) => name;
           </div>
           <pre><code><span class="v2-kw">const</span> engineer = {'{'}
   name: <span class="v2-str">'Eslam Nabawy'</span>,
-  focus: [<span class="v2-str">'apps'</span>, <span class="v2-str">'automation'</span>],
-  builds: <span class="v2-str">'interfaces that stay usable'</span>,
+  focus: [<span class="v2-str">'cross-platform apps'</span>, <span class="v2-str">'AI systems'</span>],
+  builds: <span class="v2-str">'production-grade software'</span>,
   location: <span class="v2-str">'6th October City, Egypt'</span>,
   availableFor: <span class="v2-str">'software roles'</span>
 {'}'};</code></pre>
@@ -282,21 +282,22 @@ const icon = (name: string) => name;
     <section class="v2-section" id="projects">
       <div class="v2-section-head">
         <p class="v2-section-tag">Projects</p>
-        <h2>Built with real screens, not placeholders</h2>
-        <span>Every card below uses the actual project data and available screenshots. Silvator is included with the same visual treatment as the rest of the work.</span>
+        <h2>Production-grade software, shown clearly</h2>
+        <span>Featured work leads with four projects from my current engineering focus. Additional work remains available below for broader context.</span>
       </div>
 
       <div class="v2-project-grid">
         {orderedProjects.map((project, index) => {
           const image = getProjectHeroImage(project);
           const href = `${base}projects/${project.slug}/`;
+          const isPrimary = ['brox', 'ai-workflow-automation', 'rain-p2p-messenger', 'campus-suit'].includes(project.slug);
           const isLarge = project.slug === 'brox';
           const isWide = project.slug === 'so-she-picks-ecommerce';
           const imageDimensions = projectImageDimensions[project.slug];
           const highlights = projectHighlights[project.slug] ?? [project.impact ?? project.role ?? 'Built as a focused product experience.'];
 
           return (
-            <article class:list={['v2-project-card', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']}>
+            <article class:list={['v2-project-card', isPrimary && 'v2-project-card-primary', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']}>
               <a href={href}>
                 <div class:list={['v2-project-media', `v2-tone-${projectTone(project)}`]}>
                   {image ? (
@@ -317,6 +318,7 @@ const icon = (name: string) => name;
                   <div class="v2-project-meta">
                     <span>{projectMeta(project)}</span>
                     <small>{project.updated_at ? displayDate.format(new Date(project.updated_at)) : 'Current'}</small>
+                    {!isPrimary && <small class="v2-project-label">Additional work</small>}
                   </div>
                   <h3>{project.title}</h3>
                   <p class="v2-project-role">{project.role ?? 'Software Engineer'}</p>
@@ -369,22 +371,22 @@ const icon = (name: string) => name;
         <article>
           <p>Education</p>
           <h3>Bachelor of Computer Science</h3>
-          <span>AEA Academy · July 2024</span>
+          <span>Akhbar El-Yom Academy · Oct 2020 - Jul 2024 · Overall grade 82.88%</span>
         </article>
         <article>
           <p>Community</p>
           <h3>GDSC Flutter Head</h3>
-          <span>Led sessions, mentored beginners, and supported student events.</span>
+          <span>Led the Flutter team from Oct 2022 - Oct 2023; organized workshops and supported NextGen and Google I/O Extended.</span>
         </article>
         <article>
           <p>Problem Solving</p>
           <h3>ICPC Core Team</h3>
-          <span>Organized contests and mentored participants in algorithmic thinking.</span>
+          <span>Core team member from Jun 2020 - Oct 2023; supported contests and competitive-programming training.</span>
         </article>
         <article>
           <p>Automation</p>
           <h3>n8n + LLM Workflows</h3>
-          <span>Built practical workflows around webhooks, routing, notifications, and LLM APIs.</span>
+          <span>Arabic (Native) · English (Upper-Intermediate) · Military service completed.</span>
         </article>
       </div>
     </section>

@@ -670,6 +670,15 @@
   transform: translateY(-4px);
 }
 
+.v2-project-card:not(.v2-project-card-primary) {
+  border-color: rgba(255, 255, 255, 0.055);
+  background: rgba(16, 18, 26, 0.72);
+}
+
+.v2-project-label {
+  color: var(--v2-green) !important;
+}
+
 .v2-project-card > a {
   display: flex;
   min-height: 100%;

@@ -222,51 +222,51 @@ const projectDetails: Record<string, ProjectDetailContent> = {
     ],
   },
   'ai-workflow-automation': {
-    category: 'Automation System',
-    subtitle: 'Inspectable n8n workflows connecting LLM APIs, webhooks, and services',
-    type: 'Automation',
-    platform: 'n8n workflows',
-    timeline: 'Current workflow set',
+    category: 'Customer Service AI',
+    subtitle: 'AI-powered customer service automation across WhatsApp and Telegram',
+    type: 'Automation Platform',
+    platform: 'n8n, Supabase, multi-provider LLMs',
+    timeline: 'May 2026 - Jun 2026',
     status: 'Published case study',
     highlights: [
       {
-        title: 'Webhook-driven execution',
+        title: 'Automated response delivery',
         description:
-          'Workflows start from explicit triggers and move through LLM calls, conditions, retries, and notifications.',
+          'Customer requests from WhatsApp and Telegram move through automated response delivery with explicit trigger and output states.',
       },
       {
-        title: 'Visible control points',
+        title: 'Persistent conversation context',
         description:
-          'The automation is modeled so inputs, branches, outputs, and failure paths are inspectable.',
+          'A Supabase-backed memory layer keeps relevant conversation context available across customer interactions.',
       },
       {
-        title: 'AI-assisted delivery',
+        title: 'Multi-provider routing and safety',
         description:
-          'LLM APIs are used as part of a workflow system rather than as untracked manual prompts.',
+          'Groq, Gemini, and OpenRouter are routed through inspectable workflow logic, with a safety gate before responses are delivered.',
       },
     ],
     decisions: [
       {
-        title: 'Avoiding hidden scripts',
+        title: 'Keeping orchestration inspectable',
         description:
-          'n8n makes the route from trigger to output visible, which helps debug and maintain automation behavior.',
+          'n8n makes the route from incoming customer request to response visible, helping debug and maintain automation behavior.',
       },
       {
-        title: 'Keeping failure paths explicit',
+        title: 'Validating before delivery',
         description:
-          'Retry and notification branches keep failed automation runs observable instead of silently dropping work.',
+          'A safety gate checks automated responses before they reach WhatsApp or Telegram customers.',
       },
       {
-        title: 'Separating routing from generation',
+        title: 'Routing across AI providers',
         description:
-          'Conditions and service steps decide where data goes; LLM calls handle the specific generation or reasoning task.',
+          'Workflow conditions route requests across Groq, Gemini, and OpenRouter while the memory layer preserves context.',
       },
     ],
     layers: [
-      { name: 'Trigger', items: ['Webhooks', 'Input validation', 'External events'] },
-      { name: 'AI', items: ['OpenAI API', 'Claude API', 'Prompt routing'] },
-      { name: 'Workflow', items: ['Conditions', 'Retries', 'Notifications'] },
-      { name: 'Services', items: ['External APIs', 'Data processing', 'Content ops'] },
+      { name: 'Channels', items: ['WhatsApp', 'Telegram', 'Webhook inputs'] },
+      { name: 'AI Routing', items: ['Groq', 'Gemini', 'OpenRouter'] },
+      { name: 'Memory', items: ['Supabase', 'Conversation context', 'Persistent state'] },
+      { name: 'Safety', items: ['Response validation', 'Delivery gates', 'Workflow observability'] },
     ],
   },
   'so-she-picks-ecommerce': {

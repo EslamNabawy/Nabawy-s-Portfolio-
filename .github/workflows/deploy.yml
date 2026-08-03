@@ -44,6 +44,9 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
+      - name: Verify generated site
+        run: npm run verify:build
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
