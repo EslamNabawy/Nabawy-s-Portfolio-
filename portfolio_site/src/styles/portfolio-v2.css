@@ -170,7 +170,7 @@
 .v2-hero-inner {
   display: grid;
   width: 100%;
-  max-width: 1680px;
+  max-width: 1920px;
   margin: 0 auto;
   grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
   gap: clamp(40px, 6vw, 120px);
@@ -460,7 +460,7 @@
 }
 
 .v2-section {
-  width: min(100%, 1680px);
+  width: min(100%, 1920px);
   max-width: none;
   margin: 0 auto;
   padding: clamp(72px, 8vw, 132px) clamp(20px, 4vw, 80px);
@@ -495,7 +495,7 @@
 }
 
 .v2-skills > * {
-  width: min(100%, 1680px);
+  width: min(100%, 1920px);
   max-width: none;
   margin-inline: auto;
 }
@@ -641,7 +641,7 @@
 
 .v2-project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(18px, 2vw, 32px);
 }
 
@@ -888,7 +888,7 @@
 }
 
 .v2-experience > * {
-  width: min(100%, 1680px);
+  width: min(100%, 1920px);
   max-width: none;
   margin-inline: auto;
 }
@@ -1275,12 +1275,30 @@
   .v2-hero,
   .v2-section,
   .v2-contact {
-    padding-inline: max(60px, calc((100vw - 1280px) / 2));
+    padding-inline: clamp(60px, 4vw, 96px);
   }
 
   .v2-hero-inner,
   .v2-section-inner {
-    max-width: 1680px;
+    max-width: 1920px;
+  }
+}
+
+@media (width >= 700px) {
+  .v2-project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 1280px) {
+  .v2-project-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 2000px) {
+  .v2-project-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
