@@ -164,16 +164,16 @@
   min-height: 100vh;
   align-items: center;
   overflow: hidden;
-  padding: 120px clamp(20px, 4vw, 60px) 80px;
+  padding: clamp(104px, 9vw, 148px) clamp(20px, 4vw, 80px) clamp(64px, 6vw, 104px);
 }
 
 .v2-hero-inner {
   display: grid;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1680px;
   margin: 0 auto;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.9fr);
-  gap: clamp(40px, 7vw, 80px);
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+  gap: clamp(40px, 6vw, 120px);
   align-items: center;
 }
 
@@ -460,9 +460,10 @@
 }
 
 .v2-section {
-  max-width: 1100px;
+  width: min(100%, 1680px);
+  max-width: none;
   margin: 0 auto;
-  padding: 110px clamp(20px, 4vw, 60px);
+  padding: clamp(72px, 8vw, 132px) clamp(20px, 4vw, 80px);
 }
 
 .v2-section-head {
@@ -494,20 +495,21 @@
 }
 
 .v2-skills > * {
-  max-width: 1100px;
+  width: min(100%, 1680px);
+  max-width: none;
   margin-inline: auto;
 }
 
 .v2-skills-layout {
   display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: clamp(40px, 7vw, 80px);
+  grid-template-columns: minmax(240px, 0.36fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 120px);
   align-items: start;
 }
 
 .v2-orbit {
   position: relative;
-  width: 320px;
+  width: clamp(240px, 24vw, 380px);
   max-width: 100%;
   aspect-ratio: 1;
   animation: v2-spin 44s linear infinite;
@@ -639,8 +641,8 @@
 
 .v2-project-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: clamp(18px, 2vw, 32px);
 }
 
 .v2-project-card {
@@ -691,7 +693,7 @@
 
 .v2-project-card-large > a {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .v2-project-card-wide {
@@ -700,7 +702,7 @@
 
 .v2-project-card-wide > a {
   display: grid;
-  grid-template-columns: minmax(250px, 330px) minmax(0, 1fr);
+  grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.25fr);
 }
 
 .v2-project-media {
@@ -797,7 +799,7 @@
   min-width: 0;
   flex: 1;
   flex-direction: column;
-  padding: 28px 32px 32px;
+  padding: clamp(22px, 2.4vw, 40px);
 }
 
 .v2-project-meta {
@@ -886,7 +888,8 @@
 }
 
 .v2-experience > * {
-  max-width: 1100px;
+  width: min(100%, 1680px);
+  max-width: none;
   margin-inline: auto;
 }
 
@@ -1003,7 +1006,7 @@
 
 .v2-contact {
   overflow: hidden;
-  padding: 130px clamp(20px, 4vw, 60px);
+  padding: clamp(88px, 10vw, 170px) clamp(20px, 4vw, 80px);
   text-align: center;
 }
 
@@ -1021,7 +1024,7 @@
 .v2-contact-inner {
   position: relative;
   z-index: 1;
-  max-width: 720px;
+  max-width: min(900px, 100%);
   margin: 0 auto;
 }
 
@@ -1093,7 +1096,7 @@
   justify-content: space-between;
   gap: 12px;
   border-top: 1px solid var(--v2-border);
-  padding: 28px clamp(20px, 4vw, 60px);
+  padding: 28px clamp(20px, 4vw, 80px);
 }
 
 .v2-footer p {
@@ -1277,7 +1280,7 @@
 
   .v2-hero-inner,
   .v2-section-inner {
-    max-width: 1280px;
+    max-width: 1680px;
   }
 }
 
