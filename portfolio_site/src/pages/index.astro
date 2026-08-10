@@ -307,9 +307,18 @@ const icon = (name: string) => name;
           const imageDimensions = projectImageDimensions[project.slug];
           const highlights = projectHighlights[project.slug] ?? [project.impact ?? project.role ?? 'Built as a focused product experience.'];
 
+          const additionalWorkHeading = !isPrimary && index === 4 ? (
+            <div class="v2-project-divider" aria-label="Additional work">
+              <span>Additional work</span>
+              <small>More experiments and product interfaces</small>
+            </div>
+          ) : null;
+
           return (
-            <article class:list={['v2-project-card', isPrimary && 'v2-project-card-primary', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']}>
-              <a href={href}>
+            <Fragment>
+              {additionalWorkHeading}
+              <article class:list={['v2-project-card', isPrimary && 'v2-project-card-primary', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']}>
+              <a href={href} aria-label={`View ${project.title} case study`}>
                 <div class:list={['v2-project-media', `v2-tone-${projectTone(project)}`]}>
                   {image ? (
                     <img
@@ -329,7 +338,7 @@ const icon = (name: string) => name;
                   <div class="v2-project-meta">
                     <span>{projectMeta(project)}</span>
                     <small>{project.updated_at ? displayDate.format(new Date(project.updated_at)) : 'Current'}</small>
-                    {!isPrimary && <small class="v2-project-label">Additional work</small>}
+                    {isPrimary ? <small class="v2-project-label v2-project-label-selected">Selected work</small> : <small class="v2-project-label">Additional work</small>}
                   </div>
                   <h3>{project.title}</h3>
                   <p class="v2-project-role">{project.role ?? 'Software Engineer'}</p>
@@ -346,7 +355,8 @@ const icon = (name: string) => name;
                   </div>
                 </div>
               </a>
-            </article>
+              </article>
+            </Fragment>
           );
         })}
       </div>
