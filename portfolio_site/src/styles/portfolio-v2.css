@@ -161,7 +161,7 @@
 
 .v2-hero {
   display: flex;
-  min-height: 100vh;
+  min-height: clamp(680px, 88svh, 980px);
   align-items: center;
   overflow: hidden;
   padding: clamp(104px, 9vw, 148px) clamp(20px, 4vw, 80px) clamp(64px, 6vw, 104px);
@@ -175,6 +175,10 @@
   grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
   gap: clamp(40px, 6vw, 120px);
   align-items: center;
+}
+
+.v2-hero-inner > * {
+  min-width: 0;
 }
 
 .v2-eyebrow,
@@ -204,7 +208,7 @@
 }
 
 .v2-hero-title {
-  max-width: 12ch;
+  max-width: 100%;
   color: #fff;
   font-size: clamp(3.35rem, 7vw, 5.85rem);
   font-weight: 700;
@@ -324,6 +328,8 @@
 
 .v2-code-widget {
   position: relative;
+  width: 100%;
+  min-width: 0;
   overflow: visible;
   border: 1px solid var(--v2-border);
   border-radius: 16px;
@@ -1198,7 +1204,13 @@
   }
 
   .v2-hero {
+    min-height: auto;
     padding-top: 150px;
+  }
+
+  .v2-hero-title {
+    font-size: clamp(2.8rem, 14vw, 5.85rem);
+    overflow-wrap: anywhere;
   }
 
   .v2-project-grid,
