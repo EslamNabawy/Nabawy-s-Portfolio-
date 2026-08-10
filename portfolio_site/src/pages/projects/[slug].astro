@@ -492,6 +492,7 @@ const contactLinks = [
                 type="button"
                 data-full={primaryScreen.image_url}
                 data-alt={primaryScreen.alt_text ?? `${project.title} primary screenshot`}
+                aria-label={`Open ${primaryScreen.alt_text ?? `${project.title} primary screenshot`} in full screen`}
               >
                 <img
                   src={primaryScreen.image_url}
@@ -510,6 +511,7 @@ const contactLinks = [
                     type="button"
                     data-full={image.image_url}
                     data-alt={image.alt_text ?? `${project.title} screenshot ${index + 1}`}
+                    aria-label={`Open ${image.alt_text ?? `${project.title} screenshot ${index + 1}`} in full screen`}
                   >
                     <img
                       src={image.image_url}
@@ -662,9 +664,10 @@ const contactLinks = [
       <p>Software Engineer &middot; Egypt &middot; <em>Built with intent</em></p>
     </footer>
 
-    <div class="pd-lightbox" id="pd-lightbox" role="dialog" aria-modal="true" aria-label="Project screenshot preview" aria-hidden="true" tabindex="-1" hidden>
+    <div class="pd-lightbox" id="pd-lightbox" role="dialog" aria-modal="true" aria-labelledby="pd-lightbox-title" aria-hidden="true" tabindex="-1" hidden>
       <button class="pd-lightbox-close" type="button" aria-label="Close screenshot">Close</button>
       {heroImage && <img src={heroImage} alt={heroAlt} />}
+      <p class="pd-lightbox-caption" id="pd-lightbox-title"></p>
     </div>
   </main>
 </BaseLayout>
@@ -772,6 +775,7 @@ const contactLinks = [
   const lightbox = document.getElementById('pd-lightbox') as HTMLDivElement | null;
   const lightboxImage = lightbox?.querySelector('img');
   const closeButton = lightbox?.querySelector<HTMLButtonElement>('button');
+  const lightboxCaption = lightbox?.querySelector<HTMLParagraphElement>('.pd-lightbox-caption');
   let lightboxTrigger: HTMLButtonElement | null = null;
   const closeLightbox = () => {
     if (!lightbox || !lightboxImage) return;
@@ -780,6 +784,7 @@ const contactLinks = [
     document.body.classList.remove('pd-lightbox-open');
     lightboxTrigger?.focus();
     lightboxTrigger = null;
+    if (lightboxCaption) lightboxCaption.textContent = '';
   };
   document.querySelectorAll<HTMLButtonElement>('[data-full]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -787,6 +792,7 @@ const contactLinks = [
       lightboxTrigger = button;
       lightboxImage.src = button.dataset.full ?? '';
       lightboxImage.alt = button.dataset.alt ?? 'Project screenshot';
+      if (lightboxCaption) lightboxCaption.textContent = button.dataset.alt ?? 'Project screenshot';
       lightbox.hidden = false;
       lightbox.setAttribute('aria-hidden', 'false');
       document.body.classList.add('pd-lightbox-open');
@@ -805,8 +811,14 @@ const contactLinks = [
       return;
     }
     if (event.key === 'Tab') {
+      const focusable = [closeButton].filter((element): element is HTMLButtonElement => Boolean(element));
+      if (focusable.length === 0) return;
+      const currentIndex = focusable.indexOf(document.activeElement as HTMLButtonElement);
+      const nextIndex = event.shiftKey
+        ? (currentIndex <= 0 ? focusable.length - 1 : currentIndex - 1)
+        : (currentIndex + 1) % focusable.length;
       event.preventDefault();
-      closeButton?.focus();
+      focusable[nextIndex]?.focus();
     }
   });
 </script>

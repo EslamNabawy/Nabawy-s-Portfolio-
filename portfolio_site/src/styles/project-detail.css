@@ -1004,6 +1004,20 @@
   box-shadow: 0 34px 100px rgba(0, 0, 0, 0.52);
 }
 
+.pd-lightbox-caption {
+  position: absolute;
+  bottom: clamp(12px, 3vh, 28px);
+  left: 50%;
+  max-width: min(720px, calc(100% - 32px));
+  margin: 0;
+  color: var(--pd-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  line-height: 1.45;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
 .pd-lightbox-close {
   position: absolute;
   right: 24px;
@@ -1035,6 +1049,11 @@
   .pd-lightbox-close {
     right: 12px;
     top: 12px;
+  }
+
+  .pd-lightbox-caption {
+    bottom: 10px;
+    font-size: 0.65rem;
   }
 }
 
