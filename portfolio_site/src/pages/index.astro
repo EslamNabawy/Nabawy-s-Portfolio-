@@ -164,7 +164,13 @@ const icon = (name: string) => name;
 
     <nav class="v2-nav" aria-label="Primary navigation">
       <a class="v2-nav-logo" href={base}>eslam<em>.dev</em></a>
-      <button class="v2-nav-toggle" type="button" aria-expanded="false" aria-controls="primary-links">
+      <button
+        class="v2-nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="primary-links"
+        aria-label="Open navigation"
+      >
         <span aria-hidden="true">Menu</span>
         <span class="sr-only">Toggle navigation</span>
       </button>
@@ -434,6 +440,7 @@ const icon = (name: string) => name;
     const setNavOpen = (open: boolean) => {
       nav.dataset.open = String(open);
       navToggle.setAttribute('aria-expanded', String(open));
+      navToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
     };
 
     navToggle.addEventListener('click', () => setNavOpen(nav.dataset.open !== 'true'));
@@ -447,6 +454,32 @@ const icon = (name: string) => name;
         navToggle.focus();
       }
     });
+
+    const sectionLinks = [...navLinks.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+    const sections = sectionLinks
+      .map((link) => document.querySelector(link.getAttribute('href') || ''))
+      .filter((section): section is HTMLElement => section instanceof HTMLElement);
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        sectionLinks.forEach((link) => {
+          const active = link.getAttribute('href') === `#${visible.target.id}`;
+          if (active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      },
+      { rootMargin: '-28% 0px -58% 0px', threshold: [0.1, 0.35, 0.6] },
+    );
+    sections.forEach((section) => sectionObserver.observe(section));
+
+    window.addEventListener(
+      'scroll',
+      () => nav.toggleAttribute('data-scrolled', window.scrollY > 12),
+      { passive: true },
+    );
   }
 
   const canvas = document.getElementById('v2-bg-canvas') as HTMLCanvasElement | null;
