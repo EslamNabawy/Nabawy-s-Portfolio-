@@ -681,6 +681,20 @@
   font-weight: 700;
 }
 
+.v2-skill-top > div {
+  min-width: 0;
+}
+
+.v2-skill-top small {
+  display: block;
+  margin-top: 4px;
+  color: var(--v2-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .v2-skill-tags,
 .v2-project-stack {
   display: flex;

@@ -84,6 +84,8 @@ const highlightedSkills = new Set([
   'Git / GitHub',
 ]);
 
+const skillId = (category: string) => `skill-${category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
 const projectTone = (project: Project) =>
   ({
     brox: 'brox',
@@ -255,8 +257,8 @@ const icon = (name: string) => name;
     <section class="v2-section v2-skills" id="skills">
       <div class="v2-section-head">
         <p class="v2-section-tag">Skills</p>
-        <h2>Tools I use to ship</h2>
-        <span>Grouped for quick scanning. The point is not a keyword wall; it is the stack I use to build and debug real software.</span>
+        <h2>Capabilities, grouped for delivery</h2>
+        <span>CV-backed technologies organized by the way they support product delivery: application platforms, integrations, data, AI workflows, and engineering practice.</span>
       </div>
 
       <div class="v2-skills-layout">
@@ -272,10 +274,13 @@ const icon = (name: string) => name;
 
         <div class="v2-skill-groups">
           {skillGroups.map((group) => (
-            <article class="v2-skill-group">
+            <article class="v2-skill-group" aria-labelledby={skillId(group.category)}>
               <div class="v2-skill-top">
                 <span>{skillCode(group.category)}</span>
-                <h3>{group.category}</h3>
+                <div>
+                  <h3 id={skillId(group.category)}>{group.category}</h3>
+                  <small>Capability group</small>
+                </div>
               </div>
               <div class="v2-skill-tags">
                 {group.items.map((item) => (
