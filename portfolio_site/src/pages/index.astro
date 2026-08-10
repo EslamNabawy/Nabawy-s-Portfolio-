@@ -422,10 +422,18 @@ const icon = (name: string) => name;
       <div class="v2-contact-inner">
         <p class="v2-section-tag">Get In Touch</p>
         <h2>Let's build <em>something useful</em></h2>
-        <span>Open to software engineering roles, freelance builds, and practical product collaborations.</span>
+        <span>Open to software engineering roles, freelance builds, and practical product collaborations across Flutter, backend integrations, and AI-assisted workflows.</span>
+        <p class="v2-contact-availability"><strong>Based in Egypt</strong><span>Available for thoughtful product and engineering conversations.</span></p>
         <div class="v2-contact-links">
           {contactActions.map((item) => (
-            <a href={item.href} download={item.download}>
+            <a
+              class:list={['v2-contact-link', item.label === 'Email' && 'v2-contact-link-primary']}
+              href={item.href}
+              download={item.download}
+              target={item.target}
+              rel={item.rel}
+              aria-label={`${item.label}${item.label === 'Resume' ? ' from Google Drive' : ''}`}
+            >
               <span>{icon(item.icon)}</span>
               {item.label}
             </a>

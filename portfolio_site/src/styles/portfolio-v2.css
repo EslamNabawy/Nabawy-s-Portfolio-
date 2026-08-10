@@ -1166,6 +1166,28 @@
   line-height: 1.7;
 }
 
+.v2-contact-availability {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 14px;
+  margin: -24px auto 30px;
+  color: var(--v2-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.v2-contact-availability strong {
+  color: var(--v2-green);
+  font-weight: 800;
+}
+
+.v2-contact-availability span {
+  color: var(--v2-muted);
+}
+
 .v2-contact-links {
   justify-content: center;
 }
@@ -1201,6 +1223,12 @@
   color: var(--v2-green);
   font-size: 0.68rem;
   text-transform: uppercase;
+}
+
+.v2-contact-link-primary {
+  border-color: rgba(0, 255, 200, 0.32) !important;
+  background: rgba(0, 255, 200, 0.1) !important;
+  color: var(--v2-green) !important;
 }
 
 .v2-footer {
