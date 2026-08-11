@@ -24,7 +24,7 @@ const stackLabel = project.tech_stack.slice(0, 3).join(' / ') || 'Project';
 <article class="portfolio-project-card">
   <a href={`${base}projects/${project.slug}/`} class="portfolio-project-card__link">
     <div class="portfolio-project-card__media">
-      <img src={heroImage} alt={`${project.title} preview`} loading="lazy" />
+      <img src={heroImage} alt={`${project.title} preview`} loading="lazy" decoding="async" />
       <span>Case {caseNumber}</span>
     </div>
 
