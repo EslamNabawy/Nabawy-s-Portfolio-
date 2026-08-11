@@ -561,16 +561,40 @@ const contactLinks = [
         <section class="pd-section" id="architecture">
           <p class="pd-section-tag pd-reveal">Architecture</p>
           <h2 class="pd-section-title pd-reveal">How it is structured</h2>
-          <div class="pd-architecture pd-reveal">
-            {content.layers.map((layer) => (
-              <div class="pd-arch-row">
-                <span>{layer.name}</span>
-                <div>
-                  {layer.items.map((item) => <em>{item}</em>)}
-                </div>
-              </div>
-            ))}
+
+          <div class="pd-arch-viz pd-reveal" role="region" aria-label="Interactive architecture diagram">
+            <div class="pd-arch-flow" role="list">
+              {content.layers.map((layer, index) => (
+                <button
+                  class="pd-arch-node"
+                  role="listitem"
+                  type="button"
+                  data-layer-index={index}
+                  data-layer-name={layer.name}
+                  data-layer-items={JSON.stringify(layer.items)}
+                  aria-pressed="false"
+                  aria-describedby={`arch-detail-${project.slug}`}
+                >
+                  <span class="pd-arch-node-index">{String(index + 1).padStart(2, '0')}</span>
+                  <span class="pd-arch-node-name">{layer.name}</span>
+                  <span class="pd-arch-node-count">{layer.items.length} components</span>
+                  {index < content.layers.length - 1 && (
+                    <span class="pd-arch-connector" aria-hidden="true"></span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div
+              class="pd-arch-detail"
+              id={`arch-detail-${project.slug}`}
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <p class="pd-arch-detail-hint">Click a layer to inspect its components</p>
+            </div>
           </div>
+
           {project.architecture_notes && (
             <p class="pd-architecture-note pd-reveal">{project.architecture_notes}</p>
           )}
@@ -773,6 +797,66 @@ const contactLinks = [
       tag.setAttribute('aria-pressed', String(highlighted));
     });
   });
+
+  // ── Architecture visualizer ──────────────────────────────────────────────
+  (function initArchViz() {
+    const viz = document.querySelector('.pd-arch-viz');
+    if (!viz) return;
+    const nodes = Array.from(viz.querySelectorAll<HTMLButtonElement>('.pd-arch-node'));
+    const detail = viz.querySelector<HTMLElement>('.pd-arch-detail');
+    if (!detail) return;
+
+    let activeIndex: number | null = null;
+
+    function renderDetail(node: HTMLButtonElement) {
+      const name = node.dataset.layerName ?? '';
+      let items: string[] = [];
+      try { items = JSON.parse(node.dataset.layerItems ?? '[]'); } catch { /* ignore */ }
+      detail!.innerHTML = `
+        <div class="pd-arch-detail-inner">
+          <span class="pd-arch-detail-label">${name}</span>
+          <div class="pd-arch-detail-chips">
+            ${items.map((item) => `<span class="pd-arch-chip">${item}</span>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    function clearDetail() {
+      detail!.innerHTML = '<p class="pd-arch-detail-hint">Click a layer to inspect its components</p>';
+    }
+
+    nodes.forEach((node, index) => {
+      node.addEventListener('click', () => {
+        if (activeIndex === index) {
+          // Toggle off
+          node.classList.remove('is-active');
+          node.setAttribute('aria-pressed', 'false');
+          activeIndex = null;
+          clearDetail();
+          return;
+        }
+        // Deactivate previous
+        if (activeIndex !== null) {
+          nodes[activeIndex]?.classList.remove('is-active');
+          nodes[activeIndex]?.setAttribute('aria-pressed', 'false');
+        }
+        node.classList.add('is-active');
+        node.setAttribute('aria-pressed', 'true');
+        activeIndex = index;
+        renderDetail(node);
+      });
+    });
+
+    // Activate first node by default on load for discoverability
+    if (nodes.length > 0) {
+      nodes[0].classList.add('is-active');
+      nodes[0].setAttribute('aria-pressed', 'true');
+      activeIndex = 0;
+      renderDetail(nodes[0]);
+    }
+  })();
+
+
 
   const lightbox = document.getElementById('pd-lightbox') as HTMLDivElement | null;
   const lightboxImage = lightbox?.querySelector('img');
