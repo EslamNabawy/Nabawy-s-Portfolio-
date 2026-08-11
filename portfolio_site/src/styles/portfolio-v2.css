@@ -702,12 +702,6 @@
   gap: 6px;
 }
 
-.v2-skill-tag,
-.v2-project-stack span {
-  border: 1px solid var(--v2-border);
-  border-radius: 4px;
-  background: var(--v2-ink-2);
-  color: var(--v2-muted);
 
 .v2-skill-tags,
 .v2-project-stack {
