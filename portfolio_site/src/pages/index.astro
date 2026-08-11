@@ -164,28 +164,30 @@ const icon = (name: string) => name;
     <canvas id="v2-bg-canvas" aria-hidden="true"></canvas>
     <div class="v2-progress" id="v2-progress" aria-hidden="true"></div>
 
-    <nav class="v2-nav" aria-label="Primary navigation">
-      <a class="v2-nav-logo" href={base}>eslam<em>.dev</em></a>
-      <button
-        class="v2-nav-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="primary-links"
-        aria-label="Open navigation"
-      >
-        <span aria-hidden="true">Menu</span>
-        <span class="sr-only">Toggle navigation</span>
-      </button>
-      <div class="v2-nav-links" id="primary-links">
-        <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
-        <a href="#experience">Experience</a>
-        <a href="#contact">Contact</a>
-      </div>
-      {config.email && (
-        <a class="v2-nav-hire" href="#contact">Hire Me</a>
-      )}
-    </nav>
+    <header class="v2-header">
+      <nav class="v2-nav" aria-label="Primary navigation">
+        <a class="v2-nav-logo" href={base}>eslam<em>.dev</em></a>
+        <button
+          class="v2-nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-links"
+          aria-label="Open navigation"
+        >
+          <span aria-hidden="true">Menu</span>
+          <span class="sr-only">Toggle navigation</span>
+        </button>
+        <div class="v2-nav-links" id="primary-links">
+          <a href="#projects">Projects</a>
+          <a href="#skills">Skills</a>
+          <a href="#experience">Experience</a>
+          <a href="#contact">Contact</a>
+        </div>
+        {config.email && (
+          <a class="v2-nav-hire" href="#contact">Hire Me</a>
+        )}
+      </nav>
+    </header>
 
     <section class="v2-hero" id="hero">
       <div class="v2-hero-inner">
