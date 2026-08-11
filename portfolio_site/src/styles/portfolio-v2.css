@@ -708,6 +708,20 @@
   border-radius: 4px;
   background: var(--v2-ink-2);
   color: var(--v2-muted);
+
+.v2-skill-tags,
+.v2-project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.v2-skill-tag,
+.v2-project-stack span {
+  border: 1px solid var(--v2-border);
+  border-radius: 4px;
+  background: var(--v2-ink-2);
+  color: var(--v2-muted);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.66rem;
   padding: 4px 9px;
@@ -717,6 +731,73 @@
   border-color: rgba(0, 255, 200, 0.22);
   background: rgba(0, 255, 200, 0.05);
   color: var(--v2-green);
+}
+
+.v2-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: clamp(20px, 2.5vw, 32px);
+}
+
+.v2-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--v2-border);
+  border-radius: 20px;
+  background: var(--v2-ink-2);
+  color: var(--v2-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.v2-filter-pill:hover {
+  border-color: rgba(0, 255, 200, 0.3);
+  color: var(--v2-text);
+}
+
+.v2-filter-pill:focus-visible {
+  outline: 2px solid var(--v2-green);
+  outline-offset: 2px;
+}
+
+.v2-filter-pill[aria-selected='true'] {
+  border-color: var(--v2-green);
+  background: rgba(0, 255, 200, 0.1);
+  color: var(--v2-green);
+  box-shadow: 0 0 16px rgba(0, 255, 200, 0.15);
+}
+
+.v2-filter-pill-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0 5px;
+}
+
+.v2-filter-pill[aria-selected='true'] .v2-filter-pill-count {
+  background: rgba(0, 255, 200, 0.22);
+}
+
+.v2-project-card[data-filtered='hidden'] {
+  display: none !important;
+}
+
+.v2-project-divider[data-filtered='hidden'] {
+  display: none !important;
 }
 
 .v2-project-grid {

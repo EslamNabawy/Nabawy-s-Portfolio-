@@ -155,6 +155,12 @@ const displayDate = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 });
 
+const projectCategory = (slug: string) => {
+  if (['brox', 'rain-p2p-messenger', 'silvator'].includes(slug)) return 'cross-platform';
+  if (['ai-workflow-automation'].includes(slug)) return 'ai-automation';
+  return 'systems-web';
+};
+
 const icon = (name: string) => name;
 ---
 
@@ -304,6 +310,25 @@ const icon = (name: string) => name;
         <span>Featured work leads with four projects from my current engineering focus. Additional work remains available below for broader context.</span>
       </div>
 
+      <div class="v2-filter-bar" role="tablist" aria-label="Filter projects by domain">
+        <button type="button" class="v2-filter-pill" role="tab" aria-selected="true" data-filter="all">
+          <span>All Work</span>
+          <span class="v2-filter-pill-count">{orderedProjects.length}</span>
+        </button>
+        <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="cross-platform">
+          <span>Cross-Platform</span>
+          <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['brox', 'rain-p2p-messenger', 'silvator'].includes(p.slug)).length}</span>
+        </button>
+        <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="ai-automation">
+          <span>AI & Automation</span>
+          <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['ai-workflow-automation'].includes(p.slug)).length}</span>
+        </button>
+        <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="systems-web">
+          <span>Systems & Web</span>
+          <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['campus-suit', 'so-she-picks-ecommerce'].includes(p.slug)).length}</span>
+        </button>
+      </div>
+
       <div class="v2-project-grid">
         {orderedProjects.map((project, index) => {
           const image = getProjectHeroImage(project);
@@ -315,7 +340,7 @@ const icon = (name: string) => name;
           const highlights = projectHighlights[project.slug] ?? [project.impact ?? project.role ?? 'Built as a focused product experience.'];
 
           const additionalWorkHeading = !isPrimary && index === 4 ? (
-            <div class="v2-project-divider" aria-label="Additional work">
+            <div class="v2-project-divider" aria-label="Additional work" data-divider="true">
               <span>Additional work</span>
               <small>More experiments and product interfaces</small>
             </div>
@@ -324,7 +349,7 @@ const icon = (name: string) => name;
           return (
             <Fragment>
               {additionalWorkHeading}
-              <article class:list={['v2-project-card', isPrimary && 'v2-project-card-primary', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']}>
+              <article class:list={['v2-project-card', isPrimary && 'v2-project-card-primary', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']} data-category={projectCategory(project.slug)}>
               <a href={href} aria-label={`View ${project.title} case study`}>
                 <div class:list={['v2-project-media', `v2-tone-${projectTone(project)}`]}>
                   {image ? (
@@ -510,6 +535,38 @@ const icon = (name: string) => name;
       () => nav.toggleAttribute('data-scrolled', window.scrollY > 12),
       { passive: true },
     );
+
+    const filterPills = Array.from(document.querySelectorAll<HTMLButtonElement>('.v2-filter-pill'));
+    const projectCards = Array.from(document.querySelectorAll<HTMLElement>('.v2-project-card'));
+    const projectDividers = Array.from(document.querySelectorAll<HTMLElement>('.v2-project-divider'));
+
+    if (filterPills.length > 0 && projectCards.length > 0) {
+      filterPills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          const filter = pill.dataset.filter || 'all';
+
+          filterPills.forEach((p) => p.setAttribute('aria-selected', String(p === pill)));
+
+          projectCards.forEach((card) => {
+            const category = card.dataset.category;
+            const match = filter === 'all' || category === filter;
+            if (match) {
+              card.removeAttribute('data-filtered');
+            } else {
+              card.setAttribute('data-filtered', 'hidden');
+            }
+          });
+
+          projectDividers.forEach((divider) => {
+            if (filter === 'all') {
+              divider.removeAttribute('data-filtered');
+            } else {
+              divider.setAttribute('data-filtered', 'hidden');
+            }
+          });
+        });
+      });
+    }
   }
 
   const canvas = document.getElementById('v2-bg-canvas') as HTMLCanvasElement | null;
