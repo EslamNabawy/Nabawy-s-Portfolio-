@@ -600,9 +600,25 @@
 
 .pd-arch-flow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  grid-template-rows: auto;
+  max-width: 100%;
   gap: 0;
   position: relative;
+  container-type: inline-size;
+}
+
+@supports not (container-type: inline-size) {
+  .pd-arch-flow {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
+
+/* On large screens cap at 5 columns */
+@media (min-width: 900px) {
+  .pd-arch-flow {
+    grid-template-columns: repeat(auto-fit, minmax(min(180px, 18%), 1fr));
+  }
 }
 
 .pd-arch-node {
