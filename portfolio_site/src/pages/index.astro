@@ -4,7 +4,7 @@ import { getPortfolioData, getProjectHeroImage } from '../lib/portfolio-data';
 import type { Project } from '../lib/types';
 import '../styles/portfolio-v2.css';
 
-const { config, projects, skills, experiments } = await getPortfolioData();
+const { config, projects, skills } = await getPortfolioData();
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
@@ -160,6 +160,82 @@ const projectCategory = (slug: string) => {
   if (['ai-workflow-automation'].includes(slug)) return 'ai-automation';
   return 'systems-web';
 };
+
+const timelineRoles = [
+  {
+    id: 'freelance-software-developer',
+    category: 'engineering',
+    categoryLabel: 'Engineering & Delivery',
+    title: 'Freelance Software Developer',
+    organization: 'Self-Employed / Client Work',
+    period: 'Nov 2022 — Present',
+    location: 'Remote · 6th October City, Egypt',
+    statusLabel: 'Active',
+    summary: 'Designing, engineering, and shipping production-grade cross-platform Flutter applications, local storage engines, and automated AI backend workflows for client products.',
+    highlights: [
+      'Built and shipped 6+ desktop & mobile applications (Brox, Rain P2P, Silvator, So She Picks).',
+      'Engineered offline-first architecture using Hive and Drift SQLite engines with role-gated admin workflows.',
+      'Constructed automated AI backend pipelines with n8n, Supabase conversation memory, and safety gates.',
+      'Managed end-to-end client release cycles, version packaging, and GitHub Actions CI/CD deployment workflows.'
+    ],
+    techStack: ['Flutter', 'Dart', 'BLoC', 'Riverpod', 'Hive', 'Drift', 'n8n', 'Supabase', 'GitHub Actions'],
+    metricsBadge: '⚡ 6+ Production Products Shipped'
+  },
+  {
+    id: 'programming-instructor',
+    category: 'teaching',
+    categoryLabel: 'Teaching & Mentoring',
+    title: 'Programming Instructor',
+    organization: 'Private Coaching & Academic Mentoring',
+    period: 'Feb 2022 — Present',
+    location: '6th October City, Egypt',
+    statusLabel: 'Active Mentor',
+    summary: 'Designing structured computer science curricula for university and school students covering fundamentals, object-oriented design, data structures, algorithms, and mobile development.',
+    highlights: [
+      'Authored hands-on training modules in C++, Python, Dart, and object-oriented architecture patterns.',
+      'Conducted weekly live code reviews, debugging workshops, and algorithm problem-solving sessions.',
+      'Guided student capstone projects from software requirement specs to working mobile prototypes.'
+    ],
+    techStack: ['C++', 'Python', 'Dart', 'OOP', 'Data Structures', 'Algorithms', 'Software Design'],
+    metricsBadge: '🎓 50+ Students Mentored'
+  },
+  {
+    id: 'gdsc-flutter-head',
+    category: 'community',
+    categoryLabel: 'Tech Leadership',
+    title: 'Flutter Head — Google Developer Student Club',
+    organization: 'GDSC (Google Developer Student Club)',
+    period: 'Oct 2022 — Oct 2023',
+    location: 'Akhbar El-Yom Academy',
+    statusLabel: 'Completed Term',
+    summary: 'Led the Flutter engineering track, organizing technical workshops, mentoring student developers, and co-hosting regional Google tech community events.',
+    highlights: [
+      'Organized and delivered a 6-week Flutter bootcamp covering UI primitives, state management, and API consumption.',
+      'Co-organized regional tech community events including Google I/O Extended and NextGen developer meetups.',
+      'Established student peer-review groups that built 4 open-source community app projects.'
+    ],
+    techStack: ['Flutter', 'Dart', 'Technical Mentoring', 'Public Speaking', 'Community Leadership'],
+    metricsBadge: '🚀 80+ Campus Developers Trained'
+  },
+  {
+    id: 'icpc-core-team',
+    category: 'community',
+    categoryLabel: 'Competitive Programming',
+    title: 'ICPC Core Team Member',
+    organization: 'International Collegiate Programming Contest',
+    period: 'Jun 2020 — Oct 2023',
+    location: 'Akhbar El-Yom Academy',
+    statusLabel: 'Completed Term',
+    summary: 'Competed in algorithmic problem-solving contests while training university peers in graph theory, dynamic programming, and data structures.',
+    highlights: [
+      'Solved 300+ algorithmic problems across Codeforces, LeetCode, and competitive platforms.',
+      'Organized mock problem-solving contests and taught graph traversal, greedy algorithms, and data structure optimizations.',
+      'Helped prepare student teams for the Egyptian Collegiate Programming Contest (ECPC) qualifications.'
+    ],
+    techStack: ['C++', 'Algorithms', 'Graph Theory', 'Dynamic Programming', 'Competitive Math'],
+    metricsBadge: '🏆 300+ Algorithmic Problems Solved'
+  }
+];
 
 const icon = (name: string) => name;
 ---
@@ -404,20 +480,87 @@ const icon = (name: string) => name;
 
     <section class="v2-section v2-experience" id="experience">
       <div class="v2-section-head">
-        <p class="v2-section-tag">Experience</p>
+        <p class="v2-section-tag">Experience & Leadership</p>
         <h2>Where the work happened</h2>
-        <span>Teaching, freelance delivery, mentoring, and community work that support the engineering.</span>
+        <span>Teaching, freelance delivery, mentoring, and community leadership that back the engineering.</span>
       </div>
 
-      <div class="v2-timeline">
-        {experiments.map((experiment) => (
-          <article class="v2-timeline-item">
-            <div>
-              <small>{experiment.category}</small>
-              <h3>{experiment.title}</h3>
-              <span>{experiment.status}</span>
+      <div class="v2-timeline-filters" role="tablist" aria-label="Filter experience by domain">
+        <button type="button" class="v2-exp-pill" role="tab" aria-selected="true" data-exp-filter="all">
+          <span>All Roles</span>
+          <span class="v2-exp-pill-count">{timelineRoles.length}</span>
+        </button>
+        <button type="button" class="v2-exp-pill" role="tab" aria-selected="false" data-exp-filter="engineering">
+          <span>Engineering</span>
+          <span class="v2-exp-pill-count">{timelineRoles.filter(r => r.category === 'engineering').length}</span>
+        </button>
+        <button type="button" class="v2-exp-pill" role="tab" aria-selected="false" data-exp-filter="teaching">
+          <span>Teaching</span>
+          <span class="v2-exp-pill-count">{timelineRoles.filter(r => r.category === 'teaching').length}</span>
+        </button>
+        <button type="button" class="v2-exp-pill" role="tab" aria-selected="false" data-exp-filter="community">
+          <span>Leadership</span>
+          <span class="v2-exp-pill-count">{timelineRoles.filter(r => r.category === 'community').length}</span>
+        </button>
+      </div>
+
+      <div class="v2-timeline" role="region" aria-label="Career and Leadership Timeline">
+        {timelineRoles.map((role) => (
+          <article
+            class="v2-timeline-item"
+            data-exp-category={role.category}
+          >
+            <div class="v2-timeline-left">
+              <span class="v2-timeline-category">{role.categoryLabel}</span>
+              <span class="v2-timeline-period">{role.period}</span>
+              <small class="v2-timeline-location">{role.location}</small>
             </div>
-            <p>{experiment.summary}</p>
+            <div class="v2-timeline-content">
+              <div class="v2-timeline-header">
+                <div>
+                  <h3>{role.title}</h3>
+                  <p class="v2-timeline-org">{role.organization}</p>
+                </div>
+                <div class="v2-timeline-badges">
+                  <span class="v2-timeline-status">{role.statusLabel}</span>
+                  <span class="v2-timeline-metric">{role.metricsBadge}</span>
+                </div>
+              </div>
+              <p class="v2-timeline-summary">{role.summary}</p>
+
+              <button
+                type="button"
+                class="v2-timeline-toggle"
+                aria-expanded="false"
+                aria-controls={`exp-drawer-${role.id}`}
+              >
+                <span class="v2-toggle-text">Show Details & Stack</span>
+                <svg class="v2-toggle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+
+              <div class="v2-timeline-drawer" id={`exp-drawer-${role.id}`} hidden>
+                <div class="v2-drawer-inner">
+                  <div class="v2-drawer-section">
+                    <span class="v2-drawer-title">Key Responsibilities & Delivery</span>
+                    <ul class="v2-drawer-list">
+                      {role.highlights.map((h) => (
+                        <li>{h}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div class="v2-drawer-section">
+                    <span class="v2-drawer-title">Technologies & Tools</span>
+                    <div class="v2-drawer-tags">
+                      {role.techStack.map((tech) => (
+                        <span class="v2-drawer-tag">{tech}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </article>
         ))}
       </div>
@@ -649,6 +792,50 @@ const icon = (name: string) => name;
             group.classList.add('v2-skill-group-flash');
             window.setTimeout(() => group.classList.remove('v2-skill-group-flash'), 1200);
           }
+        }
+      });
+    });
+
+    // ── Interactive Timeline Explorer Handlers ──────────────────────────────
+    const expPills = Array.from(document.querySelectorAll<HTMLButtonElement>('.v2-exp-pill'));
+    const timelineItems = Array.from(document.querySelectorAll<HTMLElement>('.v2-timeline-item'));
+
+    if (expPills.length > 0 && timelineItems.length > 0) {
+      expPills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          const filter = pill.dataset.expFilter || 'all';
+
+          expPills.forEach((p) => p.setAttribute('aria-selected', String(p === pill)));
+
+          timelineItems.forEach((item) => {
+            const cat = item.dataset.expCategory;
+            const match = filter === 'all' || cat === filter;
+            if (match) {
+              item.removeAttribute('data-filtered-hidden');
+            } else {
+              item.setAttribute('data-filtered-hidden', 'true');
+            }
+          });
+        });
+      });
+    }
+
+    const timelineToggles = Array.from(document.querySelectorAll<HTMLButtonElement>('.v2-timeline-toggle'));
+    timelineToggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => {
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        const targetId = toggle.getAttribute('aria-controls');
+        const drawer = targetId ? document.getElementById(targetId) : null;
+        const toggleText = toggle.querySelector('.v2-toggle-text');
+
+        toggle.setAttribute('aria-expanded', String(!isExpanded));
+        if (toggleText) {
+          toggleText.textContent = isExpanded ? 'Show Details & Stack' : 'Hide Details';
+        }
+
+        if (drawer) {
+          drawer.hidden = isExpanded;
+          drawer.classList.toggle('is-open', !isExpanded);
         }
       });
     });
