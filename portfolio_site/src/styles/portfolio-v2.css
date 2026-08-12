@@ -163,7 +163,7 @@
   justify-content: center;
   border-radius: var(--v2-radius-sm);
   background: var(--v2-green);
-  color: #000 !important;
+  color: #090d16 !important;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.73rem;
   font-weight: 800;
@@ -327,7 +327,7 @@
 
 .v2-btn-fill {
   background: var(--v2-green);
-  color: #000000 !important;
+  color: #090d16 !important;
 }
 
 .v2-section,

@@ -418,7 +418,7 @@ const contactLinks = [
           <span aria-hidden="true">&larr;</span>
           All Projects
         </a>
-        <a class="pd-nav-hire" href="#contact-section">Hire Me</a>
+        <a class="pd-nav-hire" href={`${base}#contact`}>Get In Touch</a>
       </nav>
     </header>
 
@@ -654,7 +654,7 @@ const contactLinks = [
 
         <div class="pd-sidebar-card pd-sidebar-cta pd-reveal-r">
           <p>Interested in similar work?</p>
-          {config.email && <a class="pd-btn pd-btn-fill" href={`mailto:${config.email}`}>Get in Touch</a>}
+          {config.email && <a class="pd-btn pd-btn-fill" href={`${base}#contact`}>Get In Touch</a>}
           <a class="pd-btn pd-btn-line" href={base}>Back to Portfolio</a>
         </div>
       </aside>

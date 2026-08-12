@@ -127,8 +127,9 @@
 .pd-nav-hire {
   border: 1px solid transparent;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--pd-green), var(--pd-blue));
-  color: #061016;
+  background: var(--pd-green);
+  color: #090d16 !important;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 0.73rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -141,8 +142,8 @@
 }
 
 .pd-nav-hire:hover {
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 0 28px rgba(0, 180, 255, 0.28);
+  box-shadow: 0 0 28px rgba(0, 255, 200, 0.38);
+  color: #090d16 !important;
   transform: translateY(-1px);
 }
 
@@ -337,13 +338,13 @@
 
 .pd-btn-fill {
   border: 1px solid transparent;
-  background: linear-gradient(135deg, var(--pd-green), var(--pd-blue));
-  color: #061016;
+  background: var(--pd-green);
+  color: #090d16 !important;
 }
 
 .pd-btn-fill:hover {
-  box-shadow: 0 0 32px rgba(0, 180, 255, 0.34);
-  color: #061016;
+  box-shadow: 0 0 32px rgba(0, 255, 200, 0.42);
+  color: #090d16 !important;
   transform: translateY(-2px);
 }
 
