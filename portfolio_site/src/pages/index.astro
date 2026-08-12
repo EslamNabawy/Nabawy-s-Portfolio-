@@ -282,9 +282,15 @@ const icon = (name: string) => name;
               </div>
               <div class="v2-skill-tags">
                 {group.items.map((item) => (
-                  <span class:list={['v2-skill-tag', highlightedSkills.has(item) && 'v2-skill-tag-hot']}>
+                  <button
+                    type="button"
+                    class:list={['v2-skill-tag', highlightedSkills.has(item) && 'v2-skill-tag-hot']}
+                    data-skill={item.toLowerCase()}
+                    aria-pressed="false"
+                    title={`Click to highlight projects built with ${item}`}
+                  >
                     {item}
-                  </span>
+                  </button>
                 ))}
               </div>
             </article>
@@ -339,7 +345,11 @@ const icon = (name: string) => name;
           return (
             <Fragment>
               {additionalWorkHeading}
-              <article class:list={['v2-project-card', isPrimary && 'v2-project-card-primary', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']} data-category={projectCategory(project.slug)}>
+              <article
+                class:list={['v2-project-card', isPrimary && 'v2-project-card-primary', isLarge && 'v2-project-card-large', isWide && 'v2-project-card-wide']}
+                data-category={projectCategory(project.slug)}
+                data-tech-stack={JSON.stringify(project.tech_stack.map(s => s.toLowerCase()))}
+              >
               <a href={href} aria-label={`View ${project.title} case study`}>
                 <div class:list={['v2-project-media', `v2-tone-${projectTone(project)}`]}>
                   {image ? (
@@ -361,6 +371,7 @@ const icon = (name: string) => name;
                     <span>{projectMeta(project)}</span>
                     <small>{project.updated_at ? displayDate.format(new Date(project.updated_at)) : 'Current'}</small>
                     {isPrimary ? <small class="v2-project-label v2-project-label-selected">Selected work</small> : <small class="v2-project-label">Additional work</small>}
+                    <small class="v2-project-match-badge" hidden></small>
                   </div>
                   <h3>{project.title}</h3>
                   <p class="v2-project-role">{project.role ?? 'Software Engineer'}</p>
@@ -372,7 +383,14 @@ const icon = (name: string) => name;
                   </div>
                   <div class="v2-project-stack">
                     {project.tech_stack.slice(0, 7).map((item) => (
-                      <span>{item}</span>
+                      <button
+                        type="button"
+                        class="v2-tech-tag"
+                        data-tech={item.toLowerCase()}
+                        title={`Find ${item} in Capabilities`}
+                      >
+                        {item}
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -557,6 +575,83 @@ const icon = (name: string) => name;
         });
       });
     }
+
+    // ── Skill-to-Project Cross-Highlighting System ──────────────────────
+    const skillButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.v2-skill-tag'));
+    const techButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.v2-tech-tag'));
+
+    let activeSkill: string | null = null;
+
+    function setSkillHighlight(skill: string | null) {
+      if (activeSkill === skill) skill = null; // Toggle off on second click
+      activeSkill = skill;
+
+      skillButtons.forEach((btn) => {
+        const isCurrent = btn.dataset.skill === skill;
+        btn.classList.toggle('is-active', isCurrent);
+        btn.setAttribute('aria-pressed', String(isCurrent));
+      });
+
+      projectCards.forEach((card) => {
+        const stackText = card.dataset.techStack || '[]';
+        let stack: string[] = [];
+        try { stack = JSON.parse(stackText); } catch { /* ignore */ }
+        const matchBadge = card.querySelector<HTMLElement>('.v2-project-match-badge');
+
+        if (!skill) {
+          card.classList.remove('is-skill-matched', 'is-skill-dimmed');
+          if (matchBadge) matchBadge.hidden = true;
+          return;
+        }
+
+        const isMatched = stack.some((tech) => tech.includes(skill!) || skill!.includes(tech));
+
+        if (isMatched) {
+          card.classList.add('is-skill-matched');
+          card.classList.remove('is-skill-dimmed');
+          if (matchBadge) {
+            matchBadge.textContent = `✨ Uses ${skill}`;
+            matchBadge.hidden = false;
+          }
+        } else {
+          card.classList.remove('is-skill-matched');
+          card.classList.add('is-skill-dimmed');
+          if (matchBadge) matchBadge.hidden = true;
+        }
+      });
+    }
+
+    skillButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const skill = btn.dataset.skill || null;
+        setSkillHighlight(skill);
+      });
+    });
+
+    techButtons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const tech = btn.dataset.tech;
+        if (!tech) return;
+
+        const skillsSection = document.getElementById('skills');
+        skillsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        const matchingBtn = skillButtons.find(
+          (sBtn) => sBtn.dataset.skill === tech || sBtn.dataset.skill?.includes(tech) || tech.includes(sBtn.dataset.skill || '')
+        );
+
+        if (matchingBtn) {
+          setSkillHighlight(matchingBtn.dataset.skill || null);
+          const group = matchingBtn.closest<HTMLElement>('.v2-skill-group');
+          if (group) {
+            group.classList.add('v2-skill-group-flash');
+            window.setTimeout(() => group.classList.remove('v2-skill-group-flash'), 1200);
+          }
+        }
+      });
+    });
   }
 
   const canvas = document.getElementById('v2-bg-canvas') as HTMLCanvasElement | null;

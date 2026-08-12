@@ -711,7 +711,7 @@
 }
 
 .v2-skill-tag,
-.v2-project-stack span {
+.v2-tech-tag {
   border: 1px solid var(--v2-border);
   border-radius: 4px;
   background: var(--v2-ink-2);
@@ -719,12 +719,80 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.66rem;
   padding: 4px 9px;
+  cursor: pointer;
+  transition: all 180ms ease;
+  outline: none;
+}
+
+.v2-skill-tag:hover,
+.v2-tech-tag:hover {
+  border-color: rgba(0, 255, 200, 0.35);
+  background: rgba(0, 255, 200, 0.08);
+  color: var(--v2-green);
+  transform: translateY(-1px);
 }
 
 .v2-skill-tag-hot {
   border-color: rgba(0, 255, 200, 0.22);
   background: rgba(0, 255, 200, 0.05);
   color: var(--v2-green);
+}
+
+.v2-skill-tag.is-active {
+  border-color: var(--v2-green);
+  background: rgba(0, 255, 200, 0.18);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(0, 255, 200, 0.32);
+  font-weight: 700;
+  transform: translateY(-1px);
+}
+
+/* Cross-highlighting project card states */
+.v2-project-card.is-skill-matched {
+  border-color: rgba(0, 255, 200, 0.45) !important;
+  box-shadow: 0 0 32px rgba(0, 255, 200, 0.2), 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-4px) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  z-index: 2;
+}
+
+.v2-project-card.is-skill-dimmed {
+  opacity: 0.38 !important;
+  filter: grayscale(35%) !important;
+  transform: none !important;
+}
+
+.v2-project-match-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 255, 200, 0.12);
+  border: 1px solid rgba(0, 255, 200, 0.3);
+  border-radius: 12px;
+  color: var(--v2-green);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  text-transform: lowercase;
+}
+
+.v2-skill-group.v2-skill-group-flash {
+  animation: v2-skill-flash 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes v2-skill-flash {
+  0% {
+    border-color: var(--v2-green);
+    box-shadow: 0 0 24px rgba(0, 255, 200, 0.4);
+    transform: scale(1.02);
+  }
+  100% {
+    border-color: var(--v2-border);
+    box-shadow: none;
+    transform: scale(1);
+  }
 }
 
 .v2-filter-bar {
