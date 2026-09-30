@@ -513,7 +513,7 @@ const heroAlt =
   `${project.title} project preview`;
 const primaryScreen = allImages.find((image) => image.image_url !== heroImage) ?? allImages[0] ?? null;
 const thumbImages = primaryScreen
-  ? allImages.filter((image) => image.id !== primaryScreen.id)
+  ? allImages.filter((image) => image.id !== primaryScreen.id && image.image_url !== heroImage)
   : allImages;
 const summary = project.short_description ?? project.description;
 const content = projectDetails[project.slug] ?? {
@@ -563,7 +563,7 @@ const escapeHtml = (value: string) =>
 
 const inlineHtml = (value: string) =>
   escapeHtml(value)
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>')
     .replace(/`([^`]+)`/g, '<code>$1</code>');
 
 const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')

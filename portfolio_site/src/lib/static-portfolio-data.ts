@@ -223,7 +223,6 @@ export const staticPortfolioData: StaticPortfolioData = {
       ].join('\n\n'),
       tech_stack: ['n8n', 'JavaScript', 'Python', 'Google Sheets API', 'Webhooks', 'HTML', 'CSS'],
       project_images: [
-        projectImage('fairmatch-primary', 'fairmatch', 'project-assets/fairmatch.svg', 'FairMatch automated team formation pipeline mockup'),
         projectImage(
           'fairmatch-screen-01',
           'fairmatch',
@@ -255,7 +254,7 @@ export const staticPortfolioData: StaticPortfolioData = {
       ],
       github_url: null,
       live_url: null,
-      image_url: 'project-assets/fairmatch.svg',
+      image_url: 'project-assets/fairmatch/03-results-dashboard.png',
       featured: true,
       display_order: 10,
     }),
