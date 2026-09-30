@@ -1054,6 +1054,18 @@
   background: radial-gradient(ellipse at 52% 42%, rgba(155, 109, 255, 0.26), transparent 70%);
 }
 
+.v2-tone-aiops::before {
+  background: radial-gradient(ellipse at 55% 40%, rgba(217, 255, 85, 0.24), transparent 70%);
+}
+
+.v2-tone-fairmatch::before {
+  background: radial-gradient(ellipse at 45% 55%, rgba(0, 255, 200, 0.28), transparent 70%);
+}
+
+.v2-tone-devops::before {
+  background: radial-gradient(ellipse at 58% 45%, rgba(0, 180, 255, 0.26), transparent 70%);
+}
+
 .v2-project-media img {
   position: absolute;
   inset: 8%;

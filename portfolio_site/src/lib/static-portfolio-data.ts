@@ -1,4 +1,5 @@
 import type { Experiment, PageSection, Project, SiteConfig, Skill } from './types';
+import fairmatchAlgorithm from '../content/fairmatch-algorithm.md?raw';
 
 type StaticPortfolioData = {
   config: SiteConfig;
@@ -8,7 +9,7 @@ type StaticPortfolioData = {
   sections: PageSection[];
 };
 
-const updatedAt = '2026-05-30T00:00:00.000Z';
+const updatedAt = '2026-09-30T00:00:00.000Z';
 
 const projectImage = (
   id: string,
@@ -146,9 +147,9 @@ export const staticPortfolioData: StaticPortfolioData = {
   config: {
     id: 'global',
     name: 'Eslam Tarek Nabawy',
-    headline: 'Software Engineer building production-grade cross-platform apps and AI-integrated systems.',
+    headline: 'Software Engineer | DevOps, AIOps & Automation',
     bio:
-      'Software Engineer with hands-on experience designing and shipping scalable cross-platform applications and AI-integrated systems. I translate requirements into maintainable architecture and deliver features end-to-end, from design through deployment, with a focus on code quality and reliability.',
+      'Software engineer transitioning into DevOps and AIOps, with hands-on experience in Linux, Docker, Kubernetes, CI/CD, observability, and automation. I build AI-assisted operations workflows with Python, n8n, Ollama, and multi-provider LLMs, with a current focus on root cause analysis and anomaly-driven operations.',
     resume_url: 'https://drive.google.com/drive/folders/1-THpoKa7tuM2fNNUTPfNsdvtAQuUz1cL?usp=sharing',
     github_url: 'https://github.com/EslamNabawy',
     linkedin_url: 'https://www.linkedin.com/in/eslam-tarek-nabawy/',
@@ -173,14 +174,91 @@ export const staticPortfolioData: StaticPortfolioData = {
     updated_at: updatedAt,
   },
   skills: [
-    skill('languages', 'Languages', ['Dart', 'Python'], 10),
-    skill('cross-platform', 'Cross-Platform Application Development', ['Flutter', 'Android', 'iOS', 'Windows Desktop', 'Linux', 'macOS'], 20),
-    skill('backend-apis', 'Backend And APIs', ['Firebase', 'Supabase Edge Functions', 'REST APIs', 'Webhooks'], 30),
-    skill('data', 'Databases And Data Management', ['PostgreSQL', 'NoSQL', 'Data Modeling', 'Data Persistence', 'SQLite', 'Hive'], 40),
-    skill('ai-automation', 'AI And Automation', ['LLM Integration', 'LangGraph', 'n8n', 'Webhook-Based Workflows', 'OpenAI', 'Claude', 'Groq', 'Gemini', 'OpenRouter'], 50),
-    skill('engineering-tools', 'Software Engineering And Tools', ['Clean Code', 'Software Architecture', 'OOP', 'Design Patterns', 'DSA', 'State Management', 'Repository Pattern', 'Git', 'GitHub Actions', 'GitHub CLI', 'Docker', 'Linux', 'CI/CD', 'Postman', 'Figma'], 60),
+    skill('devops-infra', 'DevOps & Infrastructure', ['Linux', 'Docker', 'Kubernetes', 'WSL2', 'Terraform', 'Git', 'GitHub Actions', 'CI/CD', 'GitHub CLI'], 10),
+    skill('observability-aiops', 'Observability & AIOps', ['Prometheus', 'Grafana', 'Alerting', 'Alert Correlation', 'Root Cause Analysis', 'Anomaly Detection', 'Chaos Engineering'], 20),
+    skill('ai-automation', 'AI & Automation', ['Python', 'LLM Integration', 'Ollama', 'LangGraph', 'n8n', 'Webhooks', 'OpenAI', 'Claude', 'Groq', 'Gemini', 'OpenRouter'], 30),
+    skill('backend-data', 'Backend & Data', ['PostgreSQL', 'Supabase Edge Functions', 'Firebase', 'REST APIs', 'SQL', 'SQLite', 'Drift', 'Hive', 'NoSQL', 'Google Sheets API', 'Data Modeling'], 40),
+    skill('software-engineering', 'Software Engineering', ['JavaScript', 'Dart', 'Flutter', 'Software Architecture', 'Clean Code', 'OOP', 'Design Patterns', 'Data Structures & Algorithms', 'Melos Monorepo'], 50),
   ],
   projects: [
+    project({
+      id: 'aiops-capstone',
+      title: 'Chaos-Grounded Autonomous AIOps Platform',
+      slug: 'aiops-capstone',
+      description:
+        'NTI AIOps Track capstone: an AIOps pipeline that injects faults into Kubernetes to create ground-truth incidents, correlates the resulting alerts, and uses an AI agent to investigate metrics and logs for root cause analysis. The generated RCA is evaluated against the known injected fault, making the system measurable rather than purely demonstrative.',
+      short_description:
+        'Kubernetes fault injection, alert correlation, and AI-driven root cause analysis scored against known ground truth.',
+      role: 'AIOps Engineer / Capstone Builder',
+      impact: 'Turned AI root cause analysis into a measurable result by scoring it against injected faults with known ground truth.',
+      architecture_notes:
+        'Runs the cluster, observability stack, and self-hosted LLMs through Ollama on a single WSL2-based machine, with no paid APIs and no telemetry leaving the environment.',
+      case_study_markdown:
+        'Fault injection creates incidents with known causes, Prometheus and Grafana collect the resulting telemetry, alert correlation groups the noise, and an AI agent investigates metrics and logs before its RCA verdict is compared with the injected fault.',
+      tech_stack: ['Kubernetes', 'Docker', 'WSL2', 'Python', 'Ollama', 'Prometheus', 'Grafana', 'Chaos Engineering'],
+      project_images: [
+        projectImage('aiops-capstone-primary', 'aiops-capstone', 'project-assets/aiops-platform.svg', 'AIOps platform fault injection and root cause analysis pipeline mockup'),
+      ],
+      github_url: null,
+      live_url: null,
+      image_url: 'project-assets/aiops-platform.svg',
+      featured: true,
+      display_order: 5,
+    }),
+    project({
+      id: 'fairmatch',
+      title: 'FairMatch',
+      slug: 'fairmatch',
+      description:
+        'Automated fair team formation system built as an n8n workflow that partitions a 24-person cohort into 4 balanced teams of 6 using multi-objective lexicographic optimization, from raw survey responses to published results. A 3-stage pipeline handles cleaning, solving, and publishing with deduplication, missing-data imputation from peer consensus, rating-scale detection, and rater-consistency auditing.',
+      short_description:
+        'n8n pipeline that forms 4 balanced teams of 6 from survey data with measurable fairness guarantees.',
+      role: 'Automation Engineer',
+      impact: 'Achieved an inter-team skill gap of 0.19 or less, zero hard-constraint violations, and the required gender distribution across 20 multi-start solver runs.',
+      architecture_notes:
+        'Three stages: clean, solve, publish. The solver runs 20 multi-start iterations with multi-level local search, then publishes graded rosters (0-100 fairness score, A-F per team) to Google Sheets and Excel plus a privacy-safe live dashboard, verified against a Python reference implementation.',
+      case_study_markdown: [
+        'Built entirely as an automated workflow: raw survey responses go in, graded and privacy-safe rosters come out, with solver output cross-checked against an independent Python implementation.',
+        fairmatchAlgorithm.trim(),
+      ].join('\n\n'),
+      tech_stack: ['n8n', 'JavaScript', 'Python', 'Google Sheets API', 'Webhooks', 'HTML', 'CSS'],
+      project_images: [
+        projectImage('fairmatch-primary', 'fairmatch', 'project-assets/fairmatch.svg', 'FairMatch automated team formation pipeline mockup'),
+        projectImage(
+          'fairmatch-screen-01',
+          'fairmatch',
+          'project-assets/fairmatch/01-solver-workflow.png',
+          'FairMatch n8n solver workflow: read raw responses, clean and normalize, run solver engine, write team output',
+          10,
+        ),
+        projectImage(
+          'fairmatch-screen-02',
+          'fairmatch',
+          'project-assets/fairmatch/02-publish-workflow.png',
+          'FairMatch n8n publishing workflow: webhook reads team sheets, builds HTML dashboard, responds with live page',
+          20,
+        ),
+        projectImage(
+          'fairmatch-screen-03',
+          'fairmatch',
+          'project-assets/fairmatch/03-results-dashboard.png',
+          'FairMatch live results dashboard header with 24 members, 4 teams, finalized September 25, 2026',
+          30,
+        ),
+        projectImage(
+          'fairmatch-screen-04',
+          'fairmatch',
+          'project-assets/fairmatch/04-team-cards.png',
+          'FairMatch dashboard team cards showing average skill, compatibility, and skill spread per team',
+          40,
+        ),
+      ],
+      github_url: null,
+      live_url: null,
+      image_url: 'project-assets/fairmatch.svg',
+      featured: true,
+      display_order: 10,
+    }),
     project({
       id: 'campus-suit',
       title: 'CampusSuit',
@@ -211,8 +289,8 @@ export const staticPortfolioData: StaticPortfolioData = {
       github_url: null,
       live_url: null,
       image_url: 'project-assets/campus-suit/showcase.jpg',
-      featured: true,
-      display_order: 10,
+      featured: false,
+      display_order: 40,
     }),
     project({
       id: 'rain-p2p-messenger',
@@ -254,7 +332,7 @@ export const staticPortfolioData: StaticPortfolioData = {
       live_url: null,
       image_url: 'project-assets/rain/showcase.jpg',
       featured: true,
-      display_order: 20,
+      display_order: 30,
     }),
     project({
       id: 'brox',
@@ -296,7 +374,7 @@ export const staticPortfolioData: StaticPortfolioData = {
       live_url: null,
       image_url: 'project-assets/brox/showcase.jpg',
       featured: true,
-      display_order: 30,
+      display_order: 20,
     }),
     project({
       id: 'ai-workflow-automation',
@@ -319,8 +397,32 @@ export const staticPortfolioData: StaticPortfolioData = {
       github_url: null,
       live_url: null,
       image_url: 'project-assets/ai-workflow-automation.svg',
+      featured: true,
+      display_order: 15,
+    }),
+    project({
+      id: 'devops-library',
+      title: 'DevOps Library',
+      slug: 'devops-library',
+      description:
+        'Structured DevOps learning and resource platform covering Linux, Terraform, CI/CD, Kubernetes, Docker, and Ansible. Practical guides, technical documentation, downloadable resources, and learning materials are organized into dedicated technology tracks so the site works as an extensible knowledge hub for hands-on DevOps learning and reference.',
+      short_description:
+        'GitHub Pages knowledge hub for hands-on DevOps learning: Linux, Terraform, CI/CD, Kubernetes, Docker, and Ansible tracks.',
+      role: 'DevOps Content Engineer',
+      impact: 'Published a structured DevOps reference that turns study notes into reusable, organized technology tracks.',
+      architecture_notes:
+        'Static GitHub Pages site organized into technology tracks with practical guides, documentation, and downloadable resources, designed to keep extending as new DevOps topics are covered.',
+      case_study_markdown:
+        'Built while studying for the NTI AIOps track: each technology gets its own track with guides, references, and resources instead of a flat list of links.',
+      tech_stack: ['GitHub Pages', 'Linux', 'Terraform', 'CI/CD', 'Kubernetes', 'Docker', 'Ansible'],
+      project_images: [
+        projectImage('devops-library-primary', 'devops-library', 'project-assets/devops-library.svg', 'DevOps Library learning platform tracks mockup'),
+      ],
+      github_url: null,
+      live_url: 'https://eslamnabawy.github.io/DevOps-By-Nabawy',
+      image_url: 'project-assets/devops-library.svg',
       featured: false,
-      display_order: 40,
+      display_order: 50,
     }),
     project({
       id: 'so-she-picks-ecommerce',
@@ -344,7 +446,7 @@ export const staticPortfolioData: StaticPortfolioData = {
       live_url: null,
       image_url: 'project-assets/so-she-picks.svg',
       featured: false,
-      display_order: 50,
+      display_order: 70,
     }),
     project({
       id: 'silvator',
@@ -401,6 +503,13 @@ export const staticPortfolioData: StaticPortfolioData = {
     }),
   ],
   experiments: [
+    experience(
+      'nti-aiops-track',
+      'AIOps Engineer Track (I021) — NTI',
+      'Certification',
+      '420-hour National Telecommunication Institute AIOps Engineer Track covering AIOps platforms, Kubernetes and cloud observability, ML-based anomaly detection, SRE practices, communication, leadership, presentation, and project management. In progress since July 2026, with a capstone that injects Kubernetes faults, collects telemetry, and evaluates AI-generated root cause analysis against known ground truth.',
+      5,
+    ),
     experience(
       'freelance-software-developer',
       'Freelance Software Developer',

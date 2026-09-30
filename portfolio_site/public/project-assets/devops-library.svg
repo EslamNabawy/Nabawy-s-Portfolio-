@@ -1,0 +1,40 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">DevOps Library platform thumbnail</title>
+  <desc id="desc">Mockup of a DevOps learning platform with technology tracks for Linux, Terraform, CI/CD, Kubernetes, Docker, and Ansible.</desc>
+  <rect width="1600" height="1000" fill="#07110f"/>
+  <path d="M0 170H1600M0 330H1600M0 490H1600M0 650H1600M0 810H1600M180 0V1000M380 0V1000M580 0V1000M780 0V1000M980 0V1000M1180 0V1000M1380 0V1000" stroke="#12352f" stroke-width="2"/>
+  <rect x="116" y="102" width="1368" height="796" rx="34" fill="#0d1b18" stroke="#2cd4bb" stroke-width="4"/>
+  <text x="168" y="185" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900">DevOps Library</text>
+  <text x="1074" y="184" fill="#d9ff55" font-family="Consolas, monospace" font-size="22" font-weight="900">TRACKS / GUIDES</text>
+
+  <g font-family="Consolas, monospace" font-size="22" font-weight="900">
+    <rect x="180" y="250" width="380" height="150" rx="22" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="216" y="308" fill="#2cd4bb">LINUX</text>
+    <text x="216" y="356" fill="#9fb5b0" font-size="18">shell · permissions · services</text>
+
+    <rect x="610" y="250" width="380" height="150" rx="22" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="646" y="308" fill="#2cd4bb">TERRAFORM</text>
+    <text x="646" y="356" fill="#9fb5b0" font-size="18">state · providers · modules</text>
+
+    <rect x="1040" y="250" width="370" height="150" rx="22" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="1076" y="308" fill="#2cd4bb">CI/CD</text>
+    <text x="1076" y="356" fill="#9fb5b0" font-size="18">workflows · releases</text>
+
+    <rect x="180" y="440" width="380" height="150" rx="22" fill="#102d29" stroke="#d9ff55" stroke-width="4"/>
+    <text x="216" y="498" fill="#d9ff55">KUBERNETES</text>
+    <text x="216" y="546" fill="#9fb5b0" font-size="18">pods · services · probes</text>
+
+    <rect x="610" y="440" width="380" height="150" rx="22" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="646" y="498" fill="#2cd4bb">DOCKER</text>
+    <text x="646" y="546" fill="#9fb5b0" font-size="18">images · networks · volumes</text>
+
+    <rect x="1040" y="440" width="370" height="150" rx="22" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="1076" y="498" fill="#2cd4bb">ANSIBLE</text>
+    <text x="1076" y="546" fill="#9fb5b0" font-size="18">playbooks · roles</text>
+  </g>
+
+  <rect x="180" y="640" width="1230" height="210" rx="24" fill="#0a1512" stroke="#2cd4bb" stroke-width="3"/>
+  <text x="220" y="700" fill="#2cd4bb" font-family="Consolas, monospace" font-size="20" font-weight="900">KNOWLEDGE HUB</text>
+  <text x="220" y="754" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800">Practical guides · technical docs · downloadable resources</text>
+  <text x="220" y="802" fill="#d9ff55" font-family="Consolas, monospace" font-size="20" font-weight="900">BUILT WHILE STUDYING THE NTI AIOPS TRACK · LIVE ON GITHUB PAGES</text>
+</svg>

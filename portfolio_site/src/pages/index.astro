@@ -34,9 +34,12 @@ const contactActions = [
 }[];
 
 const preferredProjectOrder = [
-  'brox',
+  'aiops-capstone',
+  'fairmatch',
   'ai-workflow-automation',
+  'brox',
   'rain-p2p-messenger',
+  'devops-library',
   'campus-suit',
   'silvator',
   'so-she-picks-ecommerce',
@@ -72,22 +75,26 @@ const skillGroups =
       ];
 
 const highlightedSkills = new Set([
+  'Kubernetes',
+  'Docker',
+  'Linux',
+  'Python',
+  'Prometheus',
+  'Grafana',
+  'Ollama',
+  'n8n',
+  'GitHub Actions',
   'Flutter',
-  'Dart',
-  'BLoC',
-  'Cubit',
-  'Riverpod',
-  'n8n Workflow Automation',
-  'OpenAI API Integration',
-  'Claude API Integration',
-  'REST API Integration',
-  'Git / GitHub',
+  'Terraform',
 ]);
 
 const skillId = (category: string) => `skill-${category.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
 const projectTone = (project: Project) =>
   ({
+    'aiops-capstone': 'aiops',
+    fairmatch: 'fairmatch',
+    'devops-library': 'devops',
     brox: 'brox',
     'rain-p2p-messenger': 'rain',
     'campus-suit': 'campus',
@@ -98,6 +105,9 @@ const projectTone = (project: Project) =>
 
 const projectMeta = (project: Project) =>
   ({
+    'aiops-capstone': 'AIOps Platform',
+    fairmatch: 'Team Formation Automation',
+    'devops-library': 'DevOps Knowledge Platform',
     brox: 'Desktop Operations',
     'rain-p2p-messenger': 'Android / Windows',
     'campus-suit': 'Campus Product',
@@ -107,6 +117,18 @@ const projectMeta = (project: Project) =>
   })[project.slug] ?? 'Software Product';
 
 const projectHighlights: Record<string, string[]> = {
+  'aiops-capstone': [
+    'Injects Kubernetes faults to create ground-truth incidents, then scores AI root cause analysis against them.',
+    'Cluster, observability stack, and self-hosted Ollama LLMs run on one WSL2 machine with no telemetry leaving it.',
+  ],
+  fairmatch: [
+    'n8n pipeline turns raw survey responses into 4 balanced teams of 6 with graded fairness rosters.',
+    'Skill gap 0.19 or less, zero hard-constraint violations, verified against a Python reference implementation.',
+  ],
+  'devops-library': [
+    'Structured tracks for Linux, Terraform, CI/CD, Kubernetes, Docker, and Ansible.',
+    'Guides, documentation, and downloadable resources organized as an extensible knowledge hub.',
+  ],
   brox: [
     'Offline-first operations console for desks, rooms, inventory, finance, staff, and memberships.',
     'Role-gated workflows, audit logs, backup / restore, local diagnostics, and release packaging.',
@@ -135,6 +157,9 @@ const projectHighlights: Record<string, string[]> = {
 };
 
 const projectImageDimensions: Record<string, { width: number; height: number }> = {
+  'aiops-capstone': { width: 1600, height: 1000 },
+  fairmatch: { width: 1600, height: 1000 },
+  'devops-library': { width: 1600, height: 1000 },
   brox: { width: 1600, height: 1000 },
   'rain-p2p-messenger': { width: 1800, height: 1125 },
   'campus-suit': { width: 1600, height: 1000 },
@@ -143,6 +168,8 @@ const projectImageDimensions: Record<string, { width: number; height: number }> 
 
 const skillCode = (category: string) => {
   const normalized = category.toLowerCase();
+  if (normalized.includes('devops')) return 'OPS';
+  if (normalized.includes('observability')) return 'OBS';
   if (normalized.includes('mobile')) return 'UI';
   if (normalized.includes('backend')) return 'DB';
   if (normalized.includes('automation') || normalized.includes('ai')) return 'AI';
@@ -157,11 +184,31 @@ const displayDate = new Intl.DateTimeFormat('en-US', {
 
 const projectCategory = (slug: string) => {
   if (['brox', 'rain-p2p-messenger', 'silvator'].includes(slug)) return 'cross-platform';
-  if (['ai-workflow-automation'].includes(slug)) return 'ai-automation';
+  if (['ai-workflow-automation', 'fairmatch'].includes(slug)) return 'ai-automation';
+  if (['aiops-capstone', 'devops-library'].includes(slug)) return 'devops-aiops';
   return 'systems-web';
 };
 
 const timelineRoles = [
+  {
+    id: 'nti-aiops-track',
+    category: 'engineering',
+    categoryLabel: 'AIOps Training & Certification',
+    title: 'AIOps Engineer Track (I021)',
+    organization: 'National Telecommunication Institute (NTI)',
+    period: 'Jul 2026 — Present',
+    location: '420 hours · Egypt',
+    statusLabel: 'In Progress',
+    summary: 'Completing the 420-hour NTI AIOps Engineer Track while building an AIOps capstone that injects Kubernetes faults, collects resulting telemetry, and evaluates AI-generated root cause analysis against known ground truth.',
+    highlights: [
+      'AIOps platforms, Kubernetes and cloud observability, ML-based anomaly detection, and SRE practices.',
+      'Capstone pipeline: fault injection, alert correlation, AI-driven investigation, and scored RCA evaluation.',
+      'Runs the cluster, observability stack, and self-hosted Ollama models on a single WSL2 machine.',
+      'Also covers communication, leadership, presentation, and project management modules.'
+    ],
+    techStack: ['Kubernetes', 'Docker', 'WSL2', 'Prometheus', 'Grafana', 'Python', 'Ollama', 'Chaos Engineering'],
+    metricsBadge: '🛰 420-hour AIOps track'
+  },
   {
     id: 'freelance-software-developer',
     category: 'engineering',
@@ -275,14 +322,14 @@ const icon = (name: string) => name;
     <section class="v2-hero" id="hero">
       <div class="v2-hero-inner">
         <div class="v2-hero-copy v2-reveal-l">
-          <p class="v2-eyebrow"><span></span> Flutter & Cross-Platform Engineer</p>
+          <p class="v2-eyebrow"><span></span> Software Engineer · DevOps, AIOps &amp; Automation</p>
           <h1 class="v2-hero-title">
             Eslam Tarek
             <span>Nabawy</span>
           </h1>
           <p class="v2-hero-description">
-            I design and ship production-grade software: cross-platform Flutter apps, AI-integrated systems,
-            and reliable integrations — from architecture to deployment.
+            I build AI-assisted operations workflows and production software: Kubernetes, Docker, CI/CD,
+            observability, Python, n8n, and multi-provider LLMs — from architecture to deployment.
           </p>
           <div class="v2-hero-actions" aria-label="Primary actions">
             <a
@@ -307,8 +354,8 @@ const icon = (name: string) => name;
           </div>
           <pre><code><span class="v2-kw">const</span> engineer = {'{'}
   name: <span class="v2-str">'Eslam Nabawy'</span>,
-  stack: [<span class="v2-str">'Flutter'</span>, <span class="v2-str">'Dart'</span>, <span class="v2-str">'Supabase'</span>, <span class="v2-str">'LangGraph'</span>],
-  ships: <span class="v2-str">'mobile · desktop · AI systems'</span>,
+  stack: [<span class="v2-str">'Kubernetes'</span>, <span class="v2-str">'Python'</span>, <span class="v2-str">'n8n'</span>, <span class="v2-str">'Flutter'</span>],
+  focus: <span class="v2-str">'DevOps · AIOps · automation'</span>,
   location: <span class="v2-str">'6th October City, Egypt'</span>,
   status: <span class="v2-str">'open to opportunities'</span>
 {'}'};</code></pre>
@@ -321,7 +368,7 @@ const icon = (name: string) => name;
       <div class="v2-section-head">
         <p class="v2-section-tag">Skills</p>
         <h2>Capabilities, grouped for delivery</h2>
-        <span>CV-backed technologies organized by the way they support product delivery: application platforms, integrations, data, AI workflows, and engineering practice.</span>
+        <span>Resume-backed skills grouped the way the work happens: infrastructure and CI/CD, observability and AIOps, AI automation, backend and data, and software engineering practice.</span>
       </div>
 
       <div class="v2-skills-layout">
@@ -368,7 +415,7 @@ const icon = (name: string) => name;
       <div class="v2-section-head">
         <p class="v2-section-tag">Projects</p>
         <h2>Production-grade software, shown clearly</h2>
-        <span>Featured work leads with four projects from my current engineering focus. Additional work remains available below for broader context.</span>
+        <span>Selected work leads with the AIOps capstone, FairMatch, AI support automation, and Brox. Additional work remains available below for broader context.</span>
       </div>
 
       <div class="v2-filter-bar" role="tablist" aria-label="Filter projects by domain">
@@ -376,16 +423,20 @@ const icon = (name: string) => name;
           <span>All Work</span>
           <span class="v2-filter-pill-count">{orderedProjects.length}</span>
         </button>
+        <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="devops-aiops">
+          <span>DevOps &amp; AIOps</span>
+          <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['aiops-capstone', 'devops-library'].includes(p.slug)).length}</span>
+        </button>
         <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="cross-platform">
           <span>Cross-Platform</span>
           <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['brox', 'rain-p2p-messenger', 'silvator'].includes(p.slug)).length}</span>
         </button>
         <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="ai-automation">
-          <span>AI & Automation</span>
-          <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['ai-workflow-automation'].includes(p.slug)).length}</span>
+          <span>AI &amp; Automation</span>
+          <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['ai-workflow-automation', 'fairmatch'].includes(p.slug)).length}</span>
         </button>
         <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="systems-web">
-          <span>Systems & Web</span>
+          <span>Systems &amp; Web</span>
           <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['campus-suit', 'so-she-picks-ecommerce'].includes(p.slug)).length}</span>
         </button>
       </div>
@@ -394,7 +445,7 @@ const icon = (name: string) => name;
         {orderedProjects.map((project, index) => {
           const image = getProjectHeroImage(project);
           const href = `${base}projects/${project.slug}/`;
-          const isPrimary = ['brox', 'ai-workflow-automation', 'rain-p2p-messenger', 'campus-suit'].includes(project.slug);
+          const isPrimary = ['aiops-capstone', 'fairmatch', 'ai-workflow-automation', 'brox'].includes(project.slug);
           const isLarge = project.slug === 'brox';
           const isWide = project.slug === 'so-she-picks-ecommerce';
           const imageDimensions = projectImageDimensions[project.slug];
@@ -469,9 +520,9 @@ const icon = (name: string) => name;
 
     <section class="v2-section v2-experience" id="experience">
       <div class="v2-section-head">
-        <p class="v2-section-tag">Experience & Leadership</p>
+        <p class="v2-section-tag">Experience, Training &amp; Leadership</p>
         <h2>Where the work happened</h2>
-        <span>Teaching, freelance delivery, mentoring, and community leadership that back the engineering.</span>
+        <span>AIOps training, freelance delivery, teaching, mentoring, and community leadership that back the engineering.</span>
       </div>
 
       <div class="v2-timeline-filters" role="tablist" aria-label="Filter experience by domain">
@@ -564,7 +615,12 @@ const icon = (name: string) => name;
         <article>
           <p>Education</p>
           <h3>Bachelor of Computer Science</h3>
-          <span>Akhbar El-Yom Academy · Oct 2020 - Jul 2024 · Overall grade 82.88%</span>
+          <span>Akhbar El-Yom Academy · Oct 2020 - Jul 2024 · Grade 90.40%, ranked 9th in class. Graduation project: CampusSuit (Excellent).</span>
+        </article>
+        <article>
+          <p>Certification</p>
+          <h3>AIOps Engineer Track (I021)</h3>
+          <span>National Telecommunication Institute · 420 hours · Jul 2026 - Present. AIOps, Kubernetes observability, ML anomaly detection, SRE practices.</span>
         </article>
         <article>
           <p>Community</p>
@@ -577,8 +633,8 @@ const icon = (name: string) => name;
           <span>Core team member from Jun 2020 - Oct 2023; supported contests and competitive-programming training.</span>
         </article>
         <article>
-          <p>Automation</p>
-          <h3>n8n + LLM Workflows</h3>
+          <p>Languages &amp; Status</p>
+          <h3>Arabic · English</h3>
           <span>Arabic (Native) · English (Upper-Intermediate) · Military service completed.</span>
         </article>
       </div>
@@ -589,8 +645,8 @@ const icon = (name: string) => name;
       <div class="v2-contact-inner">
         <p class="v2-section-tag">Get In Touch</p>
         <h2>Let's build <em>something useful</em></h2>
-        <span>Open to software engineering roles, freelance builds, and practical product collaborations across Flutter, backend integrations, and AI-assisted workflows.</span>
-        <p class="v2-contact-availability"><strong>Based in Egypt</strong><span>Available for thoughtful product and engineering conversations.</span></p>
+        <span>Open to software engineering, DevOps, and AIOps roles, freelance builds, and practical automation work across Kubernetes, CI/CD, observability, and AI-assisted workflows.</span>
+        <p class="v2-contact-availability"><strong>Based in Egypt</strong><span>Available for thoughtful engineering and operations conversations.</span></p>
         <div class="v2-contact-links">
           {contactActions.map((item) => (
             <a
@@ -611,7 +667,7 @@ const icon = (name: string) => name;
 
     <footer class="v2-footer">
       <p>© 2026 <em>Eslam Tarek Nabawy</em></p>
-      <p>Software Engineer · Egypt · <em>Built with intent</em></p>
+      <p>Software Engineer · DevOps &amp; AIOps · Egypt · <em>Built with intent</em></p>
     </footer>
   </main>
 </BaseLayout>

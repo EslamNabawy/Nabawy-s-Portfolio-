@@ -27,6 +27,150 @@ type ProjectDetailContent = {
 };
 
 const projectDetails: Record<string, ProjectDetailContent> = {
+  'aiops-capstone': {
+    category: 'AIOps Platform',
+    subtitle: 'Fault injection, alert correlation, and scored AI root cause analysis',
+    type: 'AIOps Capstone',
+    platform: 'Kubernetes, Docker, WSL2, Python, Ollama',
+    timeline: 'Sep 2026 - Present',
+    status: 'NTI AIOps Track capstone',
+    highlights: [
+      {
+        title: 'Ground-truth incidents',
+        description:
+          'Faults are injected into Kubernetes on purpose, so every incident has a known cause that AI-generated root cause analysis can be scored against.',
+      },
+      {
+        title: 'Measurable RCA, not a demo',
+        description:
+          'The evaluation step compares the AI verdict with the injected fault, turning root cause analysis into a result that can be tracked instead of a narrative.',
+      },
+      {
+        title: 'Fully self-hosted',
+        description:
+          'Cluster, observability stack, and LLMs through Ollama run on a single WSL2 machine: no paid APIs, no telemetry leaving the environment.',
+      },
+    ],
+    decisions: [
+      {
+        title: 'Injecting faults instead of waiting for them',
+        description:
+          'Chaos-style fault injection creates reproducible incidents with known causes, which is what makes RCA evaluation possible at all.',
+      },
+      {
+        title: 'Correlating before investigating',
+        description:
+          'Alerts from the injected fault are grouped first, so the AI agent investigates a coherent incident instead of a raw alert stream.',
+      },
+      {
+        title: 'Keeping telemetry local',
+        description:
+          'Running Prometheus, Grafana, and Ollama locally keeps the experiment reproducible and free of external rate limits or data exposure.',
+      },
+    ],
+    layers: [
+      { name: 'Fault Injection', items: ['Kubernetes', 'Chaos scenarios', 'Ground-truth incidents'] },
+      { name: 'Observability', items: ['Prometheus', 'Grafana', 'Alerting', 'Alert correlation'] },
+      { name: 'AI Investigation', items: ['Python agent', 'Ollama', 'Metrics and log queries'] },
+      { name: 'Evaluation', items: ['RCA vs injected fault', 'Scoring', 'Regression tracking'] },
+      { name: 'Runtime', items: ['WSL2 machine', 'Docker', 'Self-hosted models'] },
+    ],
+  },
+  fairmatch: {
+    category: 'Team Formation Automation',
+    subtitle: 'Fair team formation from raw survey responses to published rosters',
+    type: 'Automation Workflow',
+    platform: 'n8n, JavaScript, Python, Google Sheets API',
+    timeline: 'Sep 2026',
+    status: 'Published case study',
+    highlights: [
+      {
+        title: 'End-to-end automation',
+        description:
+          'A single n8n workflow partitions a 24-person cohort into 4 balanced teams of 6, from raw survey responses to published results.',
+      },
+      {
+        title: 'Three-stage pipeline',
+        description:
+          'Cleaning, solving, and publishing stages handle deduplication, missing-data imputation from peer consensus, rating-scale detection, and rater-consistency auditing.',
+      },
+      {
+        title: 'Verifiable fairness',
+        description:
+          '20 multi-start solver runs with multi-level local search achieved an inter-team skill gap of 0.19 or less, zero hard-constraint violations, and the required gender distribution.',
+      },
+    ],
+    decisions: [
+      {
+        title: 'Optimizing lexicographically',
+        description:
+          'Multi-objective lexicographic optimization keeps fairness criteria in priority order instead of collapsing them into one arbitrary weighted score.',
+      },
+      {
+        title: 'Auditing raters before solving',
+        description:
+          'Rater-consistency auditing and rating-scale detection catch noisy survey input before it distorts the team assignments.',
+      },
+      {
+        title: 'Cross-checking against a reference',
+        description:
+          'The workflow output was verified against an independent Python reference implementation, and rosters are published as graded results with a privacy-safe dashboard.',
+      },
+    ],
+    layers: [
+      { name: 'Input', items: ['Survey responses', 'Webhooks', 'Google Sheets'] },
+      { name: 'Cleaning', items: ['Deduplication', 'Imputation', 'Scale detection', 'Rater audit'] },
+      { name: 'Solver', items: ['Lexicographic optimization', '20 multi-start runs', 'Local search'] },
+      { name: 'Publishing', items: ['Graded rosters', 'Excel export', 'Live dashboard'] },
+    ],
+  },
+  'devops-library': {
+    category: 'DevOps Knowledge Platform',
+    subtitle: 'Structured DevOps learning tracks and reference material',
+    type: 'Static Site',
+    platform: 'GitHub Pages, Linux, Terraform, CI/CD',
+    timeline: 'Aug 2026 - Sep 2026',
+    status: 'Live',
+    highlights: [
+      {
+        title: 'Technology tracks',
+        description:
+          'Linux, Terraform, CI/CD, Kubernetes, Docker, and Ansible each get a dedicated track instead of a flat link dump.',
+      },
+      {
+        title: 'Practical resources',
+        description:
+          'Practical guides, technical documentation, downloadable resources, and learning material are organized for hands-on use and reference.',
+      },
+      {
+        title: 'Built while studying',
+        description:
+          'Created alongside the NTI AIOps track so study notes become a reusable, extensible knowledge hub.',
+      },
+    ],
+    decisions: [
+      {
+        title: 'Organizing by track, not by date',
+        description:
+          'Content is grouped by technology track so the platform stays navigable as new topics are added.',
+      },
+      {
+        title: 'Static hosting for zero operations',
+        description:
+          'GitHub Pages keeps the site free, versioned, and deployable with the same Git workflow used for CI/CD study.',
+      },
+      {
+        title: 'Extensible by design',
+        description:
+          'The structure leaves room for new guides and resources without redesigning the site each time.',
+      },
+    ],
+    layers: [
+      { name: 'Tracks', items: ['Linux', 'Terraform', 'CI/CD', 'Kubernetes', 'Docker', 'Ansible'] },
+      { name: 'Content', items: ['Guides', 'Documentation', 'Downloads'] },
+      { name: 'Delivery', items: ['GitHub Pages', 'Git workflow'] },
+    ],
+  },
   brox: {
     category: 'Operations Platform',
     subtitle: 'Offline-first workspace operations system for Windows',
@@ -321,11 +465,14 @@ const projectDetails: Record<string, ProjectDetailContent> = {
 export async function getStaticPaths() {
   const { config, projects } = await getPortfolioData();
   const preferredProjectOrder = [
+    'aiops-capstone',
+    'fairmatch',
+    'ai-workflow-automation',
     'brox',
     'rain-p2p-messenger',
+    'devops-library',
     'campus-suit',
     'silvator',
-    'ai-workflow-automation',
     'so-she-picks-ecommerce',
   ];
   const orderedProjects = [...projects].sort((left, right) => {
@@ -404,6 +551,34 @@ const contactLinks = [
   { label: 'LinkedIn', href: config.linkedin_url, text: 'LinkedIn' },
   { label: config.phone, href: phoneHref, text: 'Phone' },
 ].filter((item) => item.href && item.label) as { label: string; href: string; text: string }[];
+
+type CaseStudyBlock = { quote: boolean; html: string };
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+const inlineHtml = (value: string) =>
+  escapeHtml(value)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+
+const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
+  .split(/\n\s*\n/)
+  .map((chunk) => chunk.trim())
+  .filter(Boolean)
+  .map((chunk) => {
+    const quote = chunk.startsWith('>');
+    const text = chunk
+      .split('\n')
+      .map((line) => line.replace(/^\s*>\s?/, '').trim())
+      .filter(Boolean)
+      .join(' ');
+    return { quote, html: inlineHtml(text) };
+  });
 ---
 
 <BaseLayout title={`${project.title} | Project`} description={summary}>
@@ -452,6 +627,16 @@ const contactLinks = [
               Live Build
             </a>
           )}
+          {project.slug === 'fairmatch' && (
+            <a
+              class="pd-btn pd-btn-fill"
+              href={`${base}fairmatch-explainer.pdf`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Team Explainer (PDF)
+            </a>
+          )}
           {allImages.length > 0 && <a class="pd-btn pd-btn-line" href="#screens">Screenshots</a>}
           <a class="pd-btn pd-btn-line" href="#details">Details</a>
         </div>
@@ -480,7 +665,13 @@ const contactLinks = [
           <h2 class="pd-section-title pd-reveal">What I built</h2>
           <p class="pd-overview pd-reveal">{project.description}</p>
           {project.impact && <p class="pd-overview pd-reveal">{project.impact}</p>}
-          {project.case_study_markdown && <p class="pd-overview pd-reveal">{project.case_study_markdown}</p>}
+          {caseStudyBlocks.map((block) =>
+            block.quote ? (
+              <blockquote class="pd-overview pd-quote pd-reveal" set:html={block.html} />
+            ) : (
+              <p class="pd-overview pd-reveal" set:html={block.html} />
+            ),
+          )}
         </section>
 
         {allImages.length > 0 && (

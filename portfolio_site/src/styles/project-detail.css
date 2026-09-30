@@ -218,6 +218,18 @@
   background: radial-gradient(ellipse at 42% 40%, rgba(248, 113, 113, 0.2), var(--pd-surface) 62%);
 }
 
+.pd-tint-aiops-capstone {
+  background: radial-gradient(ellipse at 56% 34%, rgba(217, 255, 85, 0.2), var(--pd-surface) 62%);
+}
+
+.pd-tint-fairmatch {
+  background: radial-gradient(ellipse at 44% 38%, rgba(0, 255, 200, 0.22), var(--pd-surface) 62%);
+}
+
+.pd-tint-devops-library {
+  background: radial-gradient(ellipse at 58% 36%, rgba(0, 180, 255, 0.22), var(--pd-surface) 62%);
+}
+
 .pd-hero-overlay {
   position: absolute;
   inset: 0;
@@ -423,6 +435,33 @@
   color: var(--pd-muted);
   font-size: 0.98rem;
   line-height: 1.86;
+}
+
+.pd-overview strong {
+  color: var(--pd-text);
+  font-weight: 700;
+}
+
+.pd-overview code {
+  padding: 1px 6px;
+  border: 1px solid var(--pd-border);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--pd-green);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.pd-quote {
+  padding-left: 18px;
+  border-left: 3px solid var(--pd-green);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 10px 10px 0;
+  padding-top: 12px;
+  padding-right: 14px;
+  padding-bottom: 12px;
 }
 
 .pd-screens-section {

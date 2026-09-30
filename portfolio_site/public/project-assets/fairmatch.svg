@@ -1,0 +1,60 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">FairMatch team formation thumbnail</title>
+  <desc id="desc">Mockup of an n8n pipeline cleaning survey data, solving balanced teams, and publishing fairness-graded rosters.</desc>
+  <rect width="1600" height="1000" fill="#07110f"/>
+  <path d="M0 170H1600M0 330H1600M0 490H1600M0 650H1600M0 810H1600M180 0V1000M380 0V1000M580 0V1000M780 0V1000M980 0V1000M1180 0V1000M1380 0V1000" stroke="#12352f" stroke-width="2"/>
+  <rect x="116" y="102" width="1368" height="796" rx="34" fill="#0d1b18" stroke="#2cd4bb" stroke-width="4"/>
+  <text x="168" y="185" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900">FairMatch</text>
+  <text x="1058" y="184" fill="#d9ff55" font-family="Consolas, monospace" font-size="22" font-weight="900">n8n / OPTIMIZATION</text>
+
+  <rect x="180" y="260" width="300" height="180" rx="24" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+  <text x="216" y="318" fill="#2cd4bb" font-family="Consolas, monospace" font-size="20" font-weight="900">STAGE 01</text>
+  <text x="216" y="368" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800">Clean survey data</text>
+  <text x="216" y="406" fill="#9fb5b0" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">dedupe · impute · audit</text>
+
+  <path d="M480 350H560" stroke="#d9ff55" stroke-width="8" stroke-linecap="round"/>
+  <polygon points="560,334 600,350 560,366" fill="#d9ff55"/>
+
+  <rect x="610" y="260" width="300" height="180" rx="24" fill="#102d29" stroke="#d9ff55" stroke-width="4"/>
+  <text x="646" y="318" fill="#d9ff55" font-family="Consolas, monospace" font-size="20" font-weight="900">STAGE 02</text>
+  <text x="646" y="368" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800">Solve teams</text>
+  <text x="646" y="406" fill="#9fb5b0" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">20 multi-start runs</text>
+
+  <path d="M910 350H990" stroke="#d9ff55" stroke-width="8" stroke-linecap="round"/>
+  <polygon points="990,334 1030,350 990,366" fill="#d9ff55"/>
+
+  <rect x="1040" y="260" width="370" height="180" rx="24" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+  <text x="1076" y="318" fill="#2cd4bb" font-family="Consolas, monospace" font-size="20" font-weight="900">STAGE 03</text>
+  <text x="1076" y="368" fill="#f6f3e8" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800">Publish rosters</text>
+  <text x="1076" y="406" fill="#9fb5b0" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">Sheets · Excel · dashboard</text>
+
+  <rect x="180" y="500" width="1230" height="350" rx="24" fill="#0a1512" stroke="#2cd4bb" stroke-width="3"/>
+  <text x="220" y="560" fill="#2cd4bb" font-family="Consolas, monospace" font-size="20" font-weight="900">RESULT · 4 TEAMS OF 6</text>
+
+  <g font-family="Consolas, monospace" font-size="22" font-weight="900">
+    <rect x="220" y="590" width="270" height="220" rx="18" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="252" y="640" fill="#2cd4bb">TEAM A</text>
+    <text x="252" y="690" fill="#d9ff55">Score 96 · A</text>
+    <text x="252" y="734" fill="#f6f3e8">6 members</text>
+    <text x="252" y="776" fill="#9fb5b0">gap 0.14</text>
+
+    <rect x="520" y="590" width="270" height="220" rx="18" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="552" y="640" fill="#2cd4bb">TEAM B</text>
+    <text x="552" y="690" fill="#d9ff55">Score 94 · A</text>
+    <text x="552" y="734" fill="#f6f3e8">6 members</text>
+    <text x="552" y="776" fill="#9fb5b0">gap 0.17</text>
+
+    <rect x="820" y="590" width="270" height="220" rx="18" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="852" y="640" fill="#2cd4bb">TEAM C</text>
+    <text x="852" y="690" fill="#d9ff55">Score 93 · A</text>
+    <text x="852" y="734" fill="#f6f3e8">6 members</text>
+    <text x="852" y="776" fill="#9fb5b0">gap 0.19</text>
+
+    <rect x="1120" y="590" width="270" height="220" rx="18" fill="#102d29" stroke="#2cd4bb" stroke-width="3"/>
+    <text x="1152" y="640" fill="#2cd4bb">TEAM D</text>
+    <text x="1152" y="690" fill="#d9ff55">Score 95 · A</text>
+    <text x="1152" y="734" fill="#f6f3e8">6 members</text>
+    <text x="1152" y="776" fill="#9fb5b0">gap 0.12</text>
+  </g>
+  <text x="220" y="846" fill="#d9ff55" font-family="Consolas, monospace" font-size="20" font-weight="900">ZERO HARD-CONSTRAINT VIOLATIONS · VERIFIED AGAINST PYTHON REFERENCE</text>
+</svg>
