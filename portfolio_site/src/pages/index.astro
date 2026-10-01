@@ -311,7 +311,6 @@ const icon = (name: string) => name;
           <a href="#projects">Projects</a>
           <a href="#skills">Skills</a>
           <a href="#experience">Experience</a>
-          <a href="#devops-library">Live Sites</a>
           <a href="#contact">Contact</a>
         </div>
         {config.email && (
@@ -329,7 +328,7 @@ const icon = (name: string) => name;
             <span>Nabawy</span>
           </h1>
           <p class="v2-hero-description">
-            I build AI-assisted operations workflows and production software: Kubernetes, Docker, CI/CD,
+            I build operations workflows and production software: Kubernetes, Docker, CI/CD,
             observability, Python, n8n, and multi-provider LLMs — from architecture to deployment.
           </p>
           <div class="v2-hero-actions" aria-label="Primary actions">
@@ -641,106 +640,12 @@ const icon = (name: string) => name;
       </div>
     </section>
 
-    <section class="v2-section v2-live-sites" id="devops-library">
-      <div class="v2-section-head">
-        <p class="v2-section-tag">Live Sites</p>
-        <h2>DevOps By Nabawy</h2>
-        <span>Self-built DevOps learning platform: a main library site with tracks, companion sites, and downloadable PDF volumes — plus dedicated track sites.</span>
-      </div>
-
-      <div class="v2-site-links">
-        <a
-          class="v2-site-main"
-          href="https://eslamnabawy.github.io/DevOps-By-Nabawy/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span class="v2-site-badge">Main website</span>
-          <strong>DevOps By Nabawy</strong>
-          <code>https://eslamnabawy.github.io/DevOps-By-Nabawy/</code>
-          <em>DevOps Library — tracks, companion sites, PDF volumes</em>
-        </a>
-
-        <div class="v2-site-grid">
-          <a
-            class="v2-site-card"
-            href="https://eslamnabawy.github.io/cicd-by-nabawy/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="v2-site-badge v2-site-badge-alt">Track site</span>
-            <strong>CI/CD Automation</strong>
-            <code>https://eslamnabawy.github.io/cicd-by-nabawy/</code>
-            <em>Pipelines, Jenkins, GitLab CI, GitHub Actions, observability</em>
-          </a>
-          <a
-            class="v2-site-card"
-            href="https://eslamnabawy.github.io/linux101/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="v2-site-badge v2-site-badge-alt">Track site</span>
-            <strong>Linux 101</strong>
-            <code>https://eslamnabawy.github.io/linux101/</code>
-            <em>Linux fundamentals from shell basics to production troubleshooting</em>
-          </a>
-          <a
-            class="v2-site-card"
-            href="https://eslamnabawy.github.io/TerraForm-By-Nabawy/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="v2-site-badge v2-site-badge-alt">Track site</span>
-            <strong>Terraform IaC</strong>
-            <code>https://eslamnabawy.github.io/TerraForm-By-Nabawy/</code>
-            <em>HCL fundamentals to production-ready, exam-tested Terraform</em>
-          </a>
-        </div>
-      </div>
-
-      <div class="v2-site-shots" aria-label="DevOps By Nabawy screenshots">
-        <figure class="v2-site-shot">
-          <img
-            src={`${base}project-assets/devbynabawy/01-library-track-cards.png`}
-            width="258"
-            height="558"
-            alt="DevOps Library home with track cards for CI/CD Automation, Terraform IaC, and Kubernetes showing PDF page counts"
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption>Track cards with PDF + companion site badges</figcaption>
-        </figure>
-        <figure class="v2-site-shot">
-          <img
-            src={`${base}project-assets/devbynabawy/02-library-tracks-scroll.png`}
-            width="258"
-            height="558"
-            alt="DevOps Library track list scrolled to show more tracks with open track actions"
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption>Full track catalogue, card or list view</figcaption>
-        </figure>
-        <figure class="v2-site-shot">
-          <img
-            src={`${base}project-assets/devbynabawy/03-library-mobile-nav.png`}
-            width="640"
-            height="480"
-            alt="DevOps Library on mobile with bottom navigation for Home, Search, and Theme"
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption>Responsive mobile layout with bottom nav</figcaption>
-        </figure>
-      </div>
-    </section>
-
     <section class="v2-contact" id="contact">
       <div class="v2-contact-glow"></div>
       <div class="v2-contact-inner">
         <p class="v2-section-tag">Get In Touch</p>
         <h2>Let's build <em>something useful</em></h2>
-        <span>Open to software engineering, DevOps, and AIOps roles, freelance builds, and practical automation work across Kubernetes, CI/CD, observability, and AI-assisted workflows.</span>
+        <span>Open to software engineering, DevOps, and AIOps roles, freelance builds, and practical automation work across Kubernetes, CI/CD, observability, and n8n.</span>
         <p class="v2-contact-availability"><strong>Based in Egypt</strong><span>Available for thoughtful engineering and operations conversations.</span></p>
         <div class="v2-contact-links">
           {contactActions.map((item) => (

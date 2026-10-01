@@ -149,7 +149,7 @@ export const staticPortfolioData: StaticPortfolioData = {
     name: 'Eslam Tarek Nabawy',
     headline: 'Software Engineer | DevOps, AIOps & Automation',
     bio:
-      'Software engineer transitioning into DevOps and AIOps, with hands-on experience in Linux, Docker, Kubernetes, CI/CD, observability, and automation. I build AI-assisted operations workflows with Python, n8n, Ollama, and multi-provider LLMs, with a current focus on root cause analysis and anomaly-driven operations.',
+      'Software engineer transitioning into DevOps and AIOps, with hands-on experience in Linux, Docker, Kubernetes, CI/CD, observability, and automation. I build operations workflows with Python, n8n, Ollama, and multi-provider LLMs, with a current focus on root cause analysis and anomaly-driven operations.',
     resume_url: 'https://drive.google.com/drive/folders/1-THpoKa7tuM2fNNUTPfNsdvtAQuUz1cL?usp=sharing',
     github_url: 'https://github.com/EslamNabawy',
     linkedin_url: 'https://www.linkedin.com/in/eslam-tarek-nabawy/',
