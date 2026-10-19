@@ -1639,6 +1639,38 @@
       ]
     ]
   },
+  "project-assets/sentinels/showcase.png": {
+    "width": 1600,
+    "height": 1000,
+    "avif": [
+      [
+        640,
+        "_img/project-assets/sentinels/showcase-640.avif"
+      ],
+      [
+        1280,
+        "_img/project-assets/sentinels/showcase-1280.avif"
+      ],
+      [
+        1600,
+        "_img/project-assets/sentinels/showcase-1600.avif"
+      ]
+    ],
+    "webp": [
+      [
+        640,
+        "_img/project-assets/sentinels/showcase-640.webp"
+      ],
+      [
+        1280,
+        "_img/project-assets/sentinels/showcase-1280.webp"
+      ],
+      [
+        1600,
+        "_img/project-assets/sentinels/showcase-1600.webp"
+      ]
+    ]
+  },
   "project-assets/sentinels/slides/01-cover.png": {
     "width": 1920,
     "height": 1080,

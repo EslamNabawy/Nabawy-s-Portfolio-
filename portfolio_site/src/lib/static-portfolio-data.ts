@@ -231,7 +231,7 @@ export const staticPortfolioData: StaticPortfolioData = {
       ],
       github_url: 'https://github.com/Moha-sys/NTI_Project_Sentinelas',
       live_url: null,
-      image_url: 'project-assets/sentinels/demo/demo-01-dashboard-overview.png',
+      image_url: 'project-assets/sentinels/showcase.png',
       featured: true,
       display_order: 5,
     }),
