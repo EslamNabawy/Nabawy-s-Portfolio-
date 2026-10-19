@@ -27,53 +27,81 @@ type ProjectDetailContent = {
 };
 
 const projectDetails: Record<string, ProjectDetailContent> = {
-  'aiops-capstone': {
+  'sentinels': {
     category: 'AIOps Platform',
-    subtitle: 'Fault injection, alert correlation, and scored AI root cause analysis',
-    type: 'AIOps Capstone',
-    platform: 'Kubernetes, Docker, WSL2, Python, Ollama',
-    timeline: 'Sep 2026 - Present',
-    status: 'NTI AIOps Track capstone',
+    subtitle: 'Autonomous AIOps platform: detect, diagnose, fix, notify',
+    type: 'NTI Graduation Project',
+    platform: 'Kubernetes, Python, FastAPI, React, Ansible',
+    timeline: '2026',
+    status: 'Working platform, level 1 of a 4-level roadmap',
     highlights: [
       {
-        title: 'Ground-truth incidents',
+        title: 'Alert storms become one incident',
         description:
-          'Faults are injected into Kubernetes on purpose, so every incident has a known cause that AI-generated root cause analysis can be scored against.',
+          'Alerts that share a service and a 120-second window are grouped into a single incident. In the demo, 8 noisy alerts collapse into one: checkout is slow for customers.',
       },
       {
-        title: 'Measurable RCA, not a demo',
+        title: 'Two-stage ML detection',
         description:
-          'The evaluation step compares the AI verdict with the injected fault, turning root cause analysis into a result that can be tracked instead of a narrative.',
+          'Isolation Forest learns normal behaviour without labelled data and flags the anomaly; a LightGBM classifier then names the fault type, CPU stress, memory leak, network or disk full, with a confidence score.',
       },
       {
-        title: 'Fully self-hosted',
+        title: 'An agent that cites its evidence',
         description:
-          'Cluster, observability stack, and LLMs through Ollama run on a single WSL2 machine: no paid APIs, no telemetry leaving the environment.',
+          'A ReAct agent over a ChromaDB runbook base queries live Prometheus metrics and Loki logs, then returns a root cause with the evidence behind it. The model runs locally through Ollama, so there is no paid LLM API.',
+      },
+      {
+        title: 'Fixes wait for a human',
+        description:
+          'In safe mode nothing is applied automatically. An operator approves in the React dashboard, then an Ansible playbook runs. Rejections are recorded too, so every decision has an audit trail.',
+      },
+      {
+        title: 'Scored against ground truth',
+        description:
+          'Chaos Mesh injects real faults and writes each one to a ground-truth ledger, which is what makes 98% root-cause accuracy and a 0.9999 detection AUC measurable rather than claimed.',
       },
     ],
     decisions: [
       {
-        title: 'Injecting faults instead of waiting for them',
+        title: 'Testing it by breaking it',
         description:
-          'Chaos-style fault injection creates reproducible incidents with known causes, which is what makes RCA evaluation possible at all.',
+          'Pod kill, network partition and CPU stress are injected on purpose into Google Online Boutique. Because the fault is known before the platform sees it, detection and diagnosis can be scored instead of demonstrated, and the CI pipeline runs a chaos test before every deploy.',
       },
       {
         title: 'Correlating before investigating',
         description:
-          'Alerts from the injected fault are grouped first, so the AI agent investigates a coherent incident instead of a raw alert stream.',
+          'Deduplication and correlation run ahead of any AI step, so the expensive reasoning is spent once per incident rather than once per alert in a cascade.',
       },
       {
-        title: 'Keeping telemetry local',
+        title: 'Unsupervised first, supervised second',
         description:
-          'Running Prometheus, Grafana, and Ollama locally keeps the experiment reproducible and free of external rate limits or data exposure.',
+          'Labelled failure data is scarce, so detection cannot depend on it. Isolation Forest handles the open-ended question of whether something is wrong; LightGBM answers the narrower question of what kind of fault it is.',
+      },
+      {
+        title: 'Keeping the human in the loop by default',
+        description:
+          'Autonomous remediation is a switch, not the default. The approval gate makes the platform usable where an unattended ansible-playbook run against production would not be acceptable.',
+      },
+      {
+        title: 'Fail-open alerting',
+        description:
+          'Notifications are a side effect, not a dependency. If n8n is slow or down, detection, diagnosis and remediation keep running rather than stalling behind the alert.',
+      },
+      {
+        title: 'Running the model locally',
+        description:
+          'Serving the LLM through Ollama keeps telemetry inside the environment, removes API rate limits from the critical path, and holds inference cost at zero.',
       },
     ],
     layers: [
-      { name: 'Fault Injection', items: ['Kubernetes', 'Chaos scenarios', 'Ground-truth incidents'] },
-      { name: 'Observability', items: ['Prometheus', 'Grafana', 'Alerting', 'Alert correlation'] },
-      { name: 'AI Investigation', items: ['Python agent', 'Ollama', 'Metrics and log queries'] },
-      { name: 'Evaluation', items: ['RCA vs injected fault', 'Scoring', 'Regression tracking'] },
-      { name: 'Runtime', items: ['WSL2 machine', 'Docker', 'Self-hosted models'] },
+      { name: 'Workload', items: ['Kubernetes', 'Online Boutique (10 microservices)', 'Chaos Mesh', 'Ground-truth ledger'] },
+      { name: 'Telemetry', items: ['OpenTelemetry', 'Prometheus', 'Loki', 'Tempo', 'Grafana'] },
+      { name: 'Detection', items: ['Isolation Forest', 'LightGBM classifier', 'Confidence scoring'] },
+      { name: 'Correlation', items: ['120 s window', 'Per-service grouping', 'One incident per failure'] },
+      { name: 'AI SRE Agent', items: ['ReAct loop', 'ChromaDB runbooks', 'Ollama local LLM', 'Metric and log queries'] },
+      { name: 'Action', items: ['React dashboard', 'Operator approval', 'Ansible playbooks', 'Audit trail'] },
+      { name: 'Notify', items: ['n8n workflows', 'Telegram', 'Slack', 'Email', 'Fail-open'] },
+      { name: 'As Code', items: ['Terraform', 'Docker', 'Jenkins', 'Chaos test in CI'] },
     ],
   },
   fairmatch: {
@@ -465,7 +493,7 @@ const projectDetails: Record<string, ProjectDetailContent> = {
 export async function getStaticPaths() {
   const { config, projects } = await getPortfolioData();
   const preferredProjectOrder = [
-    'aiops-capstone',
+    'sentinels',
     'fairmatch',
     'ai-workflow-automation',
     'brox',

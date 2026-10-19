@@ -218,8 +218,8 @@
   background: radial-gradient(ellipse at 42% 40%, rgba(248, 113, 113, 0.2), var(--pd-surface) 62%);
 }
 
-.pd-tint-aiops-capstone {
-  background: radial-gradient(ellipse at 56% 34%, rgba(217, 255, 85, 0.2), var(--pd-surface) 62%);
+.pd-tint-sentinels {
+  background: radial-gradient(ellipse at 56% 34%, rgba(14, 154, 160, 0.26), var(--pd-surface) 62%);
 }
 
 .pd-tint-fairmatch {

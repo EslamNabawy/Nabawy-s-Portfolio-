@@ -34,7 +34,7 @@ const contactActions = [
 }[];
 
 const preferredProjectOrder = [
-  'aiops-capstone',
+  'sentinels',
   'fairmatch',
   'ai-workflow-automation',
   'brox',
@@ -92,7 +92,7 @@ const skillId = (category: string) => `skill-${category.toLowerCase().replace(/[
 
 const projectTone = (project: Project) =>
   ({
-    'aiops-capstone': 'aiops',
+    'sentinels': 'aiops',
     fairmatch: 'fairmatch',
     'devops-library': 'devops',
     brox: 'brox',
@@ -105,7 +105,7 @@ const projectTone = (project: Project) =>
 
 const projectMeta = (project: Project) =>
   ({
-    'aiops-capstone': 'AIOps Platform',
+    'sentinels': 'AIOps Platform',
     fairmatch: 'Team Formation Automation',
     'devops-library': 'DevOps Knowledge Platform',
     brox: 'Desktop Operations',
@@ -117,9 +117,10 @@ const projectMeta = (project: Project) =>
   })[project.slug] ?? 'Software Product';
 
 const projectHighlights: Record<string, string[]> = {
-  'aiops-capstone': [
-    'Injects Kubernetes faults to create ground-truth incidents, then scores AI root cause analysis against them.',
-    'Cluster, observability stack, and self-hosted Ollama LLMs run on one WSL2 machine with no telemetry leaving it.',
+  'sentinels': [
+    'Detects anomalies with Isolation Forest and LightGBM, then groups an alert storm into one incident in a 120-second window.',
+    'A local-LLM ReAct agent over ChromaDB runbooks returns the root cause with evidence; Ansible applies the fix after one approval.',
+    '98% root-cause accuracy and a 0.9999 detection AUC, scored against Chaos Mesh faults logged as ground truth.',
   ],
   fairmatch: [
     'n8n pipeline turns raw survey responses into 4 balanced teams of 6 with graded fairness rosters.',
@@ -157,7 +158,7 @@ const projectHighlights: Record<string, string[]> = {
 };
 
 const projectImageDimensions: Record<string, { width: number; height: number }> = {
-  'aiops-capstone': { width: 1600, height: 1000 },
+  'sentinels': { width: 1920, height: 1080 },
     fairmatch: { width: 1600, height: 1000 },
   'devops-library': { width: 1600, height: 1000 },
   brox: { width: 1600, height: 1000 },
@@ -185,7 +186,7 @@ const displayDate = new Intl.DateTimeFormat('en-US', {
 const projectCategory = (slug: string) => {
   if (['brox', 'rain-p2p-messenger', 'silvator'].includes(slug)) return 'cross-platform';
   if (['ai-workflow-automation', 'fairmatch'].includes(slug)) return 'ai-automation';
-  if (['aiops-capstone', 'devops-library'].includes(slug)) return 'devops-aiops';
+  if (['sentinels', 'devops-library'].includes(slug)) return 'devops-aiops';
   return 'systems-web';
 };
 
@@ -425,7 +426,7 @@ const icon = (name: string) => name;
         </button>
         <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="devops-aiops">
           <span>DevOps &amp; AIOps</span>
-          <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['aiops-capstone', 'devops-library'].includes(p.slug)).length}</span>
+          <span class="v2-filter-pill-count">{orderedProjects.filter(p => ['sentinels', 'devops-library'].includes(p.slug)).length}</span>
         </button>
         <button type="button" class="v2-filter-pill" role="tab" aria-selected="false" data-filter="cross-platform">
           <span>Cross-Platform</span>
@@ -445,7 +446,7 @@ const icon = (name: string) => name;
         {orderedProjects.map((project, index) => {
           const image = getProjectHeroImage(project);
           const href = `${base}projects/${project.slug}/`;
-          const isPrimary = ['aiops-capstone', 'fairmatch', 'ai-workflow-automation', 'brox'].includes(project.slug);
+          const isPrimary = ['sentinels', 'fairmatch', 'ai-workflow-automation', 'brox'].includes(project.slug);
           const isLarge = project.slug === 'brox';
           const isWide = project.slug === 'so-she-picks-ecommerce';
           const imageDimensions = projectImageDimensions[project.slug];
