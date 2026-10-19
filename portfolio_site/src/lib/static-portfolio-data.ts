@@ -189,7 +189,7 @@ export const staticPortfolioData: StaticPortfolioData = {
         'Autonomous AIOps platform built as a six-person NTI graduation project. It watches a 10-microservice e-commerce system running on Kubernetes, detects abnormal behaviour with machine learning, groups alert storms into a single incident, and uses a retrieval-augmented AI SRE agent to explain the root cause with evidence from live metrics and logs. A proposed fix runs as an Ansible playbook only after an operator approves it, every decision is audited, and the team is notified on Telegram, Slack or email through n8n. The platform is tested the honest way: Chaos Mesh breaks the system on purpose, and every injected fault is logged as ground truth to score detection and diagnosis.',
       short_description:
         'An AIOps platform that spots failures in a Kubernetes system, finds the root cause with ML and an AI SRE agent, and fixes them after one approval.',
-      role: 'ML Lead: anomaly detection and fault classification',
+      role: 'ML Lead',
       impact:
         'On a chaos-tested environment: 98% root-cause accuracy, 100% fault-type classification, 0.9999 anomaly-detection AUC, runbook matches under 10 ms, and alert storms collapsed from 8 alerts into 1 incident, all at $0 in LLM API cost because the model runs locally.',
       architecture_notes:

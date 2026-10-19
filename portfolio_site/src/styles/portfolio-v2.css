@@ -2893,3 +2893,13 @@
     aspect-ratio: 4 / 3;
   }
 }
+
+/* Count of technologies the card does not have room for; not interactive. */
+.v2-tech-more {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.v2-tech-more:hover {
+  transform: none;
+}

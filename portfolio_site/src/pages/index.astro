@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SmartImage from '../components/SmartImage.astro';
+import { projectDetails } from '../lib/project-details';
 import { getPortfolioData, getProjectHeroImage } from '../lib/portfolio-data';
 import type { Project } from '../lib/types';
 import '../styles/portfolio-v2.css';
@@ -105,17 +106,11 @@ const projectTone = (project: Project) =>
   })[project.slug] ?? 'default';
 
 const projectMeta = (project: Project) =>
-  ({
-    'sentinels': 'AIOps Platform',
-    fairmatch: 'Team Formation Automation',
-    'devops-library': 'DevOps Knowledge Platform',
-    brox: 'Desktop Operations',
-    'rain-p2p-messenger': 'Android / Windows',
-    'campus-suit': 'Campus Product',
-    silvator: 'Mood Companion',
-    'ai-workflow-automation': 'Omnichannel AI Support',
-    'so-she-picks-ecommerce': 'Mobile Commerce',
-  })[project.slug] ?? 'Software Product';
+  projectDetails[project.slug]?.category ?? 'Software Product';
+
+// Every project carried the same updated_at, so every card showed the same
+// month. The project page already states a real timeline; reuse it.
+const projectTimeline = (project: Project) => projectDetails[project.slug]?.timeline ?? null;
 
 const projectHighlights: Record<string, string[]> = {
   'sentinels': [
@@ -178,11 +173,6 @@ const skillCode = (category: string) => {
   if (normalized.includes('engineering')) return 'CS';
   return category.slice(0, 2).toUpperCase();
 };
-
-const displayDate = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  year: 'numeric',
-});
 
 const projectCategory = (slug: string) => {
   if (['brox', 'rain-p2p-messenger', 'silvator'].includes(slug)) return 'cross-platform';
@@ -487,8 +477,7 @@ const icon = (name: string) => name;
                 <div class="v2-project-body">
                   <div class="v2-project-meta">
                     <span>{projectMeta(project)}</span>
-                    <small>{project.updated_at ? displayDate.format(new Date(project.updated_at)) : 'Current'}</small>
-                    {isPrimary ? <small class="v2-project-label v2-project-label-selected">Selected work</small> : <small class="v2-project-label">Additional work</small>}
+                    {projectTimeline(project) && <small>{projectTimeline(project)}</small>}
                     <small class="v2-project-match-badge" hidden></small>
                   </div>
                   <h3>{project.title}</h3>
@@ -510,6 +499,14 @@ const icon = (name: string) => name;
                         {item}
                       </button>
                     ))}
+                    {project.tech_stack.length > 7 && (
+                      <span
+                        class="v2-tech-tag v2-tech-more"
+                        title={project.tech_stack.slice(7).join(', ')}
+                      >
+                        +{project.tech_stack.length - 7}
+                      </span>
+                    )}
                   </div>
                 </div>
               </a>

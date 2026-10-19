@@ -8,9 +8,10 @@ interface Props {
   noindex?: boolean;
   socialImage?: string;
   socialImageAlt?: string;
+  schema?: Record<string, unknown>;
 }
 
-const { title, description, noindex = false, socialImage, socialImageAlt } = Astro.props;
+const { title, description, noindex = false, socialImage, socialImageAlt, schema } = Astro.props;
 const canonicalUrl = Astro.url.href;
 // Each page shares its own preview; without this every link previews the same project.
 // socialImage may already carry BASE_URL (resolveAssetUrl applies it), so the
@@ -62,6 +63,7 @@ const personSchema = {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    {schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
   </head>
   <body class="min-h-screen font-sans antialiased">
     <slot />
