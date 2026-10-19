@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SmartImage from '../components/SmartImage.astro';
 import { getPortfolioData, getProjectHeroImage } from '../lib/portfolio-data';
 import type { Project } from '../lib/types';
 import '../styles/portfolio-v2.css';
@@ -470,14 +471,14 @@ const icon = (name: string) => name;
               <a href={href} aria-label={`View ${project.title} case study`}>
                 <div class:list={['v2-project-media', `v2-tone-${projectTone(project)}`]}>
                   {image ? (
-                    <img
+                    <SmartImage
                       src={image}
                       alt={`${project.title} screenshot mockup`}
                       width={imageDimensions?.width}
                       height={imageDimensions?.height}
+                      sizes="(min-width: 1280px) 30vw, (min-width: 700px) 45vw, 92vw"
                       loading={index === 0 ? 'eager' : 'lazy'}
                       fetchpriority={index === 0 ? 'high' : 'auto'}
-                      decoding="async"
                     />
                   ) : (
                     <div class="v2-project-empty">Preview pending</div>

@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SmartImage from '../../components/SmartImage.astro';
+import imageVariants from '../../lib/image-variants.json';
 import { getPortfolioData, getProjectHeroImage } from '../../lib/portfolio-data';
 import type { Project, SiteConfig } from '../../lib/types';
 import '../../styles/project-detail.css';
@@ -545,6 +547,12 @@ const thumbImages = primaryScreen
   : allImages;
 // The hero shot is not repeated in the gallery, so count what the gallery actually shows.
 const galleryCount = thumbImages.length + (primaryScreen ? 1 : 0);
+const fullSizeSrc = (url: string) => {
+  const key = url.startsWith(base) ? url.slice(base.length) : url.replace(/^\/+/, '');
+  const entry = (imageVariants as unknown as Record<string, { webp: [number, string][] }>)[key];
+  const largest = entry?.webp.at(-1);
+  return largest ? `${base}${largest[1]}` : url;
+};
 const summary = project.short_description ?? project.description;
 const content = projectDetails[project.slug] ?? {
   category: 'Software Project',
@@ -611,7 +619,12 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
   });
 ---
 
-<BaseLayout title={`${project.title} | Project`} description={summary}>
+<BaseLayout
+  title={`${project.title} | Project`}
+  description={summary}
+  socialImage={heroImage || undefined}
+  socialImageAlt={heroImage ? heroAlt : undefined}
+>
   <main class="pd-project">
     <canvas id="pd-bg-canvas" aria-hidden="true"></canvas>
     <div class="pd-progress" id="pd-progress" aria-hidden="true"></div>
@@ -629,7 +642,9 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
 
     <section class="pd-hero" id="project-hero">
       <div class:list={['pd-hero-media', `pd-tint-${project.slug}`]}>
-        {heroImage && <img src={heroImage} alt={heroAlt} loading="eager" />}
+        {heroImage && (
+          <SmartImage src={heroImage} alt={heroAlt} sizes="100vw" loading="eager" fetchpriority="high" />
+        )}
       </div>
       <div class="pd-hero-overlay"></div>
 
@@ -713,13 +728,14 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
               <button
                 class="pd-screen-primary pd-reveal"
                 type="button"
-                data-full={primaryScreen.image_url}
+                data-full={fullSizeSrc(primaryScreen.image_url)}
                 data-alt={primaryScreen.alt_text ?? `${project.title} primary screenshot`}
                 aria-label={`Open ${primaryScreen.alt_text ?? `${project.title} primary screenshot`} in full screen`}
               >
-                <img
+                <SmartImage
                   src={primaryScreen.image_url}
                   alt={primaryScreen.alt_text ?? `${project.title} primary screenshot`}
+                  sizes="(min-width: 960px) 62vw, 92vw"
                   loading="eager"
                 />
                 <span>{primaryScreen.alt_text ?? `${project.title} screen`}</span>
@@ -732,13 +748,14 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
                   <button
                     class="pd-screen-thumb"
                     type="button"
-                    data-full={image.image_url}
+                    data-full={fullSizeSrc(image.image_url)}
                     data-alt={image.alt_text ?? `${project.title} screenshot ${index + 1}`}
                     aria-label={`Open ${image.alt_text ?? `${project.title} screenshot ${index + 1}`} in full screen`}
                   >
-                    <img
+                    <SmartImage
                       src={image.image_url}
                       alt={image.alt_text ?? `${project.title} screenshot ${index + 1}`}
+                      sizes="(min-width: 960px) 20vw, (min-width: 760px) 30vw, 92vw"
                       loading="lazy"
                     />
                     <span>{String(index + 1).padStart(2, '0')}</span>
@@ -915,7 +932,9 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
       <p class="pd-lightbox-counter" aria-live="polite"></p>
       <button class="pd-lightbox-close" type="button" aria-label="Close screenshot">Close</button>
       <button class="pd-lightbox-nav pd-lightbox-prev" type="button" aria-label="Previous screenshot" hidden>&larr;</button>
-      {heroImage && <img src={heroImage} alt={heroAlt} />}
+      {/* Hidden until opened, and lazy so the browser does not fetch it on load;
+          the script swaps in the chosen screenshot. */}
+      {heroImage && <img src={fullSizeSrc(heroImage)} alt={heroAlt} loading="lazy" decoding="async" />}
       <button class="pd-lightbox-nav pd-lightbox-next" type="button" aria-label="Next screenshot" hidden>&rarr;</button>
       <p class="pd-lightbox-caption" id="pd-lightbox-title"></p>
     </div>
@@ -1111,6 +1130,11 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
     }
     if (prevButton) prevButton.hidden = total < 2;
     if (nextButton) nextButton.hidden = total < 2;
+    // Warm the neighbours so stepping through the gallery does not flash an empty frame.
+    [wrapped - 1, wrapped + 1].forEach((neighbour) => {
+      const url = screenButtons[((neighbour % total) + total) % total]?.dataset.full;
+      if (url) new Image().src = url;
+    });
   };
 
   const closeLightbox = () => {

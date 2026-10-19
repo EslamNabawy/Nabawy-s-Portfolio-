@@ -54,6 +54,9 @@ app.*.map.json
 supabase_config.json
 portfolio_admin_windows_release.zip
 
+# Generated responsive image variants (rebuilt by prebuild)
+**/public/_img/
+
 # Local agent tooling
 .agents/
 skills-lock.json

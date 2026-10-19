@@ -1784,3 +1784,9 @@ a:hover {
     animation: none;
   }
 }
+
+/* <picture> is only a wrapper for format negotiation; keep it out of layout
+   so existing `… img` rules size the image exactly as before. */
+picture {
+  display: contents;
+}

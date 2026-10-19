@@ -1,0 +1,84 @@
+---
+/**
+ * Renders an image as <picture> with AVIF and WebP sources when build-time
+ * variants exist for it, and as a plain <img> when they do not.
+ *
+ * `src` arrives already resolved by resolveAssetUrl (so it carries BASE_URL, or
+ * is an absolute Supabase URL). Manifest keys are public-relative, so the base
+ * is stripped to look the image up and re-applied to the variant paths.
+ * Supabase-hosted images never match and fall through to a plain <img>.
+ */
+import variants from '../lib/image-variants.json';
+
+interface Props {
+  src: string;
+  alt: string;
+  sizes?: string;
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  decoding?: 'async' | 'sync' | 'auto';
+  class?: string;
+  width?: number;
+  height?: number;
+}
+
+type Variant = {
+  width: number;
+  height: number;
+  avif: [number, string][];
+  webp: [number, string][];
+};
+
+const {
+  src,
+  alt,
+  sizes,
+  loading = 'lazy',
+  fetchpriority,
+  decoding = 'async',
+  class: className,
+  width,
+  height,
+} = Astro.props;
+
+const rawBase = import.meta.env.BASE_URL || '/';
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+
+const isRemote = /^https?:\/\//.test(src);
+const key = isRemote ? '' : src.startsWith(base) ? src.slice(base.length) : src.replace(/^\/+/, '');
+const entry = key ? (variants as unknown as Record<string, Variant>)[key] : undefined;
+
+const toSrcset = (list: [number, string][]) =>
+  list.map(([w, path]) => `${base}${path} ${w}w`).join(', ');
+
+const resolvedWidth = width ?? entry?.width;
+const resolvedHeight = height ?? entry?.height;
+---
+
+{entry ? (
+  <picture>
+    <source type="image/avif" srcset={toSrcset(entry.avif)} sizes={sizes} />
+    <source type="image/webp" srcset={toSrcset(entry.webp)} sizes={sizes} />
+    <img
+      src={src}
+      alt={alt}
+      class={className}
+      width={resolvedWidth}
+      height={resolvedHeight}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding={decoding}
+    />
+  </picture>
+) : (
+  <img
+    src={src}
+    alt={alt}
+    class={className}
+    width={resolvedWidth}
+    height={resolvedHeight}
+    loading={loading}
+    fetchpriority={fetchpriority}
+    decoding={decoding}
+  />
+)}

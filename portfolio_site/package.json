@@ -8,7 +8,8 @@
     "build": "astro check && astro build",
     "verify:build": "node scripts/verify-build.mjs",
     "test": "npm run build && npm run verify:build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "prebuild": "node scripts/generate-image-variants.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.86.0",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "sharp": "^0.35.5",
     "typescript": "^5.9.3"
   }
 }
