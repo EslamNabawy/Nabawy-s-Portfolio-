@@ -543,6 +543,8 @@ const primaryScreen = allImages.find((image) => image.image_url !== heroImage) ?
 const thumbImages = primaryScreen
   ? allImages.filter((image) => image.id !== primaryScreen.id && image.image_url !== heroImage)
   : allImages;
+// The hero shot is not repeated in the gallery, so count what the gallery actually shows.
+const galleryCount = thumbImages.length + (primaryScreen ? 1 : 0);
 const summary = project.short_description ?? project.description;
 const content = projectDetails[project.slug] ?? {
   category: 'Software Project',
@@ -680,7 +682,7 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
           </div>
           <div>
             <span>Media</span>
-            <strong>{allImages.length} screenshots</strong>
+            <strong>{galleryCount} screenshots</strong>
           </div>
         </div>
       </div>
@@ -910,8 +912,11 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
     </footer>
 
     <div class="pd-lightbox" id="pd-lightbox" role="dialog" aria-modal="true" aria-labelledby="pd-lightbox-title" aria-hidden="true" tabindex="-1" hidden>
+      <p class="pd-lightbox-counter" aria-live="polite"></p>
       <button class="pd-lightbox-close" type="button" aria-label="Close screenshot">Close</button>
+      <button class="pd-lightbox-nav pd-lightbox-prev" type="button" aria-label="Previous screenshot" hidden>&larr;</button>
       {heroImage && <img src={heroImage} alt={heroAlt} />}
+      <button class="pd-lightbox-nav pd-lightbox-next" type="button" aria-label="Next screenshot" hidden>&rarr;</button>
       <p class="pd-lightbox-caption" id="pd-lightbox-title"></p>
     </div>
   </main>
@@ -1079,9 +1084,35 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
 
   const lightbox = document.getElementById('pd-lightbox') as HTMLDivElement | null;
   const lightboxImage = lightbox?.querySelector('img');
-  const closeButton = lightbox?.querySelector<HTMLButtonElement>('button');
+  const closeButton = lightbox?.querySelector<HTMLButtonElement>('.pd-lightbox-close');
+  const prevButton = lightbox?.querySelector<HTMLButtonElement>('.pd-lightbox-prev');
+  const nextButton = lightbox?.querySelector<HTMLButtonElement>('.pd-lightbox-next');
   const lightboxCaption = lightbox?.querySelector<HTMLParagraphElement>('.pd-lightbox-caption');
+  const lightboxCounter = lightbox?.querySelector<HTMLParagraphElement>('.pd-lightbox-counter');
+  const screenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-full]'));
+  let lightboxIndex = -1;
   let lightboxTrigger: HTMLButtonElement | null = null;
+
+  // Step through every screenshot without leaving the lightbox; wraps at both ends.
+  const showScreen = (index: number) => {
+    const total = screenButtons.length;
+    if (!lightbox || !lightboxImage || total === 0) return;
+    const wrapped = ((index % total) + total) % total;
+    const button = screenButtons[wrapped];
+    if (!button) return;
+    const label = button.dataset.alt ?? 'Project screenshot';
+    lightboxIndex = wrapped;
+    lightboxTrigger = button;
+    lightboxImage.src = button.dataset.full ?? '';
+    lightboxImage.alt = label;
+    if (lightboxCaption) lightboxCaption.textContent = label;
+    if (lightboxCounter) {
+      lightboxCounter.textContent = `${String(wrapped + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+    }
+    if (prevButton) prevButton.hidden = total < 2;
+    if (nextButton) nextButton.hidden = total < 2;
+  };
+
   const closeLightbox = () => {
     if (!lightbox || !lightboxImage) return;
     lightbox.hidden = true;
@@ -1089,21 +1120,24 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
     document.body.classList.remove('pd-lightbox-open');
     lightboxTrigger?.focus();
     lightboxTrigger = null;
+    lightboxIndex = -1;
     if (lightboxCaption) lightboxCaption.textContent = '';
+    if (lightboxCounter) lightboxCounter.textContent = '';
   };
-  document.querySelectorAll<HTMLButtonElement>('[data-full]').forEach((button) => {
+
+  screenButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
       if (!lightbox || !lightboxImage) return;
-      lightboxTrigger = button;
-      lightboxImage.src = button.dataset.full ?? '';
-      lightboxImage.alt = button.dataset.alt ?? 'Project screenshot';
-      if (lightboxCaption) lightboxCaption.textContent = button.dataset.alt ?? 'Project screenshot';
+      showScreen(index);
       lightbox.hidden = false;
       lightbox.setAttribute('aria-hidden', 'false');
       document.body.classList.add('pd-lightbox-open');
       window.requestAnimationFrame(() => closeButton?.focus());
     });
   });
+
+  prevButton?.addEventListener('click', () => showScreen(lightboxIndex - 1));
+  nextButton?.addEventListener('click', () => showScreen(lightboxIndex + 1));
   closeButton?.addEventListener('click', closeLightbox);
   lightbox?.addEventListener('click', (event) => {
     if (event.target === lightbox) closeLightbox();
@@ -1115,8 +1149,20 @@ const caseStudyBlocks: CaseStudyBlock[] = (project.case_study_markdown ?? '')
       closeLightbox();
       return;
     }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      showScreen(lightboxIndex - 1);
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      showScreen(lightboxIndex + 1);
+      return;
+    }
     if (event.key === 'Tab') {
-      const focusable = [closeButton].filter((element): element is HTMLButtonElement => Boolean(element));
+      const focusable = [prevButton, nextButton, closeButton].filter(
+        (element): element is HTMLButtonElement => element instanceof HTMLButtonElement && !element.hidden,
+      );
       if (focusable.length === 0) return;
       const currentIndex = focusable.indexOf(document.activeElement as HTMLButtonElement);
       const nextIndex = event.shiftKey

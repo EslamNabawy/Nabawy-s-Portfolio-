@@ -57,3 +57,4 @@ portfolio_admin_windows_release.zip
 # Local agent tooling
 .agents/
 skills-lock.json
+**/.claude/
