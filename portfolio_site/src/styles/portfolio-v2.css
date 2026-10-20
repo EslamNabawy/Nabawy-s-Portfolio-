@@ -1106,7 +1106,7 @@
 
 .v2-project-body h3 {
   color: #fff;
-  font-size: 1.75rem;
+  font-size: clamp(1.35rem, 1.1vw + 0.85rem, 1.75rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -1131,7 +1131,10 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 18px 0;
+  /* Pins highlights, chips and link together at the foot of the card, so a row
+     of cards shares one baseline however long each description runs. */
+  margin: auto 0 0;
+  padding-top: 18px;
 }
 
 .v2-project-highlights span {
@@ -1151,7 +1154,7 @@
 }
 
 .v2-project-stack {
-  margin-top: auto;
+  margin-top: 18px;
   border-top: 1px solid var(--v2-border);
   padding-top: 18px;
 }
@@ -1903,4 +1906,90 @@
   background: var(--chip-surface);
   color: var(--chip-fg);
   transform: none;
+}
+
+
+/* ── Project card: case-study tile ──────────────────────────────────────────
+   The showcase mockups already carry their own margin and backdrop, so the
+   panel's padding was a second helping: every thumbnail shrank by a different
+   amount and the grid read as mismatched. The picture now fills its frame and
+   fades into the body, which also hides the hard edge where a light mockup met
+   the dark card. */
+.v2-project-media {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.v2-project-media img {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transition: transform 420ms ease;
+}
+
+.v2-project-card:hover .v2-project-media img {
+  transform: scale(1.04);
+}
+
+.v2-project-media::after {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 26%;
+  background: linear-gradient(to top, var(--v2-ink-3), transparent);
+  content: '';
+  pointer-events: none;
+}
+
+
+.v2-project-cta {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+  color: var(--v2-green);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.v2-project-cta i {
+  font-style: normal;
+  transition: transform 220ms ease;
+}
+
+.v2-project-card:hover .v2-project-cta i {
+  transform: translateX(5px);
+}
+
+/* Marks the selected work without adding another label to read. */
+.v2-project-card-primary {
+  position: relative;
+}
+
+.v2-project-card-primary::before {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--v2-green), transparent);
+  content: '';
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-project-media img,
+  .v2-project-cta i {
+    transition: none;
+  }
+
+  .v2-project-card:hover .v2-project-media img,
+  .v2-project-card:hover .v2-project-cta i {
+    transform: none;
+  }
 }
