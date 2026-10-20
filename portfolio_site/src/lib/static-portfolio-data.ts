@@ -174,11 +174,11 @@ export const staticPortfolioData: StaticPortfolioData = {
     updated_at: updatedAt,
   },
   skills: [
-    skill('devops-infra', 'DevOps & Infrastructure', ['Linux', 'Docker', 'Kubernetes', 'WSL2', 'Terraform', 'Git', 'GitHub Actions', 'CI/CD', 'GitHub CLI'], 10),
-    skill('observability-aiops', 'Observability & AIOps', ['Prometheus', 'Grafana', 'Alerting', 'Alert Correlation', 'Root Cause Analysis', 'Anomaly Detection', 'Chaos Engineering'], 20),
-    skill('ai-automation', 'AI & Automation', ['Python', 'LLM Integration', 'Ollama', 'LangGraph', 'n8n', 'Webhooks', 'OpenAI', 'Claude', 'Groq', 'Gemini', 'OpenRouter'], 30),
-    skill('backend-data', 'Backend & Data', ['PostgreSQL', 'Supabase Edge Functions', 'Firebase', 'REST APIs', 'SQL', 'SQLite', 'Drift', 'Hive', 'NoSQL', 'Google Sheets API', 'Data Modeling'], 40),
-    skill('software-engineering', 'Software Engineering', ['JavaScript', 'Dart', 'Flutter', 'Software Architecture', 'Clean Code', 'OOP', 'Design Patterns', 'Data Structures & Algorithms', 'Melos Monorepo'], 50),
+    skill('devops-infra', 'DevOps & Infrastructure', ['Linux', 'Bash', 'Docker', 'Kubernetes', 'WSL2', 'Terraform', 'Ansible', 'Jenkins', 'Git', 'GitHub Actions', 'CI/CD', 'GitHub CLI', 'AWS (hands-on labs)'], 10),
+    skill('observability-aiops', 'Observability & AIOps', ['Prometheus', 'Grafana', 'Loki', 'Tempo', 'OpenTelemetry', 'Alerting', 'Alert Correlation', 'Root Cause Analysis', 'Anomaly Detection', 'Chaos Engineering', 'Chaos Mesh', 'Incident Remediation'], 20),
+    skill('ai-automation', 'AI & Automation', ['Python', 'FastAPI', 'scikit-learn', 'LightGBM', 'LLM Integration', 'Ollama', 'RAG (Retrieval-Augmented Generation)', 'ChromaDB', 'LangGraph', 'n8n', 'Webhooks', 'OpenAI', 'Claude', 'Groq', 'Gemini', 'OpenRouter'], 30),
+    skill('backend-data', 'Backend & Data', ['PostgreSQL', 'Supabase Edge Functions', 'Redis', 'Firebase', 'REST APIs', 'SQL', 'SQLite', 'Drift', 'Hive', 'NoSQL', 'Google Sheets API', 'Data Modeling'], 40),
+    skill('software-engineering', 'Software Engineering', ['JavaScript', 'Dart', 'Flutter', 'React', 'WebRTC', 'Software Architecture', 'Clean Code', 'OOP', 'Design Patterns', 'Data Structures & Algorithms', 'Melos Monorepo'], 50),
   ],
   projects: [
     project({

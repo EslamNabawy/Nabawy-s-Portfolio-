@@ -31,9 +31,9 @@ export const projectDetails: Record<string, ProjectDetailContent> = {
   'sentinels': {
     category: 'AIOps Platform',
     subtitle: 'Autonomous AIOps platform: detect, diagnose, fix, notify',
-    type: 'NTI Graduation Project',
+    type: 'NTI Graduation Project, team of 6',
     platform: 'Kubernetes, Python, FastAPI, React, Ansible',
-    timeline: 'Oct 2026',
+    timeline: 'Sep 2026 - Oct 2026',
     status: 'Working platform, level 1 of a 4-level roadmap',
     highlights: [
       {
