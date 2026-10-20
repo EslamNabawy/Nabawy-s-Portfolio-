@@ -1790,3 +1790,76 @@ a:hover {
 picture {
   display: contents;
 }
+
+
+/* ── Chip ───────────────────────────────────────────────────────────────────
+   One tag control for the capability tags, the project card tech chips and
+   the project sidebar stack. The three class names stay because scripts query
+   them; the look lives here once. Both pages previously defined this twice
+   over with identical values under --v2-* and --pd-* prefixes. */
+:root {
+  --chip-accent: #00ffc8;
+  --chip-border: rgba(255, 255, 255, 0.075);
+  --chip-fg: #7a8aaa;
+  --chip-surface: #10121a;
+}
+
+.v2-skill-tag,
+.v2-tech-tag,
+.pd-project .pd-stack-tag {
+  appearance: none;
+  border: 1px solid var(--chip-border);
+  border-radius: 5px;
+  background: var(--chip-surface);
+  color: var(--chip-fg);
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.v2-skill-tag:hover,
+.v2-tech-tag:hover,
+.pd-project .pd-stack-tag:hover {
+  border-color: rgba(0, 255, 200, 0.4);
+  background: rgba(0, 255, 200, 0.08);
+  color: var(--chip-accent);
+  transform: translateY(-1px);
+}
+
+/* Faint accent: this chip matches whatever is currently selected. */
+.v2-skill-tag-hot,
+.pd-project .pd-stack-tag.is-hot {
+  border-color: rgba(0, 255, 200, 0.22);
+  background: rgba(0, 255, 200, 0.05);
+  color: var(--chip-accent);
+}
+
+/* The chips set outline:none, so give keyboard users the ring back. */
+.v2-skill-tag:focus-visible,
+.v2-tech-tag:focus-visible,
+.pd-project .pd-stack-tag:focus-visible {
+  outline: 3px solid var(--chip-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-skill-tag,
+  .v2-tech-tag,
+  .pd-project .pd-stack-tag {
+    transition: none;
+  }
+
+  .v2-skill-tag:hover,
+  .v2-tech-tag:hover,
+  .pd-project .pd-stack-tag:hover {
+    transform: none;
+  }
+}
