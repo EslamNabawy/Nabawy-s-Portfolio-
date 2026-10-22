@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SmartImage from '../components/SmartImage.astro';
+import MeshBackground from '../components/MeshBackground.astro';
 import { projectDetails } from '../lib/project-details';
 import { getPortfolioData, getProjectHeroImage } from '../lib/portfolio-data';
 import type { Project } from '../lib/types';
@@ -282,7 +283,7 @@ const icon = (name: string) => name;
 <BaseLayout title={`${config.name} | Portfolio`} description={config.headline}>
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <main id="main-content" class="v2-portfolio" tabindex="-1">
-    <canvas id="v2-bg-canvas" aria-hidden="true"></canvas>
+    <MeshBackground />
     <div class="v2-progress" id="v2-progress" aria-hidden="true"></div>
 
     <header class="v2-header">
@@ -886,64 +887,4 @@ const icon = (name: string) => name;
     });
   }
 
-  const canvas = document.getElementById('v2-bg-canvas') as HTMLCanvasElement | null;
-  if (canvas) {
-    const context = canvas.getContext('2d');
-    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const particles = Array.from({ length: window.innerWidth < 760 ? 28 : 58 }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: (Math.random() - 0.5) * 0.2,
-      r: Math.random() * 1.4 + 0.5,
-    }));
-
-    let frameId: number | undefined;
-
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-      context?.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-
-    const draw = () => {
-      if (!context || motionQuery.matches || document.hidden) return;
-      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      particles.forEach((particle) => {
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        if (particle.x < 0) particle.x = window.innerWidth;
-        if (particle.x > window.innerWidth) particle.x = 0;
-        if (particle.y < 0) particle.y = window.innerHeight;
-        if (particle.y > window.innerHeight) particle.y = 0;
-
-        context.beginPath();
-        context.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
-        context.fillStyle = 'rgba(0, 255, 200, 0.62)';
-        context.fill();
-      });
-      frameId = requestAnimationFrame(draw);
-    };
-
-    const stop = () => {
-      if (frameId !== undefined) cancelAnimationFrame(frameId);
-      frameId = undefined;
-    };
-
-    const start = () => {
-      if (frameId === undefined && !motionQuery.matches && !document.hidden) draw();
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
-    motionQuery.addEventListener('change', () => {
-      stop();
-      start();
-    });
-    start();
-  }
 </script>
